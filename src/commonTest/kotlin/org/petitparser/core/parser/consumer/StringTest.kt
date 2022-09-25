@@ -4,7 +4,7 @@ import org.petitparser.core.parser.assertFailure
 import org.petitparser.core.parser.assertSuccess
 import kotlin.test.Test
 
-class StringTest {
+internal class StringTest {
   @Test
   fun testDefault() {
     val parser = string("kotlin")

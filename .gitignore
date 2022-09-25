@@ -7,5 +7,6 @@
 .project
 .settings
 build/
+kotlin-js-store/
 out/
 target/

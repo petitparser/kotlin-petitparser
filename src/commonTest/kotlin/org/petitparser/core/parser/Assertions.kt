@@ -13,7 +13,7 @@ fun <R> assertSuccess(parser: Parser<R>, input: String, expected: R, position: I
     assertEquals(position, result.position)
     assertEquals(expected, result.value)
   } else {
-    asserter.fail("Expected successful parse result, but got $result.")
+    asserter.fail("Expected successful parse result, but got $result")
   }
 }
 
@@ -24,6 +24,6 @@ fun <R> assertFailure(parser: Parser<R>, input: String, message: String, positio
     assertEquals(position, result.position)
     assertEquals(message, result.message)
   } else {
-    asserter.fail("Expected failing parse result, but got $result.")
+    asserter.fail("Expected failing parse result, but got $result")
   }
 }
