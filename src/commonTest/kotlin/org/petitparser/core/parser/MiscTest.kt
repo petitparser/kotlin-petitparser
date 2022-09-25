@@ -1,20 +1,19 @@
-package org.petitparser.core.parser.misc
+package org.petitparser.core.parser
 
-import org.petitparser.core.parser.assertFailure
-import org.petitparser.core.parser.assertSuccess
 import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.misc.*
 import kotlin.test.Test
 
 internal class MiscTest {
   @Test
-  fun testEndOfInput() {
+  fun test_endOfInput() {
     val parser = endOfInput()
     assertSuccess(parser, "", Unit)
     assertFailure(parser, "1", "end of input expected")
   }
 
   @Test
-  fun testEnd() {
+  fun test_end() {
     val parser = any().end()
     assertSuccess(parser, "a", 'a')
     assertFailure(parser, "aa", "end of input expected", 1)
@@ -22,21 +21,21 @@ internal class MiscTest {
   }
 
   @Test
-  fun testFailure() {
+  fun test_failure() {
     val parser = failure<Int>("permanent failure")
     assertFailure(parser, "", "permanent failure")
     assertFailure(parser, "a", "permanent failure")
   }
 
   @Test
-  fun testPosition() {
+  fun test_position() {
     val parser = position()
     assertSuccess(parser, "", 0)
     assertSuccess(parser, "a", 0, 0)
   }
 
   @Test
-  fun testSuccess() {
+  fun test_success() {
     val parser = success(42)
     assertSuccess(parser, "", 42)
     assertSuccess(parser, "a", 42, 0)

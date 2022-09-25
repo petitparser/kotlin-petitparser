@@ -12,7 +12,7 @@ fun <R> Parser<R>.star() = repeat(min = 0, max = Int.MAX_VALUE)
 fun <R> Parser<R>.plus() = repeat(min = 1, max = Int.MAX_VALUE)
 
 /** Returns a parser that accepts the receiver exactly [count] times. */
-fun <R> Parser<R>.times(count: Int) = repeat(min = count, max = count)
+fun <R> Parser<R>.repeat(count: Int) = repeat(min = count, max = count)
 
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.repeat(min: Int, max: Int) = object : Parser<List<R>> {

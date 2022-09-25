@@ -1,7 +1,6 @@
 package org.petitparser.core.parser.action
 
 import org.petitparser.core.context.Context
-import org.petitparser.core.context.Result
 import org.petitparser.core.context.Success
 import org.petitparser.core.parser.Parser
 
