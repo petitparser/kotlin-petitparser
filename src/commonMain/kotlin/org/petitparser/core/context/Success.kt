@@ -4,4 +4,6 @@ class Success<R>(override val buffer: String, override val position: Int, overri
   Result<R> {
   override val message: String
     get() = throw UnsupportedOperationException()
+
+  override fun toString(): String = "Success[$position]: $value"
 }

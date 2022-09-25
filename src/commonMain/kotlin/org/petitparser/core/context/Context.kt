@@ -11,4 +11,6 @@ interface Context {
     Failure<R>(buffer, position, message)
 }
 
-class ContextImpl(override val buffer: String, override val position: Int) : Context
+class ContextImpl(override val buffer: String, override val position: Int) : Context {
+  override fun toString(): String = "Context[$position]"
+}

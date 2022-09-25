@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.js.translate.context.Namer.kotlin
-
 plugins {
   kotlin("multiplatform") version "1.7.10"
 }

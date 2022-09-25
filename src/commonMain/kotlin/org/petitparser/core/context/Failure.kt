@@ -7,4 +7,6 @@ class Failure<R>(
 ) : Result<R> {
   override val value: R
     get() = throw ParseError(this)
+
+  override fun toString(): String = "Failure[$position]: $message"
 }
