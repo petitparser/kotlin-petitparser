@@ -5,7 +5,7 @@ interface Context {
   val position: Int
 
   fun <R> success(value: R, position: Int = this.position) =
-    Success<R>(buffer, position, value)
+    Success(buffer, position, value)
 
   fun <R> failure(message: String, position: Int = this.position) =
     Failure<R>(buffer, position, message)
