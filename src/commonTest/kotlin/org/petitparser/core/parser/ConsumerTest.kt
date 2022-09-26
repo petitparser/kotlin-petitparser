@@ -50,6 +50,15 @@ internal class ConsumerTest {
   }
 
   @Test
+  fun test_letterOrDigit() {
+    val parser = letterOrDigit()
+    assertSuccess(parser, "a", 'a')
+    assertSuccess(parser, "1", '1')
+    assertFailure(parser, "*", "letter or digit expected")
+    assertFailure(parser, "", "letter or digit expected")
+  }
+
+  @Test
   fun test_whitespace() {
     val parser = whitespace()
     assertSuccess(parser, " ", ' ')

@@ -20,6 +20,10 @@ fun digit(message: String = "digit expected") = char(Char::isDigit, message)
 /** Returns a parser that accepts a letter character. */
 fun letter(message: String = "letter expected") = char(Char::isLetter, message)
 
+/** Returns a parser that accepts a letter or digit character. */
+fun letterOrDigit(message: String = "letter or digit expected") =
+  char(Char::isLetterOrDigit, message)
+
 /** Returns a parser that accepts a whitespace character. */
 fun whitespace(message: String = "whitespace expected") = char(Char::isWhitespace, message)
 
