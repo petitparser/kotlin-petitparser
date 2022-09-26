@@ -19,4 +19,5 @@ fun main() {
   val float = success(1.0)
   val string = success("String")
   val union = integer + float + string
+  print(union.parse(""))
 }
