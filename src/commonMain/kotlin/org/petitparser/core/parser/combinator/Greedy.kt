@@ -7,19 +7,15 @@ import org.petitparser.core.context.Success
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the receiver zero or more times. */
-fun <R> Parser<R>.greedyStar(limit: Parser<Nothing>) =
+fun <R> Parser<R>.greedyStar(limit: Parser<*>) =
   greedyRepeat(limit, min = 0, max = Int.MAX_VALUE)
 
 /** Returns a parser that accepts the receiver one or more times. */
-fun <R> Parser<R>.greedyPlus(limit: Parser<Nothing>) =
+fun <R> Parser<R>.greedyPlus(limit: Parser<*>) =
   greedyRepeat(limit, min = 1, max = Int.MAX_VALUE)
 
-/** Returns a parser that accepts the receiver exactly [count] times. */
-fun <R> Parser<R>.greedyRepeat(limit: Parser<Nothing>, count: Int) =
-  greedyRepeat(limit, min = count, max = count)
-
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
-fun <R> Parser<R>.greedyRepeat(limit: Parser<Nothing>, min: Int, max: Int) =
+fun <R> Parser<R>.greedyRepeat(limit: Parser<*>, min: Int, max: Int = min) =
   object : Parser<List<R>> {
     override fun parseOn(context: Context): Result<List<R>> {
       var current = context
