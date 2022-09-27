@@ -1,7 +1,7 @@
 package org.petitparser.core.parser.consumer
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Result
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts any character. */
@@ -29,13 +29,13 @@ fun whitespace(message: String = "whitespace expected") = char(Char::isWhitespac
 
 /** Returns a parser that accepts a character satisfying a [predicate]. */
 fun char(predicate: (Char) -> Boolean, message: String) = object : Parser<Char> {
-  override fun parseOn(context: Context): Result<Char> {
-    if (context.position < context.buffer.length) {
-      val char = context.buffer[context.position]
+  override fun parseOn(input: Input): Output<Char> {
+    if (input.position < input.buffer.length) {
+      val char = input.buffer[input.position]
       if (predicate(char)) {
-        return context.success(char, context.position + 1)
+        return input.success(char, input.position + 1)
       }
     }
-    return context.failure(message)
+    return input.failure(message)
   }
 }

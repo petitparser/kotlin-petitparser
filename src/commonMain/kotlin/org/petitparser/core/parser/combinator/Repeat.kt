@@ -1,8 +1,7 @@
 package org.petitparser.core.parser.combinator
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Failure
-import org.petitparser.core.context.Result
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the receiver zero or more times. */
@@ -16,24 +15,26 @@ fun <R> Parser<R>.repeat(count: Int) = repeat(min = count, max = count)
 
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.repeat(min: Int, max: Int) = object : Parser<List<R>> {
-  override fun parseOn(context: Context): Result<List<R>> {
-    var current = context
+  override fun parseOn(input: Input): Output<List<R>> {
+    var current = input
     val elements = mutableListOf<R>()
     while (elements.size < min) {
-      val result = this@repeat.parseOn(current)
-      if (result is Failure) {
-        return result.failure(result.message)
+      when (val result = this@repeat.parseOn(current)) {
+        is Output.Success -> {
+          elements.add(result.value)
+          current = result
+        }
+        is Output.Failure -> return result.failure(result.message)
       }
-      elements.add(result.value)
-      current = result
     }
     while (elements.size < max) {
-      val result = this@repeat.parseOn(current)
-      if (result is Failure) {
-        return current.success(elements)
+      when (val result = this@repeat.parseOn(current)) {
+        is Output.Success -> {
+          elements.add(result.value)
+          current = result
+        }
+        is Output.Failure -> return current.success(elements)
       }
-      elements.add(result.value)
-      current = result
     }
     return current.success(elements)
   }

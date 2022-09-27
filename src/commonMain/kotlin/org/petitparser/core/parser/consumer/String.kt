@@ -1,7 +1,7 @@
 package org.petitparser.core.parser.consumer
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Result
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the [string]. */
@@ -10,14 +10,14 @@ fun string(string: String, message: String = "'$string' expected", ignoreCase: B
 
 /** Returns a parser that accepts string satisfying the given [predicate]. */
 fun string(predicate: (String) -> Boolean, length: Int, message: String) = object : Parser<String> {
-  override fun parseOn(context: Context): Result<String> {
-    val stop = context.position + length
-    if (stop <= context.buffer.length) {
-      val string = context.buffer.substring(context.position, stop)
+  override fun parseOn(input: Input): Output<String> {
+    val stop = input.position + length
+    if (stop <= input.buffer.length) {
+      val string = input.buffer.substring(input.position, stop)
       if (predicate(string)) {
-        return context.success(string, stop)
+        return input.success(string, stop)
       }
     }
-    return context.failure(message)
+    return input.failure(message)
   }
 }

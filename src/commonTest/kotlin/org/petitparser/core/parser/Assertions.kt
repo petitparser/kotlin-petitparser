@@ -1,18 +1,17 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.context.Failure
-import org.petitparser.core.context.Result
-import org.petitparser.core.context.Success
+import org.petitparser.core.context.Output
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.test.asserter
 
-internal fun <R> assertSuccess(result: Result<R>, value: R, position: Int?) {
-  if (result is Success<R>) {
-    assertEquals(value, result.value)
-    if (position != null) assertEquals(position, result.position)
-  } else {
-    asserter.fail("Expected success, but got $result")
+internal fun <R> assertSuccess(output: Output<R>, value: R, position: Int) = when (output) {
+  is Output.Success -> {
+    assertEquals(value, output.value, "value")
+    assertEquals(position, output.position, "position")
   }
+  is Output.Failure -> asserter.fail("Expected success, but got $output")
 }
 
 internal fun <R> assertSuccess(
@@ -20,14 +19,16 @@ internal fun <R> assertSuccess(
   input: String,
   value: R,
   position: Int = input.length,
-) = assertSuccess(parser.parse(input), value, position)
+) {
+  assertTrue(parser.accept(input), "$parser should accept $input")
+  assertSuccess(parser.parse(input), value, position)
+}
 
-internal fun <R> assertFailure(result: Result<R>, message: String, position: Int?) {
-  if (result is Failure<R>) {
-    assertEquals(message, result.message)
-    if (position != null) assertEquals(position, result.position)
-  } else {
-    asserter.fail("Expected failing parse result, but got $result")
+internal fun <R> assertFailure(output: Output<R>, message: String, position: Int) = when (output) {
+  is Output.Success -> asserter.fail("Expected failure, but got $output")
+  is Output.Failure -> {
+    assertEquals(message, output.message, "message")
+    assertEquals(position, output.position, "position")
   }
 }
 
@@ -36,5 +37,7 @@ internal fun <R> assertFailure(
   input: String,
   message: String,
   position: Int = 0,
-) =
+) {
+  assertFalse(parser.accept(input), "$parser should not accept $input")
   assertFailure(parser.parse(input), message, position)
+}

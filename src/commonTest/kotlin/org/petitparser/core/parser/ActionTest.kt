@@ -1,8 +1,12 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Result
-import org.petitparser.core.parser.action.*
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
+import org.petitparser.core.parser.action.callCC
+import org.petitparser.core.parser.action.cast
+import org.petitparser.core.parser.action.flatten
+import org.petitparser.core.parser.action.map
+import org.petitparser.core.parser.action.pick
 import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.combinator.repeat
 import org.petitparser.core.parser.consumer.digit
@@ -26,22 +30,26 @@ internal class ActionTest {
 
   @Test
   fun test_callCC_resume() {
-    val continuations = mutableListOf<(Context) -> Result<Char>>()
-    val contexts = mutableListOf<Context>()
-    val parser = digit().callCC { continuation, context ->
+    val continuations = mutableListOf<(Input) -> Output<Char>>()
+    val inputs = mutableListOf<Input>()
+    val parser = digit().callCC { continuation, input ->
       continuations.add(continuation)
-      contexts.add(context)
-      context.failure<Char>("Abort")
+      inputs.add(input)
+      input.failure<Int>("Aborted")
     }
     // Execute the parser twice to collect the continuations
-    assertFailure(parser, "1", "Abort")
-    assertFailure(parser, "a", "Abort")
+    val failure1 = parser.parse("1")
+    assertFailure(failure1, "Aborted", 0)
+    val failure2 = parser.parse("a")
+    assertFailure(failure2, "Aborted", 0)
     // Later we can execute the captured continuations
-    assertSuccess(continuations[0](contexts[0]), '1', 1)
-    assertFailure(continuations[1](contexts[1]), "digit expected", 0)
+    assertSuccess(continuations[0](inputs[0]), '1', 1)
+    assertFailure(
+      continuations[1](inputs[1]), "digit expected", 0
+    )
     // Of course the continuations can be resumed multiple times
-    assertSuccess(continuations[0](contexts[0]), '1', 1)
-    assertFailure(continuations[1](contexts[1]), "digit expected", 0)
+    assertSuccess(continuations[0](inputs[0]), '1', 1)
+    assertFailure(continuations[1](inputs[1]), "digit expected", 0)
   }
 
   @Test

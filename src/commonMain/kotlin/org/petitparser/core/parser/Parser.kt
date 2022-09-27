@@ -1,17 +1,16 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.ContextImpl
-import org.petitparser.core.context.Result
-import org.petitparser.core.context.Success
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 
 interface Parser<out R> {
+  fun parse(input: String, position: Int = 0): Output<R> = parseOn(Input.InputImpl(input, position))
 
-  fun parse(input: String, position: Int = 0): Result<R> = parseOn(ContextImpl(input, position))
-
-  fun parseOn(context: Context): Result<R>
+  fun parseOn(input: Input): Output<R>
 }
 
-fun <R> Parser<R>.accept(input: String, start: Int = 0) =
-  parse(input, start) is Success<*>
+fun <R> Parser<R>.accept(input: String, start: Int = 0) = when (parse(input, start)) {
+  is Output.Success -> true
+  is Output.Failure -> false
+}
 

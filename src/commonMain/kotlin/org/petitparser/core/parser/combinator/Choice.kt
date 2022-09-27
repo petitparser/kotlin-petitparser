@@ -1,8 +1,7 @@
 package org.petitparser.core.parser.combinator
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Result
-import org.petitparser.core.context.Success
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the result of the first succeeding of [parsers]. */
@@ -19,17 +18,16 @@ infix fun <R> Parser<R>.or(other: Parser<R>): Parser<R> {
 }
 
 private class ChoiceParser<R>(var parsers: List<Parser<R>>) : Parser<R> {
-  override fun parseOn(context: Context): Result<R> {
-    var failures: MutableList<Result<R>>? = null
+  override fun parseOn(input: Input): Output<R> {
+    var failures: MutableList<Output<R>>? = null
     for (parser in parsers) {
-      val result = parser.parseOn(context)
-      if (result is Success<R>) {
-        return result
+      when (val result = parser.parseOn(input)) {
+        is Output.Success -> return result
+        is Output.Failure -> {
+          if (failures == null) failures = mutableListOf()
+          failures.add(result)
+        }
       }
-      if (failures == null) {
-        failures = mutableListOf()
-      }
-      failures.add(result)
     }
     return failures!!.last()
   }

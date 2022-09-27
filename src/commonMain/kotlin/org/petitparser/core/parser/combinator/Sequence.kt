@@ -1,8 +1,7 @@
 package org.petitparser.core.parser.combinator
 
-import org.petitparser.core.context.Context
-import org.petitparser.core.context.Failure
-import org.petitparser.core.context.Result
+import org.petitparser.core.context.Input
+import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts a list of [parsers]. */
@@ -19,16 +18,17 @@ infix fun Parser<Any?>.seq(other: Parser<Any?>): Parser<List<Any?>> {
 }
 
 private class SequenceParser<R>(var parsers: List<Parser<R>>) : Parser<List<R>> {
-  override fun parseOn(context: Context): Result<List<R>> {
-    var current = context
+  override fun parseOn(input: Input): Output<List<R>> {
+    var current = input
     val elements = mutableListOf<R>()
     for (parser in parsers) {
-      val result = parser.parseOn(current)
-      if (result is Failure) {
-        return result.failure(result.message)
+      when (val result = parser.parseOn(current)) {
+        is Output.Success -> {
+          elements.add(result.value)
+          current = result
+        }
+        is Output.Failure -> return result.failure(result.message)
       }
-      elements.add(result.value)
-      current = result
     }
     return current.success(elements)
   }

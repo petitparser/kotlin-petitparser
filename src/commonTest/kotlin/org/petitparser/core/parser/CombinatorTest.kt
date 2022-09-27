@@ -1,6 +1,20 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.parser.combinator.*
+import org.petitparser.core.parser.combinator.and
+import org.petitparser.core.parser.combinator.div
+import org.petitparser.core.parser.combinator.greedyPlus
+import org.petitparser.core.parser.combinator.greedyRepeat
+import org.petitparser.core.parser.combinator.greedyStar
+import org.petitparser.core.parser.combinator.lazyPlus
+import org.petitparser.core.parser.combinator.lazyRepeat
+import org.petitparser.core.parser.combinator.lazyStar
+import org.petitparser.core.parser.combinator.not
+import org.petitparser.core.parser.combinator.optional
+import org.petitparser.core.parser.combinator.or
+import org.petitparser.core.parser.combinator.plus
+import org.petitparser.core.parser.combinator.repeat
+import org.petitparser.core.parser.combinator.seq
+import org.petitparser.core.parser.combinator.star
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letterOrDigit

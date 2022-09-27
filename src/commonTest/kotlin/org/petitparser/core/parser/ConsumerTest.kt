@@ -1,6 +1,12 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.parser.consumer.*
+import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.consumer.char
+import org.petitparser.core.parser.consumer.digit
+import org.petitparser.core.parser.consumer.letter
+import org.petitparser.core.parser.consumer.letterOrDigit
+import org.petitparser.core.parser.consumer.string
+import org.petitparser.core.parser.consumer.whitespace
 import kotlin.test.Test
 
 internal class ConsumerTest {

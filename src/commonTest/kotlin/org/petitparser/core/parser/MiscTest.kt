@@ -1,7 +1,11 @@
 package org.petitparser.core.parser
 
 import org.petitparser.core.parser.consumer.any
-import org.petitparser.core.parser.misc.*
+import org.petitparser.core.parser.misc.end
+import org.petitparser.core.parser.misc.endOfInput
+import org.petitparser.core.parser.misc.failure
+import org.petitparser.core.parser.misc.position
+import org.petitparser.core.parser.misc.success
 import kotlin.test.Test
 
 internal class MiscTest {
