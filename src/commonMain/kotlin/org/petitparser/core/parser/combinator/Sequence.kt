@@ -2,7 +2,6 @@ package org.petitparser.core.parser.combinator
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
-import org.petitparser.core.context.ParseError
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts a list of [parsers]. */

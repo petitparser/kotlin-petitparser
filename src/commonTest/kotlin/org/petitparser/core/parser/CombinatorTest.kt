@@ -14,11 +14,13 @@ import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.combinator.repeat
 import org.petitparser.core.parser.combinator.seq
+import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.star
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letterOrDigit
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class CombinatorTest {
   @Test
@@ -296,5 +298,131 @@ internal class CombinatorTest {
     assertFailure(parser, "*bc", "'a' expected", 0)
     assertFailure(parser, "a*c", "'b' expected", 1)
     assertFailure(parser, "ab*", "'c' expected", 2)
+  }
+
+  @Test
+  fun test_sequence_seqMap2() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+    ) { a, b -> listOf(a, b) }
+    assertEquals(parser.children.toSet().size, 2)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertSuccess(parser, "12", listOf('1', '2'))
+  }
+
+  @Test
+  fun test_sequence_seqMap3() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+    ) { a, b, c -> listOf(a, b, c) }
+    assertEquals(parser.children.toSet().size, 3)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertSuccess(parser, "123", listOf('1', '2', '3'))
+  }
+
+  @Test
+  fun test_sequence_seqMap4() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+    ) { a, b, c, d -> listOf(a, b, c, d) }
+    assertEquals(parser.children.toSet().size, 4)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertSuccess(parser, "1234", listOf('1', '2', '3', '4'))
+  }
+
+  @Test
+  fun test_sequence_seqMap5() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+    ) { a, b, c, d, e -> listOf(a, b, c, d, e) }
+    assertEquals(parser.children.toSet().size, 5)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertSuccess(parser, "12345", listOf('1', '2', '3', '4', '5'))
+  }
+
+  @Test
+  fun test_sequence_seqMap6() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+    ) { a, b, c, d, e, f -> listOf(a, b, c, d, e, f) }
+    assertEquals(parser.children.toSet().size, 6)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertSuccess(parser, "123456", listOf('1', '2', '3', '4', '5', '6'))
+  }
+
+  @Test
+  fun test_sequence_seqMap7() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+    ) { a, b, c, d, e, f, g -> listOf(a, b, c, d, e, f, g) }
+    assertEquals(parser.children.toSet().size, 7)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertSuccess(parser, "1234567", listOf('1', '2', '3', '4', '5', '6', '7'))
+  }
+
+  @Test
+  fun test_sequence_seqMap8() {
+    var parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+      char('8'),
+    ) { a, b, c, d, e, f, g, h -> listOf(a, b, c, d, e, f, g, h) }
+    assertEquals(parser.children.toSet().size, 8)
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertFailure(parser, "1234567", "'8' expected", 7)
+    assertSuccess(parser, "12345678", listOf('1', '2', '3', '4', '5', '6', '7', '8'))
   }
 }
