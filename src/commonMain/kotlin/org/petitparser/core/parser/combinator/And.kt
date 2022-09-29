@@ -6,6 +6,7 @@ import org.petitparser.core.parser.Parser
 
 /** Returns a parser that succeeds whenever the receiver does, but never consumes input. */
 fun <R> Parser<R>.and() = object : Parser<R> {
+  override val children: List<Parser<*>> get() = listOf(this@and)
   override fun parseOn(input: Input) = when (val result = this@and.parseOn(input)) {
     is Output.Success -> input.success(result.value)
     is Output.Failure -> result
