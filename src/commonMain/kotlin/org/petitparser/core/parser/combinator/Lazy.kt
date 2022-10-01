@@ -13,7 +13,6 @@ fun <R> Parser<R>.lazyPlus(limit: Parser<*>) = lazyRepeat(limit, min = 1, max = 
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.lazyRepeat(limit: Parser<*>, min: Int, max: Int = min) =
   object : Parser<List<R>> {
-    override val children: List<Parser<*>> get() = listOf(this@lazyRepeat, limit)
     override fun parseOn(input: Input): Output<List<R>> {
       var current = input
       val elements = mutableListOf<R>()

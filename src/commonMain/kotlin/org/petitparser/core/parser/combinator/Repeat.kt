@@ -15,7 +15,6 @@ fun <R> Parser<R>.repeat(count: Int) = repeat(min = count, max = count)
 
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.repeat(min: Int, max: Int) = object : Parser<List<R>> {
-  override val children: List<Parser<*>> get() = listOf(this@repeat)
   override fun parseOn(input: Input): Output<List<R>> {
     var current = input
     val elements = mutableListOf<R>()

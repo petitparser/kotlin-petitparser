@@ -18,7 +18,6 @@ infix fun <R> Parser<R>.or(other: Parser<R>): Parser<R> {
 }
 
 private class ChoiceParser<R>(var parsers: List<Parser<R>>) : Parser<R> {
-  override val children: List<Parser<*>> get() = parsers
   override fun parseOn(input: Input): Output<R> {
     var failures: MutableList<Output<R>>? = null
     for (parser in parsers) {

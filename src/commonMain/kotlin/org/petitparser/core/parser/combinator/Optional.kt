@@ -9,7 +9,6 @@ fun <R> Parser<R>.optional() = optional(null)
 
 /** Returns new parser that accepts the receiver, otherwise returns [value]. */
 fun <R> Parser<R>.optional(value: R) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(this@optional)
   override fun parseOn(input: Input) = when (val result = this@optional.parseOn(input)) {
     is Output.Success -> result.success(result.value)
     is Output.Failure -> input.success(value)

@@ -10,7 +10,6 @@ fun <R1, R2, R> seqMap(
   p2: Parser<R2>,
   block: (R1, R2) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -27,7 +26,6 @@ fun <R1, R2, R3, R> seqMap(
   p3: Parser<R3>,
   block: (R1, R2, R3) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -47,7 +45,6 @@ fun <R1, R2, R3, R4, R> seqMap(
   p4: Parser<R4>,
   block: (R1, R2, R3, R4) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3, p4)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -70,7 +67,6 @@ fun <R1, R2, R3, R4, R5, R> seqMap(
   p5: Parser<R5>,
   block: (R1, R2, R3, R4, R5) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3, p4, p5)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -96,7 +92,6 @@ fun <R1, R2, R3, R4, R5, R6, R> seqMap(
   p6: Parser<R6>,
   block: (R1, R2, R3, R4, R5, R6) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3, p4, p5, p6)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -125,7 +120,6 @@ fun <R1, R2, R3, R4, R5, R6, R7, R> seqMap(
   p7: Parser<R7>,
   block: (R1, R2, R3, R4, R5, R6, R7) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3, p4, p5, p6, p7)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
@@ -157,7 +151,6 @@ fun <R1, R2, R3, R4, R5, R6, R7, R8, R> seqMap(
   p8: Parser<R8>,
   block: (R1, R2, R3, R4, R5, R6, R7, R8) -> R,
 ) = object : Parser<R> {
-  override val children: List<Parser<*>> get() = listOf(p1, p2, p3, p4, p5, p6, p7, p8)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
     if (r1 is Output.Failure) return r1.failure(r1.message)
