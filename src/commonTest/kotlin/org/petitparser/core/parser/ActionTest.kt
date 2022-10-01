@@ -7,6 +7,7 @@ import org.petitparser.core.parser.action.cast
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
+import org.petitparser.core.parser.action.trim
 import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.combinator.repeat
 import org.petitparser.core.parser.consumer.digit
@@ -87,5 +88,21 @@ internal class ActionTest {
     assertSuccess(parser, "789", '8')
     assertFailure(parser, "abc", "digit expected")
     assertFailure(parser, "", "digit expected")
+  }
+
+  @Test
+  fun test_trim() {
+    val parser = digit().trim()
+    assertSuccess(parser, "1", '1')
+    assertSuccess(parser, " 2", '2')
+    assertSuccess(parser, "  3", '3')
+    assertSuccess(parser, "4 ", '4')
+    assertSuccess(parser, "5  ", '5')
+    assertSuccess(parser, " 6 ", '6')
+    assertSuccess(parser, "  7  ", '7')
+    assertFailure(parser, "a", "digit expected", 0)
+    assertFailure(parser, " a", "digit expected", 1)
+    assertFailure(parser, "a ", "digit expected", 0)
+    assertFailure(parser, " a ", "digit expected", 1)
   }
 }
