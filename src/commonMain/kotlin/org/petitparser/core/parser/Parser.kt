@@ -7,6 +7,8 @@ interface Parser<out R> {
   fun parse(input: String, position: Int = 0): Output<R> = parseOn(Input.InputImpl(input, position))
 
   fun parseOn(input: Input): Output<R>
+
+  val children: List<Parser<*>> get() = emptyList()
 }
 
 fun <R> Parser<R>.accept(input: String, start: Int = 0) = when (parse(input, start)) {

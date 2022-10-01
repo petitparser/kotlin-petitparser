@@ -18,6 +18,7 @@ infix fun Parser<Any?>.seq(other: Parser<Any?>): Parser<List<Any?>> {
 }
 
 private class SequenceParser<R>(var parsers: List<Parser<R>>) : Parser<List<R>> {
+  override val children = parsers
   override fun parseOn(input: Input): Output<List<R>> {
     var current = input
     val elements = mutableListOf<R>()

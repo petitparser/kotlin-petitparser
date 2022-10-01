@@ -13,6 +13,7 @@ fun <R> Parser<R>.greedyPlus(limit: Parser<*>) = greedyRepeat(limit, min = 1, ma
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.greedyRepeat(limit: Parser<*>, min: Int, max: Int = min) =
   object : Parser<List<R>> {
+    override val children get() = listOf(this@greedyRepeat, limit)
     override fun parseOn(input: Input): Output<List<R>> {
       var current = input
       val elements = mutableListOf<R>()

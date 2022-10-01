@@ -1,5 +1,6 @@
 package org.petitparser.core.parser
 
+import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.combinator.and
 import org.petitparser.core.parser.combinator.div
 import org.petitparser.core.parser.combinator.not
@@ -7,9 +8,13 @@ import org.petitparser.core.parser.combinator.optional
 import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
+import org.petitparser.core.parser.combinator.settable
+import org.petitparser.core.parser.combinator.undefined
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
+import org.petitparser.core.parser.consumer.letter
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class CombinatorTest {
   @Test
@@ -103,6 +108,7 @@ internal class CombinatorTest {
       char('1'),
       char('2'),
     ) { a, b -> listOf(a, b) }
+    assertEquals(parser.children.size, 2)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertSuccess(parser, "12", listOf('1', '2'))
@@ -115,6 +121,7 @@ internal class CombinatorTest {
       char('2'),
       char('3'),
     ) { a, b, c -> listOf(a, b, c) }
+    assertEquals(parser.children.size, 3)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -129,6 +136,7 @@ internal class CombinatorTest {
       char('3'),
       char('4'),
     ) { a, b, c, d -> listOf(a, b, c, d) }
+    assertEquals(parser.children.size, 4)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -145,6 +153,7 @@ internal class CombinatorTest {
       char('4'),
       char('5'),
     ) { a, b, c, d, e -> listOf(a, b, c, d, e) }
+    assertEquals(parser.children.size, 5)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -163,6 +172,7 @@ internal class CombinatorTest {
       char('5'),
       char('6'),
     ) { a, b, c, d, e, f -> listOf(a, b, c, d, e, f) }
+    assertEquals(parser.children.size, 6)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -183,6 +193,7 @@ internal class CombinatorTest {
       char('6'),
       char('7'),
     ) { a, b, c, d, e, f, g -> listOf(a, b, c, d, e, f, g) }
+    assertEquals(parser.children.size, 7)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -205,6 +216,7 @@ internal class CombinatorTest {
       char('7'),
       char('8'),
     ) { a, b, c, d, e, f, g, h -> listOf(a, b, c, d, e, f, g, h) }
+    assertEquals(parser.children.size, 8)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -214,5 +226,23 @@ internal class CombinatorTest {
     assertFailure(parser, "123456", "'7' expected", 6)
     assertFailure(parser, "1234567", "'8' expected", 7)
     assertSuccess(parser, "12345678", listOf('1', '2', '3', '4', '5', '6', '7', '8'))
+  }
+
+  @Test
+  fun test_settable() {
+    val parser = digit().settable()
+    assertSuccess(parser, "1", '1')
+    assertFailure(parser, "a", "digit expected")
+    parser.delegate = letter()
+    assertSuccess(parser, "a", 'a')
+    assertFailure(parser, "1", "letter expected")
+  }
+
+  @Test
+  fun test_undefined() {
+    val parser = undefined<Char>()
+    assertFailure(parser, "1", "undefined parser")
+    parser.delegate = digit()
+    assertSuccess(parser, "1", '1')
   }
 }
