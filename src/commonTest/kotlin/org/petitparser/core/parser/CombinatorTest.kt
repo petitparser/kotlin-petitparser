@@ -13,6 +13,7 @@ import org.petitparser.core.parser.combinator.optional
 import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.combinator.repeat
+import org.petitparser.core.parser.combinator.separatedBy
 import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.star
@@ -20,7 +21,6 @@ import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letterOrDigit
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 internal class CombinatorTest {
   @Test
@@ -220,6 +220,26 @@ internal class CombinatorTest {
     val parser = digit().optional('*')
     assertSuccess(parser, "1", '1')
     assertSuccess(parser, "a", '*', 0)
+  }
+
+  @Test
+  fun test_separatedBy() {
+    val parser = digit().separatedBy(char(';'))
+    assertSuccess(parser, "1", listOf('1'))
+    assertSuccess(parser, "1;2", listOf('1', ';', '2'))
+    assertSuccess(parser, "1;2;3", listOf('1', ';', '2', ';', '3'))
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, ";", "digit expected")
+  }
+
+  @Test
+  fun test_separatedByWithoutSeparators() {
+    val parser = digit().separatedBy(char(';'), includeSeparators = false)
+    assertSuccess(parser, "1", listOf('1'))
+    assertSuccess(parser, "1;2", listOf('1', '2'))
+    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, ";", "digit expected")
   }
 
   @Test
