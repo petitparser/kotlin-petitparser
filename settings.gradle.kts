@@ -1,2 +1,2 @@
-rootProject.name = "PetitParserKotlin"
+rootProject.name = "PetitParser"
 
