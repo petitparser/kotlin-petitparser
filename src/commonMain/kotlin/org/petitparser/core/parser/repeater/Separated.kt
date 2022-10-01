@@ -4,6 +4,7 @@ import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.combinator.seq
 
+/** Returns a parser that consumes the receiver one or more times separated by the [separator] parser. */
 @Suppress("UNCHECKED_CAST")
 fun <R> Parser<R>.separatedBy(
   separator: Parser<R>,

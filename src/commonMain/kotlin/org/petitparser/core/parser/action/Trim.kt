@@ -5,6 +5,10 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.consumer.whitespace
 
+/**
+ * Returns a parser that consumes input before and after the receiver, discards the excess input
+ * and only returns the result of the receiver.
+ */
 fun <R> Parser<R>.trim(left: Parser<Any> = whitespace(), right: Parser<Any> = left) =
   object : Parser<R> {
     override fun parseOn(input: Input): Output<R> {
