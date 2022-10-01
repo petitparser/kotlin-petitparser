@@ -1,7 +1,8 @@
-package org.petitparser.core.parser.combinator
+package org.petitparser.core.parser.repeater
 
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.action.map
+import org.petitparser.core.parser.combinator.seq
 
 @Suppress("UNCHECKED_CAST")
 fun <R> Parser<R>.separatedBy(

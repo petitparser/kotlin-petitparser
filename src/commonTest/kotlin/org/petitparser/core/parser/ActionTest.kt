@@ -8,10 +8,10 @@ import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
 import org.petitparser.core.parser.action.trim
-import org.petitparser.core.parser.combinator.plus
-import org.petitparser.core.parser.combinator.repeat
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
+import org.petitparser.core.parser.repeater.plus
+import org.petitparser.core.parser.repeater.repeat
 import kotlin.test.Test
 
 internal class ActionTest {

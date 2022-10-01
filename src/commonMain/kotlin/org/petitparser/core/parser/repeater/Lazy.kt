@@ -1,4 +1,4 @@
-package org.petitparser.core.parser.combinator
+package org.petitparser.core.parser.repeater
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
