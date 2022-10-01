@@ -37,7 +37,7 @@ fun <R> assertFailure(
   assertFalse(parser.accept(input), "$parser should not accept $input")
   val result = parser.parse(input)
   assertFailure(result, message, position)
-  var error = assertFailsWith<ParseError>(message) { result.value }
+  val error = assertFailsWith<ParseError>(message) { result.value }
   assertFailure(error.failure, message, position)
 }
 

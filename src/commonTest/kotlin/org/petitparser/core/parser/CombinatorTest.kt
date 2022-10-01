@@ -322,7 +322,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap2() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
     ) { a, b -> listOf(a, b) }
@@ -333,7 +333,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap3() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
@@ -346,7 +346,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap4() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
@@ -361,7 +361,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap5() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
@@ -378,7 +378,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap6() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
@@ -397,7 +397,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap7() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
@@ -418,7 +418,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence_seqMap8() {
-    var parser = seqMap(
+    val parser = seqMap(
       char('1'),
       char('2'),
       char('3'),
