@@ -5,22 +5,19 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts any character. */
-fun any(message: String = "input expected") = char({ true }, message)
+fun any(message: String = "input expected") = char(CharPredicate.any(), message)
 
-/** Returns a parser that accepts any of the provided characters. */
-fun anyOf(chars: Iterable<Char>, message: String = "any of [${chars.joinToString("")}] expected") =
-  char(chars::contains, message)
-
-/** Returns a parser that accepts any of the provided characters. */
+/** Returns a parser that accepts any of the provided [chars]. */
 fun anyOf(chars: String, message: String = "any of [$chars] expected") =
-  char(chars::contains, message)
+  char(CharPredicate.anyOf(chars), message)
 
-/** Returns a parser that accepts a specified [char]. */
-fun char(char: Char, message: String = "'$char' expected") = char(char::equals, message)
+/** Returns a parser that accepts none of the provided [chars]. */
+fun noneOf(chars: String, message: String = "none of [$chars] expected") =
+  char(CharPredicate.noneOf(chars), message)
 
-/** Returns a parser that accepts a specified character [category]. */
-fun char(category: CharCategory, message: String = "$category expected") =
-  char(category::contains, message)
+/** Returns a parser that accepts the provided [pattern]. */
+fun pattern(pattern: String, message: String = "[$pattern] expected") =
+  char(CharPredicate.pattern(pattern), message)
 
 /** Returns a parser that accepts a digit character. */
 fun digit(message: String = "digit expected") = char(Char::isDigit, message)
@@ -35,12 +32,19 @@ fun letterOrDigit(message: String = "letter or digit expected") =
 /** Returns a parser that accepts a whitespace character. */
 fun whitespace(message: String = "whitespace expected") = char(Char::isWhitespace, message)
 
+/** Returns a parser that accepts a specified [char]. */
+fun char(char: Char, message: String = "'$char' expected") = char(CharPredicate.char(char), message)
+
+/** Returns a parser that accepts a specified character [category]. */
+fun char(category: CharCategory, message: String = "$category expected") =
+  char(category::contains, message)
+
 /** Returns a parser that accepts a character satisfying a [predicate]. */
-fun char(predicate: (Char) -> Boolean, message: String) = object : Parser<Char> {
+fun char(predicate: CharPredicate, message: String) = object : Parser<Char> {
   override fun parseOn(input: Input): Output<Char> {
     if (input.position < input.buffer.length) {
       val char = input.buffer[input.position]
-      if (predicate(char)) {
+      if (predicate.test(char)) {
         return input.success(char, input.position + 1)
       }
     }

@@ -1,6 +1,5 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.combinator.and
 import org.petitparser.core.parser.combinator.div
 import org.petitparser.core.parser.combinator.not
