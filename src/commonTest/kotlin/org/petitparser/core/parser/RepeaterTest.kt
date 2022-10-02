@@ -11,7 +11,9 @@ import org.petitparser.core.parser.repeater.lazyRepeat
 import org.petitparser.core.parser.repeater.lazyStar
 import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.repeat
-import org.petitparser.core.parser.repeater.separatedBy
+import org.petitparser.core.parser.repeater.separatedPlus
+import org.petitparser.core.parser.repeater.separatedRepeat
+import org.petitparser.core.parser.repeater.separatedStar
 import org.petitparser.core.parser.repeater.star
 import kotlin.test.Test
 
@@ -155,26 +157,6 @@ internal class RepeaterTest {
   }
 
   @Test
-  fun test_separatedBy() {
-    val parser = digit().separatedBy(char(';'))
-    assertSuccess(parser, "1", listOf('1'))
-    assertSuccess(parser, "1;2", listOf('1', ';', '2'))
-    assertSuccess(parser, "1;2;3", listOf('1', ';', '2', ';', '3'))
-    assertFailure(parser, "", "digit expected")
-    assertFailure(parser, ";", "digit expected")
-  }
-
-  @Test
-  fun test_separatedByWithoutSeparators() {
-    val parser = digit().separatedBy(char(';'), includeSeparators = false)
-    assertSuccess(parser, "1", listOf('1'))
-    assertSuccess(parser, "1;2", listOf('1', '2'))
-    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
-    assertFailure(parser, "", "digit expected")
-    assertFailure(parser, ";", "digit expected")
-  }
-
-  @Test
   fun test_repeat_star() {
     val parser = digit().star()
     assertSuccess(parser, "", listOf())
@@ -187,32 +169,92 @@ internal class RepeaterTest {
   @Test
   fun test_repeat_plus() {
     val parser = digit().plus()
+    assertFailure(parser, "", "digit expected")
     assertSuccess(parser, "1", listOf('1'))
     assertSuccess(parser, "12", listOf('1', '2'))
     assertSuccess(parser, "123", listOf('1', '2', '3'))
     assertSuccess(parser, "1234", listOf('1', '2', '3', '4'))
-    assertFailure(parser, "", "digit expected")
-    assertFailure(parser, "a", "digit expected")
   }
 
   @Test
   fun test_repeat_count() {
     val parser = digit().repeat(3)
-    assertSuccess(parser, "123", listOf('1', '2', '3'))
-    assertSuccess(parser, "1234", listOf('1', '2', '3'), 3)
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, "a", "digit expected")
     assertFailure(parser, "1", "digit expected", 1)
     assertFailure(parser, "12", "digit expected", 2)
+    assertSuccess(parser, "123", listOf('1', '2', '3'))
+    assertSuccess(parser, "1234", listOf('1', '2', '3'), 3)
   }
 
   @Test
   fun test_repeat_min_max() {
     val parser = digit().repeat(2, 3)
-    assertSuccess(parser, "12", listOf('1', '2'))
-    assertSuccess(parser, "123", listOf('1', '2', '3'))
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, "a", "digit expected")
     assertFailure(parser, "1", "digit expected", 1)
+    assertSuccess(parser, "12", listOf('1', '2'))
+    assertSuccess(parser, "123", listOf('1', '2', '3'))
+    assertSuccess(parser, "1234", listOf('1', '2', '3'), 3)
+  }
+
+  @Test
+  fun test_separated_star() {
+    val parser = digit().separatedStar(char(';'))
+    assertSuccess(parser, "", listOf())
+    assertSuccess(parser, ";", listOf(), 0)
+    assertSuccess(parser, "1", listOf('1'))
+    assertSuccess(parser, "1;", listOf('1'), 1)
+    assertSuccess(parser, "1;2", listOf('1', '2'))
+    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
+    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
+    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3', '4'))
+    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3', '4'), 7)
+  }
+
+  @Test
+  fun test_separated_plus() {
+    val parser = digit().separatedPlus(char(';'))
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, ";", "digit expected")
+    assertSuccess(parser, "1", listOf('1'))
+    assertSuccess(parser, "1;", listOf('1'), 1)
+    assertSuccess(parser, "1;2", listOf('1', '2'))
+    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
+    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
+    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3', '4'))
+    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3', '4'), 7)
+  }
+
+  @Test
+  fun test_separated_count() {
+    val parser = digit().separatedRepeat(char(';'), 3)
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, ";", "digit expected")
+    assertFailure(parser, "1", "';' expected", 1)
+    assertFailure(parser, "1;", "digit expected", 2)
+    assertFailure(parser, "1;2", "';' expected", 3)
+    assertFailure(parser, "1;2;", "digit expected", 4)
+    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
+    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3'), 5)
+  }
+
+  @Test
+  fun test_separated_min_max() {
+    val parser = digit().separatedRepeat(char(';'), 2, 3)
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, ";", "digit expected")
+    assertFailure(parser, "1", "';' expected", 1)
+    assertFailure(parser, "1;", "digit expected", 2)
+    assertSuccess(parser, "1;2", listOf('1', '2'))
+    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
+    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
+    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3'), 5)
+    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3'), 5)
   }
 }
