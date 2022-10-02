@@ -7,6 +7,14 @@ import org.petitparser.core.parser.Parser
 /** Returns a parser that accepts any character. */
 fun any(message: String = "input expected") = char({ true }, message)
 
+/** Returns a parser that accepts any of the provided characters. */
+fun anyOf(chars: Iterable<Char>, message: String = "any of [${chars.joinToString("")}] expected") =
+  char(chars::contains, message)
+
+/** Returns a parser that accepts any of the provided characters. */
+fun anyOf(chars: String, message: String = "any of [$chars] expected") =
+  char(chars::contains, message)
+
 /** Returns a parser that accepts a specified [char]. */
 fun char(char: Char, message: String = "'$char' expected") = char(char::equals, message)
 

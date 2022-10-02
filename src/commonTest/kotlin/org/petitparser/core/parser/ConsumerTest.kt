@@ -1,6 +1,7 @@
 package org.petitparser.core.parser
 
 import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.consumer.anyOf
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
@@ -25,6 +26,28 @@ internal class ConsumerTest {
     assertSuccess(parser, "1", '1')
     assertSuccess(parser, " ", ' ')
     assertFailure(parser, "", "input expected")
+  }
+
+  @Test
+  fun test_anyOfIterable() {
+    val parser = anyOf(listOf('a', 'b', 'c'))
+    assertSuccess(parser, "a", 'a')
+    assertSuccess(parser, "b", 'b')
+    assertSuccess(parser, "c", 'c')
+    assertFailure(parser, "1", "any of [abc] expected")
+    assertFailure(parser, " ", "any of [abc] expected")
+    assertFailure(parser, "", "any of [abc] expected")
+  }
+
+  @Test
+  fun test_anyOfString() {
+    val parser = anyOf("abc")
+    assertSuccess(parser, "a", 'a')
+    assertSuccess(parser, "b", 'b')
+    assertSuccess(parser, "c", 'c')
+    assertFailure(parser, "1", "any of [abc] expected")
+    assertFailure(parser, " ", "any of [abc] expected")
+    assertFailure(parser, "", "any of [abc] expected")
   }
 
   @Test
