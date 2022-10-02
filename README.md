@@ -2,7 +2,7 @@ PetitParser for Kotlin
 ======================
 
 [![Release Status](https://jitpack.io/v/petitparser/kotlin-petitparser.svg)](https://jitpack.io/#petitparser/kotlin-petitparser)
-[![Kotlin CI](https://github.com/petitparser/kotlin-petitparser/actions/workflows/maven.yml/badge.svg)](https://github.com/petitparser/kotlin-petitparser/actions/workflows/maven.yml)
+[![Kotlin CI](https://github.com/petitparser/kotlin-petitparser/actions/workflows/gradle.yml/badge.svg)](https://github.com/petitparser/kotlin-petitparser/actions/workflows/gradle.yml)
 [![GitHub Issues](https://img.shields.io/github/issues/petitparser/kotlin-petitparser.svg)](https://github.com/petitparser/kotlin-petitparser/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/petitparser/kotlin-petitparser.svg)](https://github.com/petitparser/kotlin-petitparser/network)
 [![GitHub Stars](https://img.shields.io/github/stars/petitparser/kotlin-petitparser.svg)](https://github.com/petitparser/kotlin-petitparser/stargazers)
