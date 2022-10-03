@@ -5,6 +5,7 @@ import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.misc.success
 import org.petitparser.core.parser.repeater.plus
+import org.petitparser.grammar.json.JsonGrammar
 
 fun main() {
   val parser1 = char('a').plus().flatten()
@@ -20,5 +21,14 @@ fun main() {
   val float = success(1.0)
   val string = success("String")
   val union = integer + float + string
-  print(union.parse(""))
+  println(union.parse(""))
+
+  val json = JsonGrammar().start
+  println(
+    json.parse(
+      """
+    {"a": [1, true, false, null]}
+    """
+    )
+  )
 }
