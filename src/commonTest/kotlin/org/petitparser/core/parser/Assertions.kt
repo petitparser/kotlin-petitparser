@@ -8,8 +8,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.test.asserter
 
-val UNCHECKED_MESSAGE = "unchecked message"
-val UNCHECKED_POSITION = -1
+const val UNCHECKED_MESSAGE = "unchecked message"
+const val UNCHECKED_POSITION = -1
 
 fun <R> assertSuccess(
   parser: Parser<R>,
