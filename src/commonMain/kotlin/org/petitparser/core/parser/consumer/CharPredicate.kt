@@ -45,8 +45,7 @@ fun interface CharPredicate {
     /** A character predicate that matches any of the provides [ranges]. */
     fun ranges(ranges: List<CharRange>): CharPredicate {
       // 1. sort the ranges
-      val sortedRanges =
-        ranges.sortedWith(compareBy<CharRange> { range -> range.first }.thenBy { range -> range.last })
+      val sortedRanges = ranges.sortedWith(CHAR_RANGE_COMPARATOR)
 
       // 2. merge adjacent or overlapping ranges
       val mergedRanges = mutableListOf<CharRange>()
@@ -83,13 +82,16 @@ fun interface CharPredicate {
 
     private fun ranges(starts: List<Char>, stops: List<Char>) = CharPredicate { char ->
       val index = starts.binarySearch(char)
-      index >= 0 || index < -1 && char <= stops.get(-index - 2)
+      index >= 0 || index < -1 && char <= stops[-index - 2]
     }
 
     /** A character predicate that matches the provided [pattern]. */
     fun pattern(pattern: String) = PATTERN.parse(pattern).value
   }
 }
+
+private val CHAR_RANGE_COMPARATOR =
+  compareBy<CharRange> { range -> range.first }.thenBy { range -> range.last }
 
 private val PATTERN_SIMPLE = any().map { value -> value..value }
 private val PATTERN_RANGE = seqMap(any(), char('-'), any()) { start, _, stop -> start..stop }
