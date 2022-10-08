@@ -16,9 +16,9 @@ import org.petitparser.core.parser.consumer.pattern
 import org.petitparser.core.parser.consumer.string
 import org.petitparser.core.parser.misc.end
 import org.petitparser.core.parser.repeater.plus
-import org.petitparser.core.parser.repeater.repeat
-import org.petitparser.core.parser.repeater.separatedStar
 import org.petitparser.core.parser.repeater.star
+import org.petitparser.core.parser.repeater.starSeparated
+import org.petitparser.core.parser.repeater.times
 
 class JsonGrammar : Grammar() {
 
@@ -45,7 +45,7 @@ class JsonGrammar : Grammar() {
     char('\\'), anyOf(ESCAPE_CHARS.keys.joinToString(""))
   ) { _, value -> ESCAPE_CHARS[value]!! }
   private val characterUnicode by seqMap(
-    string("\\u"), pattern("0-9A-Fa-f").repeat(4).flatten()
+    string("\\u"), pattern("0-9A-Fa-f").times(4).flatten()
   ) { _, value -> value.toInt(radix = 16).toChar() }
   private val characterPrimitive by or(
     characterNormal,
@@ -64,7 +64,7 @@ class JsonGrammar : Grammar() {
     token(':'),
     ref(::jsonValue),
   ) { key, _, value -> Pair(key, value) }
-  private val entries by entry.separatedStar(token(','))
+  private val entries by entry.starSeparated(token(','))
   private val jsonObject by seqMap(
     token('{'),
     entries,
@@ -73,7 +73,7 @@ class JsonGrammar : Grammar() {
   ) { _, it, _, _ -> it.toMap() }
 
   private val member by ref(::jsonValue)
-  private val members by member.separatedStar(token(','))
+  private val members by member.starSeparated(token(','))
   private val jsonArray by seqMap(
     token('['),
     members,

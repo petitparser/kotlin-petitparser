@@ -3,24 +3,26 @@ package org.petitparser.core.parser
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letterOrDigit
-import org.petitparser.core.parser.repeater.greedyPlus
-import org.petitparser.core.parser.repeater.greedyRepeat
-import org.petitparser.core.parser.repeater.greedyStar
-import org.petitparser.core.parser.repeater.lazyPlus
-import org.petitparser.core.parser.repeater.lazyRepeat
-import org.petitparser.core.parser.repeater.lazyStar
 import org.petitparser.core.parser.repeater.plus
+import org.petitparser.core.parser.repeater.plusGreedy
+import org.petitparser.core.parser.repeater.plusLazy
+import org.petitparser.core.parser.repeater.plusSeparated
 import org.petitparser.core.parser.repeater.repeat
-import org.petitparser.core.parser.repeater.separatedPlus
-import org.petitparser.core.parser.repeater.separatedRepeat
-import org.petitparser.core.parser.repeater.separatedStar
+import org.petitparser.core.parser.repeater.repeatGreedy
+import org.petitparser.core.parser.repeater.repeatLazy
+import org.petitparser.core.parser.repeater.repeatSeparated
 import org.petitparser.core.parser.repeater.star
+import org.petitparser.core.parser.repeater.starGreedy
+import org.petitparser.core.parser.repeater.starLazy
+import org.petitparser.core.parser.repeater.starSeparated
+import org.petitparser.core.parser.repeater.times
+import org.petitparser.core.parser.repeater.timesSeparated
 import kotlin.test.Test
 
 internal class RepeaterTest {
   @Test
   fun test_greedy_star() {
-    val parser = letterOrDigit().greedyStar(digit())
+    val parser = letterOrDigit().starGreedy(digit())
     assertFailure(parser, "", "digit expected", 0)
     assertFailure(parser, "a", "digit expected", 0)
     assertFailure(parser, "ab", "digit expected", 0)
@@ -40,7 +42,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_greedy_plus() {
-    val parser = letterOrDigit().greedyPlus(digit())
+    val parser = letterOrDigit().plusGreedy(digit())
     assertFailure(parser, "", "letter or digit expected", 0)
     assertFailure(parser, "a", "digit expected", 1)
     assertFailure(parser, "ab", "digit expected", 1)
@@ -60,7 +62,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_greedy_repeat() {
-    val parser = letterOrDigit().greedyRepeat(digit(), 2, 4)
+    val parser = letterOrDigit().repeatGreedy(digit(), 2, 4)
     assertFailure(parser, "", "letter or digit expected", 0)
     assertFailure(parser, "a", "letter or digit expected", 1)
     assertFailure(parser, "ab", "digit expected", 2)
@@ -89,7 +91,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_lazy_star() {
-    val parser = letterOrDigit().lazyStar(digit())
+    val parser = letterOrDigit().starLazy(digit())
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, "a", "digit expected", 1)
     assertFailure(parser, "ab", "digit expected", 2)
@@ -109,7 +111,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_lazy_plus() {
-    val parser = letterOrDigit().lazyPlus(digit())
+    val parser = letterOrDigit().plusLazy(digit())
     assertFailure(parser, "", "letter or digit expected")
     assertFailure(parser, "a", "digit expected", 1)
     assertFailure(parser, "ab", "digit expected", 2)
@@ -129,7 +131,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_lazy_repeat() {
-    val parser = letterOrDigit().lazyRepeat(digit(), 2, 4)
+    val parser = letterOrDigit().repeatLazy(digit(), 2, 4)
     assertFailure(parser, "", "letter or digit expected", 0)
     assertFailure(parser, "a", "letter or digit expected", 1)
     assertFailure(parser, "ab", "digit expected", 2)
@@ -178,7 +180,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_repeat_count() {
-    val parser = digit().repeat(3)
+    val parser = digit().times(3)
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, "a", "digit expected")
     assertFailure(parser, "1", "digit expected", 1)
@@ -200,7 +202,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_separated_star() {
-    val parser = digit().separatedStar(char(';'))
+    val parser = digit().starSeparated(char(';'))
     assertSuccess(parser, "", listOf())
     assertSuccess(parser, ";", listOf(), 0)
     assertSuccess(parser, "1", listOf('1'))
@@ -215,7 +217,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_separated_plus() {
-    val parser = digit().separatedPlus(char(';'))
+    val parser = digit().plusSeparated(char(';'))
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, ";", "digit expected")
     assertSuccess(parser, "1", listOf('1'))
@@ -230,7 +232,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_separated_count() {
-    val parser = digit().separatedRepeat(char(';'), 3)
+    val parser = digit().timesSeparated(char(';'), 3)
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, ";", "digit expected")
     assertFailure(parser, "1", "';' expected", 1)
@@ -245,7 +247,7 @@ internal class RepeaterTest {
 
   @Test
   fun test_separated_min_max() {
-    val parser = digit().separatedRepeat(char(';'), 2, 3)
+    val parser = digit().repeatSeparated(char(';'), 2, 3)
     assertFailure(parser, "", "digit expected")
     assertFailure(parser, ";", "digit expected")
     assertFailure(parser, "1", "';' expected", 1)

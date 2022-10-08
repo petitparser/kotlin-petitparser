@@ -11,7 +11,7 @@ import org.petitparser.core.parser.action.trim
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.repeater.plus
-import org.petitparser.core.parser.repeater.repeat
+import org.petitparser.core.parser.repeater.times
 import kotlin.test.Test
 
 internal class ActionTest {
@@ -83,7 +83,7 @@ internal class ActionTest {
 
   @Test
   fun test_pick() {
-    val parser = digit().repeat(3).pick(1)
+    val parser = digit().times(3).pick(1)
     assertSuccess(parser, "123", '2')
     assertSuccess(parser, "789", '8')
     assertFailure(parser, "abc", "digit expected")

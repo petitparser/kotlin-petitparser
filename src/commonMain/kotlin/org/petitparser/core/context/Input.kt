@@ -4,8 +4,7 @@ interface Input {
   val buffer: String
   val position: Int
 
-  fun <R> success(value: R, position: Int = this.position) =
-    Output.Success(buffer, position, value)
+  fun <R> success(value: R, position: Int = this.position) = Output.Success(buffer, position, value)
 
   fun <R> failure(message: String, position: Int = this.position) =
     Output.Failure<R>(buffer, position, message)
