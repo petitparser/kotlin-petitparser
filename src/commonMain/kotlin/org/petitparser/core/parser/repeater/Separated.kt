@@ -39,7 +39,7 @@ fun <R> Parser<R>.repeatSeparated(separator: Parser<*>, min: Int, max: Int) =
         }
       }
       while (elements.size < max) {
-        var previous = current
+        val previous = current
         if (elements.isNotEmpty()) {
           when (val separation = separator.parseOn(current)) {
             is Output.Success -> current = separation
