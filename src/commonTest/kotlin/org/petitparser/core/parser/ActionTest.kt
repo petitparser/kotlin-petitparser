@@ -7,12 +7,14 @@ import org.petitparser.core.parser.action.cast
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
+import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.action.trim
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.times
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class ActionTest {
   @Test
@@ -88,6 +90,20 @@ internal class ActionTest {
     assertSuccess(parser, "789", '8')
     assertFailure(parser, "abc", "digit expected")
     assertFailure(parser, "", "digit expected")
+  }
+
+  @Test
+  fun test_token() {
+    val parser = digit().plus().token();
+    assertFailure(parser, "", "digit expected");
+    assertFailure(parser, "a", "digit expected");
+    val token = parser.parse("123").value;
+    assertEquals(token.value, listOf('1', '2', '3'));
+    assertEquals(token.buffer, "123");
+    assertEquals(token.start, 0);
+    assertEquals(token.stop, 3);
+    assertEquals(token.input, "123");
+    assertEquals(token.length, 3);
   }
 
   @Test
