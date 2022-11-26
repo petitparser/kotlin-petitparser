@@ -3,33 +3,43 @@ package org.petitparser.core.parser.combinator
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.utils.FailureJoiner
+import org.petitparser.core.parser.utils.selectLast
 
 /** Returns a parser that accepts the result of the first succeeding of [parsers]. */
-fun <R> or(vararg parsers: Parser<R>): Parser<R> = ChoiceParser(listOf(*parsers))
+fun <R> or(
+  vararg parsers: Parser<R>,
+  failureJoiner: FailureJoiner<R> = ::selectLast,
+): Parser<R> = ChoiceParser(listOf(*parsers), failureJoiner)
 
 /** Returns a parser that accepts the parse result of this or [other] parser. */
 infix operator fun <R> Parser<R>.div(other: Parser<R>) = or(other)
 
 /** Returns a parser that accepts the parse result of this or [other] parser. */
-infix fun <R> Parser<R>.or(other: Parser<R>): Parser<R> {
+infix fun <R> Parser<R>.or(
+  other: Parser<R>,
+): Parser<R> {
   val left = if (this is ChoiceParser<R>) parsers else listOf(this)
   val right = if (other is ChoiceParser<R>) other.parsers else listOf(other)
   return ChoiceParser(left + right)
 }
 
-private class ChoiceParser<R>(var parsers: List<Parser<R>>) : Parser<R> {
+private class ChoiceParser<R>(
+  val parsers: List<Parser<R>>,
+  val failureJoiner: FailureJoiner<R> = ::selectLast,
+) : Parser<R> {
   override val children = parsers
   override fun parseOn(input: Input): Output<R> {
-    var failures: MutableList<Output<R>>? = null
+    var failure: Output.Failure<R>? = null
     for (parser in parsers) {
       when (val result = parser.parseOn(input)) {
         is Output.Success -> return result
         is Output.Failure -> {
-          if (failures == null) failures = mutableListOf()
-          failures.add(result)
+          failure = if (failure == null) result
+          else failureJoiner(failure, result)
         }
       }
     }
-    return failures!!.last()
+    return failure!!
   }
 }

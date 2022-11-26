@@ -212,8 +212,17 @@ internal class RepeaterTest {
     assertSuccess(parser, "1a2b", SeparatedList(listOf('1', '2'), listOf('a')), 3)
     assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
     assertSuccess(parser, "1a2b3;", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
-    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')))
-    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')), 7)
+    assertSuccess(
+      parser,
+      "1a2b3c4",
+      SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c'))
+    )
+    assertSuccess(
+      parser,
+      "1a2b3c4d",
+      SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')),
+      7
+    )
   }
 
   @Test
@@ -227,8 +236,17 @@ internal class RepeaterTest {
     assertSuccess(parser, "1a2b", SeparatedList(listOf('1', '2'), listOf('a')), 3)
     assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
     assertSuccess(parser, "1a2b3c", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
-    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')))
-    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')), 7)
+    assertSuccess(
+      parser,
+      "1a2b3c4",
+      SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c'))
+    )
+    assertSuccess(
+      parser,
+      "1a2b3c4d",
+      SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')),
+      7
+    )
   }
 
   @Test

@@ -1,5 +1,7 @@
 package org.petitparser.core.parser
 
+import org.petitparser.core.context.Output
+import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.combinator.and
 import org.petitparser.core.parser.combinator.div
 import org.petitparser.core.parser.combinator.not
@@ -9,11 +11,28 @@ import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.settable
 import org.petitparser.core.parser.combinator.undefined
+import org.petitparser.core.parser.consumer.anyOf
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
+import org.petitparser.core.parser.repeater.plus
+import org.petitparser.core.parser.utils.selectFarthest
+import org.petitparser.core.parser.utils.selectFarthestJoined
+import org.petitparser.core.parser.utils.selectFirst
+import org.petitparser.core.parser.utils.selectLast
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
+val failureA0 = Output.Failure<String>("A0", 0, "A0")
+val failureA1 = Output.Failure<String>("A1", 1, "A1")
+val failureB0 = Output.Failure<String>("B0", 0, "B0")
+val failureB1 = Output.Failure<String>("B1", 1, "B1")
+
+val choiceParsers = listOf(
+  anyOf("ab").plus() seq anyOf("12").plus(),
+  anyOf("ac").plus() seq anyOf("13").plus(),
+  anyOf("ad").plus() seq anyOf("14").plus(),
+).map { it.flatten() }.toTypedArray()
 
 internal class CombinatorTest {
   @Test
@@ -52,6 +71,76 @@ internal class CombinatorTest {
     assertSuccess(parser, "c", 'c')
     assertFailure(parser, "d", "'c' expected")
     assertFailure(parser, "", "'c' expected")
+  }
+
+  @Test
+  fun test_choice_selectFirst() {
+    val parser = or(*choiceParsers, failureJoiner = ::selectFirst)
+    assertEquals(selectFirst(failureA0, failureB0), failureA0)
+    assertEquals(selectFirst(failureB0, failureA0), failureB0)
+    assertSuccess(parser, "ab12", "ab12")
+    assertSuccess(parser, "ac13", "ac13")
+    assertSuccess(parser, "ad14", "ad14")
+    assertFailure(parser, "", "any of [ab] expected")
+    assertFailure(parser, "a", "any of [12] expected", 1)
+    assertFailure(parser, "ab", "any of [12] expected", 2)
+    assertFailure(parser, "ac", "any of [12] expected", 1)
+    assertFailure(parser, "ad", "any of [12] expected", 1)
+  }
+
+  @Test
+  fun test_choice_selectLast() {
+    val parser = or(*choiceParsers, failureJoiner = ::selectLast)
+    assertEquals(selectLast(failureA0, failureB0), failureB0)
+    assertEquals(selectLast(failureB0, failureA0), failureA0)
+    assertSuccess(parser, "ab12", "ab12")
+    assertSuccess(parser, "ac13", "ac13")
+    assertSuccess(parser, "ad14", "ad14")
+    assertFailure(parser, "", "any of [ad] expected")
+    assertFailure(parser, "a", "any of [14] expected", 1)
+    assertFailure(parser, "ab", "any of [14] expected", 1)
+    assertFailure(parser, "ac", "any of [14] expected", 1)
+    assertFailure(parser, "ad", "any of [14] expected", 2)
+  }
+
+  @Test
+  fun test_choice_selectFarthest() {
+    val parser = or(*choiceParsers, failureJoiner = ::selectFarthest)
+    assertEquals(selectFarthest(failureA0, failureB0), failureB0)
+    assertEquals(selectFarthest(failureA0, failureB1), failureB1)
+    assertEquals(selectFarthest(failureB0, failureA0), failureA0)
+    assertEquals(selectFarthest(failureB1, failureA0), failureB1)
+    assertSuccess(parser, "ab12", "ab12")
+    assertSuccess(parser, "ac13", "ac13")
+    assertSuccess(parser, "ad14", "ad14")
+    assertFailure(parser, "", "any of [ad] expected")
+    assertFailure(parser, "a", "any of [14] expected", 1)
+    assertFailure(parser, "ab", "any of [12] expected", 2)
+    assertFailure(parser, "ac", "any of [13] expected", 2)
+    assertFailure(parser, "ad", "any of [14] expected", 2)
+  }
+
+  @Test
+  fun test_choice_selectFarthestJoined() {
+    val parser = or(*choiceParsers, failureJoiner = ::selectFarthestJoined)
+    assertEquals(selectFarthestJoined(failureA0, failureB1), failureB1)
+    assertEquals(selectFarthestJoined(failureB1, failureA0), failureB1)
+    assertEquals(selectFarthestJoined(failureA0, failureB0).message, "A0 OR B0")
+    assertEquals(selectFarthestJoined(failureB0, failureA0).message, "B0 OR A0")
+    assertEquals(selectFarthestJoined(failureA1, failureB1).message, "A1 OR B1")
+    assertEquals(selectFarthestJoined(failureB1, failureA1).message, "B1 OR A1")
+    assertSuccess(parser, "ab12", "ab12")
+    assertSuccess(parser, "ac13", "ac13")
+    assertSuccess(parser, "ad14", "ad14")
+    assertFailure(
+      parser, "", "any of [ab] expected OR any of [ac] expected OR any of [ad] expected"
+    )
+    assertFailure(
+      parser, "a", "any of [12] expected OR any of [13] expected OR any of [14] expected", 1
+    )
+    assertFailure(parser, "ab", "any of [12] expected", 2)
+    assertFailure(parser, "ac", "any of [13] expected", 2)
+    assertFailure(parser, "ad", "any of [14] expected", 2)
   }
 
   @Test
