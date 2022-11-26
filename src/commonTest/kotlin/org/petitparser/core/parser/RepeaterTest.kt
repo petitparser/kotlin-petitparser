@@ -1,8 +1,9 @@
 package org.petitparser.core.parser
 
-import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
+import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.consumer.letterOrDigit
+import org.petitparser.core.parser.repeater.SeparatedList
 import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.plusGreedy
 import org.petitparser.core.parser.repeater.plusLazy
@@ -202,61 +203,61 @@ internal class RepeaterTest {
 
   @Test
   fun test_separated_star() {
-    val parser = digit().starSeparated(char(';'))
-    assertSuccess(parser, "", listOf())
-    assertSuccess(parser, ";", listOf(), 0)
-    assertSuccess(parser, "1", listOf('1'))
-    assertSuccess(parser, "1;", listOf('1'), 1)
-    assertSuccess(parser, "1;2", listOf('1', '2'))
-    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
-    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
-    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3', '4'))
-    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3', '4'), 7)
+    val parser = digit().starSeparated(letter())
+    assertSuccess(parser, "", SeparatedList(listOf(), listOf()))
+    assertSuccess(parser, "a", SeparatedList(listOf(), listOf()), 0)
+    assertSuccess(parser, "1", SeparatedList(listOf('1'), listOf()))
+    assertSuccess(parser, "1a", SeparatedList(listOf('1'), listOf()), 1)
+    assertSuccess(parser, "1a2", SeparatedList(listOf('1', '2'), listOf('a')))
+    assertSuccess(parser, "1a2b", SeparatedList(listOf('1', '2'), listOf('a')), 3)
+    assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
+    assertSuccess(parser, "1a2b3;", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')))
+    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')), 7)
   }
 
   @Test
   fun test_separated_plus() {
-    val parser = digit().plusSeparated(char(';'))
+    val parser = digit().plusSeparated(letter())
     assertFailure(parser, "", "digit expected")
-    assertFailure(parser, ";", "digit expected")
-    assertSuccess(parser, "1", listOf('1'))
-    assertSuccess(parser, "1;", listOf('1'), 1)
-    assertSuccess(parser, "1;2", listOf('1', '2'))
-    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
-    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
-    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3', '4'))
-    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3', '4'), 7)
+    assertFailure(parser, "a", "digit expected")
+    assertSuccess(parser, "1", SeparatedList(listOf('1'), listOf()))
+    assertSuccess(parser, "1a", SeparatedList(listOf('1'), listOf()), 1)
+    assertSuccess(parser, "1a2", SeparatedList(listOf('1', '2'), listOf('a')))
+    assertSuccess(parser, "1a2b", SeparatedList(listOf('1', '2'), listOf('a')), 3)
+    assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
+    assertSuccess(parser, "1a2b3c", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')))
+    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3', '4'), listOf('a', 'b', 'c')), 7)
   }
 
   @Test
   fun test_separated_count() {
-    val parser = digit().timesSeparated(char(';'), 3)
+    val parser = digit().timesSeparated(letter(), 3)
     assertFailure(parser, "", "digit expected")
-    assertFailure(parser, ";", "digit expected")
-    assertFailure(parser, "1", "';' expected", 1)
-    assertFailure(parser, "1;", "digit expected", 2)
-    assertFailure(parser, "1;2", "';' expected", 3)
-    assertFailure(parser, "1;2;", "digit expected", 4)
-    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
-    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3'), 5)
+    assertFailure(parser, "a", "digit expected")
+    assertFailure(parser, "1", "letter expected", 1)
+    assertFailure(parser, "1a", "digit expected", 2)
+    assertFailure(parser, "1a2", "letter expected", 3)
+    assertFailure(parser, "1a2b", "digit expected", 4)
+    assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
+    assertSuccess(parser, "1a2b3c", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
   }
 
   @Test
   fun test_separated_min_max() {
-    val parser = digit().repeatSeparated(char(';'), 2, 3)
+    val parser = digit().repeatSeparated(letter(), 2, 3)
     assertFailure(parser, "", "digit expected")
-    assertFailure(parser, ";", "digit expected")
-    assertFailure(parser, "1", "';' expected", 1)
-    assertFailure(parser, "1;", "digit expected", 2)
-    assertSuccess(parser, "1;2", listOf('1', '2'))
-    assertSuccess(parser, "1;2;", listOf('1', '2'), 3)
-    assertSuccess(parser, "1;2;3", listOf('1', '2', '3'))
-    assertSuccess(parser, "1;2;3;", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4", listOf('1', '2', '3'), 5)
-    assertSuccess(parser, "1;2;3;4;", listOf('1', '2', '3'), 5)
+    assertFailure(parser, "a", "digit expected")
+    assertFailure(parser, "1", "letter expected", 1)
+    assertFailure(parser, "1a", "digit expected", 2)
+    assertSuccess(parser, "1a2", SeparatedList(listOf('1', '2'), listOf('a')))
+    assertSuccess(parser, "1a2b", SeparatedList(listOf('1', '2'), listOf('a')), 3)
+    assertSuccess(parser, "1a2b3", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')))
+    assertSuccess(parser, "1a2b3c", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
+    assertSuccess(parser, "1a2b3c4d", SeparatedList(listOf('1', '2', '3'), listOf('a', 'b')), 5)
   }
 }

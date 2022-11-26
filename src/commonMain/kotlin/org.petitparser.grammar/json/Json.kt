@@ -70,7 +70,7 @@ class JsonGrammar : Grammar() {
     entries,
     token(',').optional(),
     token('}'),
-  ) { _, it, _, _ -> it.toMap() }
+  ) { _, it, _, _ -> it.elements.toMap() }
 
   private val member by ref(::jsonValue)
   private val members by member.starSeparated(token(','))
@@ -79,7 +79,7 @@ class JsonGrammar : Grammar() {
     members,
     token(',').optional(),
     token(']'),
-  ) { _, it, _, _ -> it }
+  ) { _, it, _, _ -> it.elements }
 
   private val jsonValue: Parser<Any?> by or(
     jsonObject,
