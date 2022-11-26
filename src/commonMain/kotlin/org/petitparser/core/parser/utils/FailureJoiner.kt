@@ -20,4 +20,4 @@ fun <R> selectFarthest(first: Output.Failure<R>, second: Output.Failure<R>) =
 fun <R> selectFarthestJoined(first: Output.Failure<R>, second: Output.Failure<R>) =
   if (first.position > second.position) first
   else if (first.position < second.position) second
-  else first.failure<R>("${first.message} OR ${second.message}")
+  else first.failure("${first.message} OR ${second.message}")

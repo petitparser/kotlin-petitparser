@@ -5,7 +5,7 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
 
 /** A list of [elements] and its [separators]. */
-data class SeparatedList<R, S>(val elements: List<R>, var separators: List<S>)
+data class SeparatedList<R, S>(val elements: List<R>, val separators: List<S>)
 
 /** Returns a parser that accepts the receiver zero or more times, separated by [separator]. */
 fun <R, S> Parser<R>.starSeparated(separator: Parser<S>) =
