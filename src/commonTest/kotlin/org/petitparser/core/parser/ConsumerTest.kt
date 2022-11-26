@@ -6,6 +6,7 @@ import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.consumer.letterOrDigit
+import org.petitparser.core.parser.consumer.newline
 import org.petitparser.core.parser.consumer.noneOf
 import org.petitparser.core.parser.consumer.pattern
 import org.petitparser.core.parser.consumer.string
@@ -207,6 +208,16 @@ internal class ConsumerTest {
     assertSuccess(parser, "e", 'e')
     assertFailure(parser, "x", "vowel expected")
     assertFailure(parser, "", "vowel expected")
+  }
+
+  @Test
+  fun test_newLine() {
+    val parser = newline()
+    assertSuccess(parser, "\n", "\n")
+    assertSuccess(parser, "\r\n", "\r\n")
+    assertSuccess(parser, "\r", "\r")
+    assertFailure(parser, "", "newline expected")
+    assertFailure(parser, "\b", "newline expected")
   }
 
   @Test
