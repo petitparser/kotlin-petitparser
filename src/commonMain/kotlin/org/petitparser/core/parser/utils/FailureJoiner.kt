@@ -6,10 +6,16 @@ import org.petitparser.core.context.Output
 typealias FailureJoiner<R> = (first: Output.Failure<R>, second: Output.Failure<R>) -> Output.Failure<R>
 
 /** Reports the first parse failure observed. */
-fun <R> selectFirst(first: Output.Failure<R>, second: Output.Failure<R>) = first
+fun <R> selectFirst(
+  first: Output.Failure<R>,
+  @Suppress("UNUSED_PARAMETER") second: Output.Failure<R>,
+) = first
 
 /** Reports the last parse failure observed (default). */
-fun <R> selectLast(first: Output.Failure<R>, second: Output.Failure<R>) = second
+fun <R> selectLast(
+  @Suppress("UNUSED_PARAMETER") first: Output.Failure<R>,
+  second: Output.Failure<R>,
+) = second
 
 /** Reports the parser failure farthest down in the input string, preferring later failures over earlier ones. */
 fun <R> selectFarthest(first: Output.Failure<R>, second: Output.Failure<R>) =
