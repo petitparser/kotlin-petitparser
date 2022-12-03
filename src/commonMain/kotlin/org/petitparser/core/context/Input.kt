@@ -9,7 +9,7 @@ interface Input {
   fun <R> failure(message: String, position: Int = this.position) =
     Output.Failure<R>(buffer, position, message)
 
-  data class InputImpl(override val buffer: String, override val position: Int) : Input
+  data class Impl(override val buffer: String, override val position: Int) : Input
 }
 
 

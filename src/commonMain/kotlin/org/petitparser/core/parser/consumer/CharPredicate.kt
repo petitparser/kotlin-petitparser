@@ -4,6 +4,7 @@ import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.misc.end
+import org.petitparser.core.parser.parse
 import org.petitparser.core.parser.repeater.star
 
 /** Functional character predicate. */
