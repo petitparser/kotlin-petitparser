@@ -2,6 +2,7 @@ package org.petitparser.core.parser
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.Token
 import org.petitparser.core.parser.action.callCC
 import org.petitparser.core.parser.action.cast
 import org.petitparser.core.parser.action.flatten
@@ -9,11 +10,14 @@ import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
 import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.action.trim
+import org.petitparser.core.parser.consumer.any
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.repeater.plus
+import org.petitparser.core.parser.repeater.star
 import org.petitparser.core.parser.repeater.times
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 internal class ActionTest {
@@ -94,16 +98,86 @@ internal class ActionTest {
 
   @Test
   fun test_token() {
-    val parser = digit().plus().token();
-    assertFailure(parser, "", "digit expected");
-    assertFailure(parser, "a", "digit expected");
-    val token = parser.parse("123").value;
-    assertEquals(token.value, listOf('1', '2', '3'));
-    assertEquals(token.buffer, "123");
-    assertEquals(token.start, 0);
-    assertEquals(token.stop, 3);
-    assertEquals(token.input, "123");
-    assertEquals(token.length, 3);
+    val parser = digit().plus().token()
+    assertFailure(parser, "", "digit expected")
+    assertFailure(parser, "a", "digit expected")
+    val token = parser.parse("123").value
+    assertEquals(listOf('1', '2', '3'), token.value)
+    assertEquals("123", token.buffer)
+    assertEquals(0, token.start)
+    assertEquals(3, token.stop)
+    assertEquals("123", token.input)
+    assertEquals(3, token.length)
+    assertEquals(1, token.line)
+    assertEquals(1, token.column)
+  }
+
+  @Test
+  fun test_token_data() {
+    val input = "1\r12\r\n123\n1234"
+    val parser = any().map(Char::code).token().star()
+    val result = parser.parse(input).value
+    assertContentEquals(
+      listOf(
+        49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52
+      ),
+      result.map(Token<Int>::value),
+    )
+    assertContentEquals(
+      listOf(
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input,
+        input
+      ),
+      result.map(Token<Int>::buffer),
+    )
+    assertContentEquals(
+      listOf(
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+      ),
+      result.map(Token<Int>::start),
+    )
+    assertContentEquals(
+      listOf(
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+      ),
+      result.map(Token<Int>::stop),
+    )
+    assertContentEquals(
+      listOf(
+        "1", "\r", "1", "2", "\r", "\n", "1", "2", "3", "\n", "1", "2", "3", "4"
+      ),
+      result.map(Token<Int>::input),
+    )
+    assertContentEquals(
+      listOf(
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+      ),
+      result.map(Token<Int>::length),
+    )
+    assertContentEquals(
+      listOf(
+        1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4
+      ),
+      result.map(Token<Int>::line),
+    )
+    assertContentEquals(
+      listOf(
+        1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4
+      ),
+      result.map(Token<Int>::column),
+    )
   }
 
   @Test
