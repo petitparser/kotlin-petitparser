@@ -5,6 +5,7 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.context.Token
 import org.petitparser.core.parser.action.callCC
 import org.petitparser.core.parser.action.cast
+import org.petitparser.core.parser.action.filter
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
@@ -194,5 +195,34 @@ internal class ActionTest {
     assertFailure(parser, " a", "digit expected", 1)
     assertFailure(parser, "a ", "digit expected", 0)
     assertFailure(parser, " a ", "digit expected", 1)
+  }
+
+  @Test
+  fun test_filter() {
+    val parser = any().plus().filter({ it.first() == it.last() })
+    assertSuccess(parser, "a", listOf('a'))
+    assertSuccess(parser, "aa", listOf('a', 'a'))
+    assertSuccess(parser, "aba", listOf('a', 'b', 'a'))
+    assertSuccess(parser, "abba", listOf('a', 'b', 'b', 'a'))
+    assertFailure(parser, "", "input expected", 0)
+    assertFailure(parser, "ab", "unexpected '[a, b]'", 0)
+    assertFailure(parser, "abc", "unexpected '[a, b, c]'", 0)
+  }
+
+  @Test
+  fun test_filter_failureFactory() {
+    val parser = any().plus().filter({ it.first() == it.last() }, { input, success ->
+      input.failure(
+        "${success.value.first()} != ${success.value.last()}",
+        success.position - 1,
+      )
+    })
+    assertSuccess(parser, "a", listOf('a'))
+    assertSuccess(parser, "aa", listOf('a', 'a'))
+    assertSuccess(parser, "aba", listOf('a', 'b', 'a'))
+    assertSuccess(parser, "abba", listOf('a', 'b', 'b', 'a'))
+    assertFailure(parser, "", "input expected", 0)
+    assertFailure(parser, "ab", "a != b", 1)
+    assertFailure(parser, "abc", "a != c", 2)
   }
 }
