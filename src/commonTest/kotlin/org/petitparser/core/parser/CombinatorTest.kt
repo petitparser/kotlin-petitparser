@@ -11,6 +11,7 @@ import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.settable
 import org.petitparser.core.parser.combinator.undefined
+import org.petitparser.core.parser.combinator.skip
 import org.petitparser.core.parser.consumer.anyOf
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
@@ -332,5 +333,37 @@ internal class CombinatorTest {
     assertFailure(parser, "1", "undefined parser")
     parser.delegate = digit()
     assertSuccess(parser, "1", '1')
+  }
+
+  @Test
+  fun test_skip() {
+    val parser = digit().skip()
+    assertSuccess(parser, "1", '1')
+    assertFailure(parser, ">2", "digit expected")
+  }
+
+  @Test
+  fun test_skip_before() {
+    val parser = digit().skip(before = char('>'))
+    assertFailure(parser, "1", "'>' expected")
+    assertFailure(parser, ">", "digit expected")
+    assertSuccess(parser, ">3", '3')
+  }
+
+  @Test
+  fun test_skip_after() {
+    val parser = digit().skip(after = char('<'))
+    assertFailure(parser, "1", "'<' expected")
+    assertFailure(parser, ">2", "digit expected")
+    assertSuccess(parser, "3<", '3')
+  }
+
+  @Test
+  fun test_skip_before_after() {
+    val parser = digit().skip(before = char('>'), after = char('<'))
+    assertFailure(parser, "1", "'>' expected")
+    assertFailure(parser, ">", "digit expected")
+    assertFailure(parser, ">3", "'<' expected")
+    assertSuccess(parser, ">4<", '4')
   }
 }
