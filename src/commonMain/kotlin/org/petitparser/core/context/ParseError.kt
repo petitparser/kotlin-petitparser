@@ -1,3 +1,3 @@
 package org.petitparser.core.context
 
-class ParseError(val failure: Output.Failure<Any?>) : RuntimeException(failure.message)
+class ParseError(val failure: Output.Failure) : RuntimeException(failure.message)

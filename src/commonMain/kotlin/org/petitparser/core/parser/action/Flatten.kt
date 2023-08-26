@@ -9,6 +9,6 @@ fun <R> Parser<R>.flatten() = object : Parser<String> {
   override val children = listOf(this@flatten)
   override fun parseOn(input: Input) = when (val result = this@flatten.parseOn(input)) {
     is Output.Success -> result.success(input.buffer.substring(input.position, result.position))
-    is Output.Failure -> result.failure(result.message)
+    is Output.Failure -> result
   }
 }

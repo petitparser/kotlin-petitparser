@@ -30,7 +30,7 @@ fun <R> Parser<R>.matches(
           result
         }
       }
-      is Output.Failure -> result.failure<R>("", context.position + 1)
+      is Output.Failure -> result.failure("", context.position + 1)
     }
   }
 }

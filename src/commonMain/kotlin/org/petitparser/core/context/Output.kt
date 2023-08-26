@@ -13,12 +13,12 @@ sealed interface Output<out R> : Input {
       get() = throw UnsupportedOperationException()
   }
 
-  data class Failure<out R>(
+  data class Failure(
     override val buffer: String,
     override val position: Int,
     override val message: String,
-  ) : Output<R> {
-    override val value: R
+  ) : Output<Nothing> {
+    override val value: Nothing
       get() = throw ParseError(this)
   }
 }

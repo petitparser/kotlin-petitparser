@@ -34,7 +34,7 @@ fun <R, S> Parser<R>.repeatSeparated(separator: Parser<S>, min: Int, max: Int) =
               current = separation
               separators.add(separation.value)
             }
-            is Output.Failure -> return separation.failure(separation.message)
+            is Output.Failure -> return separation
           }
         }
         when (val result = this@repeatSeparated.parseOn(current)) {
@@ -42,7 +42,7 @@ fun <R, S> Parser<R>.repeatSeparated(separator: Parser<S>, min: Int, max: Int) =
             current = result
             elements.add(result.value)
           }
-          is Output.Failure -> return result.failure(result.message)
+          is Output.Failure -> return result
         }
       }
       while (elements.size < max) {

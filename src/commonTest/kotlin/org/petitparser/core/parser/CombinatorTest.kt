@@ -10,8 +10,8 @@ import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.settable
-import org.petitparser.core.parser.combinator.undefined
 import org.petitparser.core.parser.combinator.skip
+import org.petitparser.core.parser.combinator.undefined
 import org.petitparser.core.parser.consumer.anyOf
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
@@ -24,10 +24,10 @@ import org.petitparser.core.parser.utils.selectLast
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-val failureA0 = Output.Failure<String>("A0", 0, "A0")
-val failureA1 = Output.Failure<String>("A1", 1, "A1")
-val failureB0 = Output.Failure<String>("B0", 0, "B0")
-val failureB1 = Output.Failure<String>("B1", 1, "B1")
+val failureA0 = Output.Failure("A0", 0, "A0")
+val failureA1 = Output.Failure("A1", 1, "A1")
+val failureB0 = Output.Failure("B0", 0, "B0")
+val failureB1 = Output.Failure("B1", 1, "B1")
 
 val choiceParsers = listOf(
   anyOf("ab").plus() seq anyOf("12").plus(),

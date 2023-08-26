@@ -9,7 +9,7 @@ import org.petitparser.core.parser.utils.selectLast
 /** Returns a parser that accepts the result of the first succeeding of [parsers]. */
 fun <R> or(
   vararg parsers: Parser<R>,
-  failureJoiner: FailureJoiner<R> = ::selectLast,
+  failureJoiner: FailureJoiner = ::selectLast,
 ): Parser<R> = ChoiceParser(listOf(*parsers), failureJoiner)
 
 /** Returns a parser that accepts the parse result of this or [other] parser. */
@@ -26,11 +26,11 @@ infix fun <R> Parser<R>.or(
 
 private class ChoiceParser<R>(
   val parsers: List<Parser<R>>,
-  val failureJoiner: FailureJoiner<R> = ::selectLast,
+  val failureJoiner: FailureJoiner = ::selectLast,
 ) : Parser<R> {
   override val children = parsers
   override fun parseOn(input: Input): Output<R> {
-    var failure: Output.Failure<R>? = null
+    var failure: Output.Failure? = null
     for (parser in parsers) {
       when (val result = parser.parseOn(input)) {
         is Output.Success -> return result

@@ -11,6 +11,6 @@ fun <T, R> Parser<T>.cast() = object : Parser<R> {
   @Suppress("UNCHECKED_CAST")
   override fun parseOn(input: Input) = when (val result = this@cast.parseOn(input)) {
     is Output.Success -> result.success(result.value as R)
-    is Output.Failure -> result.failure(result.message)
+    is Output.Failure -> result
   }
 }

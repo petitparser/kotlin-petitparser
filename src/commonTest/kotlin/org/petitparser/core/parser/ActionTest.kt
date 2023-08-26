@@ -43,7 +43,7 @@ internal class ActionTest {
     val parser = digit().callCC { continuation, input ->
       continuations.add(continuation)
       inputs.add(input)
-      input.failure<Int>("Aborted")
+      input.failure("Aborted")
     }
     // Execute the parser twice to collect the continuations
     val failure1 = parser.parse("1")

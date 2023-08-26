@@ -17,6 +17,6 @@ fun <R> Parser<R>.token() = object : Parser<Token<R>> {
         result.position,
       )
     )
-    is Output.Failure -> result.failure(result.message)
+    is Output.Failure -> result
   }
 }

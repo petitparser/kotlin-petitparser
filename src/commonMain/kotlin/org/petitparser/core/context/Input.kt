@@ -6,8 +6,8 @@ interface Input {
 
   fun <R> success(value: R, position: Int = this.position) = Output.Success(buffer, position, value)
 
-  fun <R> failure(message: String, position: Int = this.position) =
-    Output.Failure<R>(buffer, position, message)
+  fun failure(message: String, position: Int = this.position) =
+    Output.Failure(buffer, position, message)
 
   data class Impl(override val buffer: String, override val position: Int) : Input
 }

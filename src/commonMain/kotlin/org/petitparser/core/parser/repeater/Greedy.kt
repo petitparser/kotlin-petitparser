@@ -23,7 +23,7 @@ fun <R> Parser<R>.repeatGreedy(limit: Parser<*>, min: Int, max: Int = min) =
             elements.add(result.value)
             current = result
           }
-          is Output.Failure -> return result.failure(result.message)
+          is Output.Failure -> return result
         }
       }
       val contexts = mutableListOf(current)
@@ -42,12 +42,12 @@ fun <R> Parser<R>.repeatGreedy(limit: Parser<*>, min: Int, max: Int = min) =
           is Output.Success -> return contexts.last().success(elements)
           is Output.Failure -> {
             if (elements.isEmpty()) {
-              return limiter.failure(limiter.message)
+              return limiter
             }
             contexts.removeLast()
             elements.removeLast()
             if (contexts.isEmpty()) {
-              return limiter.failure(limiter.message)
+              return limiter
             }
           }
         }

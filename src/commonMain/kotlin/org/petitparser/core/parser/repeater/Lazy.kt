@@ -23,7 +23,7 @@ fun <R> Parser<R>.repeatLazy(limit: Parser<*>, min: Int, max: Int = min) =
             elements.add(result.value)
             current = result
           }
-          is Output.Failure -> return result.failure(result.message)
+          is Output.Failure -> return result
         }
       }
       while (true) {
@@ -31,14 +31,14 @@ fun <R> Parser<R>.repeatLazy(limit: Parser<*>, min: Int, max: Int = min) =
           is Output.Success -> return current.success(elements)
           is Output.Failure -> {
             if (elements.size >= max) {
-              return limiter.failure(limiter.message)
+              return limiter
             }
             when (val result = this@repeatLazy.parseOn(current)) {
               is Output.Success -> {
                 elements.add(result.value)
                 current = result
               }
-              is Output.Failure -> return limiter.failure(limiter.message)
+              is Output.Failure -> return limiter
             }
           }
         }

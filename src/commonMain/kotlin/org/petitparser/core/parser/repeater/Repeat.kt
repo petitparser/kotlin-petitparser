@@ -25,7 +25,7 @@ fun <R> Parser<R>.repeat(min: Int, max: Int) = object : Parser<List<R>> {
           elements.add(result.value)
           current = result
         }
-        is Output.Failure -> return result.failure(result.message)
+        is Output.Failure -> return result
       }
     }
     while (elements.size < max) {

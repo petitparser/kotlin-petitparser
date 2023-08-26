@@ -10,7 +10,7 @@ import org.petitparser.core.parser.Parser
  * created using [failureFactory]. */
 fun <T> Parser<T>.filter(
   predicate: (T) -> Boolean,
-  failureFactory: (Input, Output.Success<T>) -> Output.Failure<T> = { input, result ->
+  failureFactory: (Input, Output.Success<T>) -> Output.Failure = { input, result ->
     input.failure("unexpected '${result.value}'")
   },
 ) = object : Parser<T> {
@@ -20,7 +20,7 @@ fun <T> Parser<T>.filter(
       true -> result
       false -> failureFactory(input, result)
     }
-    is Output.Failure -> result.failure(result.message)
+    is Output.Failure -> result
   }
 }
 

@@ -13,9 +13,9 @@ fun <R1, R2, R> seqMap(
   override val children = listOf(p1, p2)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     return r2.success(block(r1.value, r2.value))
   }
 }
@@ -30,11 +30,11 @@ fun <R1, R2, R3, R> seqMap(
   override val children = listOf(p1, p2, p3)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     return r3.success(block(r1.value, r2.value, r3.value))
   }
 }
@@ -50,13 +50,13 @@ fun <R1, R2, R3, R4, R> seqMap(
   override val children = listOf(p1, p2, p3, p4)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     val r4 = p4.parseOn(r3)
-    if (r4 is Output.Failure) return r4.failure(r4.message)
+    if (r4 is Output.Failure) return r4
     return r4.success(block(r1.value, r2.value, r3.value, r4.value))
   }
 }
@@ -73,15 +73,15 @@ fun <R1, R2, R3, R4, R5, R> seqMap(
   override val children = listOf(p1, p2, p3, p4, p5)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     val r4 = p4.parseOn(r3)
-    if (r4 is Output.Failure) return r4.failure(r4.message)
+    if (r4 is Output.Failure) return r4
     val r5 = p5.parseOn(r4)
-    if (r5 is Output.Failure) return r5.failure(r5.message)
+    if (r5 is Output.Failure) return r5
     return r5.success(block(r1.value, r2.value, r3.value, r4.value, r5.value))
   }
 }
@@ -99,17 +99,17 @@ fun <R1, R2, R3, R4, R5, R6, R> seqMap(
   override val children = listOf(p1, p2, p3, p4, p5, p6)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     val r4 = p4.parseOn(r3)
-    if (r4 is Output.Failure) return r4.failure(r4.message)
+    if (r4 is Output.Failure) return r4
     val r5 = p5.parseOn(r4)
-    if (r5 is Output.Failure) return r5.failure(r5.message)
+    if (r5 is Output.Failure) return r5
     val r6 = p6.parseOn(r5)
-    if (r6 is Output.Failure) return r6.failure(r6.message)
+    if (r6 is Output.Failure) return r6
     return r6.success(block(r1.value, r2.value, r3.value, r4.value, r5.value, r6.value))
   }
 }
@@ -128,19 +128,19 @@ fun <R1, R2, R3, R4, R5, R6, R7, R> seqMap(
   override val children = listOf(p1, p2, p3, p4, p5, p6, p7)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     val r4 = p4.parseOn(r3)
-    if (r4 is Output.Failure) return r4.failure(r4.message)
+    if (r4 is Output.Failure) return r4
     val r5 = p5.parseOn(r4)
-    if (r5 is Output.Failure) return r5.failure(r5.message)
+    if (r5 is Output.Failure) return r5
     val r6 = p6.parseOn(r5)
-    if (r6 is Output.Failure) return r6.failure(r6.message)
+    if (r6 is Output.Failure) return r6
     val r7 = p7.parseOn(r6)
-    if (r7 is Output.Failure) return r7.failure(r7.message)
+    if (r7 is Output.Failure) return r7
     return r7.success(block(r1.value, r2.value, r3.value, r4.value, r5.value, r6.value, r7.value))
   }
 }
@@ -160,21 +160,21 @@ fun <R1, R2, R3, R4, R5, R6, R7, R8, R> seqMap(
   override val children = listOf(p1, p2, p3, p4, p5, p6, p7, p8)
   override fun parseOn(input: Input): Output<R> {
     val r1 = p1.parseOn(input)
-    if (r1 is Output.Failure) return r1.failure(r1.message)
+    if (r1 is Output.Failure) return r1
     val r2 = p2.parseOn(r1)
-    if (r2 is Output.Failure) return r2.failure(r2.message)
+    if (r2 is Output.Failure) return r2
     val r3 = p3.parseOn(r2)
-    if (r3 is Output.Failure) return r3.failure(r3.message)
+    if (r3 is Output.Failure) return r3
     val r4 = p4.parseOn(r3)
-    if (r4 is Output.Failure) return r4.failure(r4.message)
+    if (r4 is Output.Failure) return r4
     val r5 = p5.parseOn(r4)
-    if (r5 is Output.Failure) return r5.failure(r5.message)
+    if (r5 is Output.Failure) return r5
     val r6 = p6.parseOn(r5)
-    if (r6 is Output.Failure) return r6.failure(r6.message)
+    if (r6 is Output.Failure) return r6
     val r7 = p7.parseOn(r6)
-    if (r7 is Output.Failure) return r7.failure(r7.message)
+    if (r7 is Output.Failure) return r7
     val r8 = p8.parseOn(r7)
-    if (r8 is Output.Failure) return r8.failure(r8.message)
+    if (r8 is Output.Failure) return r8
     return r8.success(
       block(r1.value, r2.value, r3.value, r4.value, r5.value, r6.value, r7.value, r8.value)
     )

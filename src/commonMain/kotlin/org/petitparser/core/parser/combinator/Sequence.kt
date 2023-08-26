@@ -28,7 +28,7 @@ private class SequenceParser<R>(val parsers: List<Parser<R>>) : Parser<List<R>> 
           elements.add(result.value)
           current = result
         }
-        is Output.Failure -> return result.failure(result.message)
+        is Output.Failure -> return result
       }
     }
     return current.success(elements)
