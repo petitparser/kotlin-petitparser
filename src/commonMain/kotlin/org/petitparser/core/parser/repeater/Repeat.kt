@@ -2,6 +2,7 @@ package org.petitparser.core.parser.repeater
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the receiver zero or more times. */
@@ -15,7 +16,6 @@ fun <R> Parser<R>.times(count: Int) = repeat(min = count, max = count)
 
 /** Returns a parser that accepts the receiver between [min] and [max] times. */
 fun <R> Parser<R>.repeat(min: Int, max: Int) = object : Parser<List<R>> {
-  override val children get() = listOf(this@repeat)
   override fun parseOn(input: Input): Output<List<R>> {
     var current = input
     val elements = mutableListOf<R>()

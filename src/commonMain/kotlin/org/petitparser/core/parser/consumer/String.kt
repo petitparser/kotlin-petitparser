@@ -2,6 +2,8 @@ package org.petitparser.core.parser.consumer
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.failure
+import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts the [string]. */

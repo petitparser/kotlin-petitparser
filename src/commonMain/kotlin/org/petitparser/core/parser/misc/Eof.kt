@@ -2,6 +2,8 @@ package org.petitparser.core.parser.misc
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.failure
+import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.action.cast
 import org.petitparser.core.parser.action.pick

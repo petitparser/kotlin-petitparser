@@ -197,7 +197,6 @@ internal class CombinatorTest {
       char('1'),
       char('2'),
     ) { a, b -> listOf(a, b) }
-    assertEquals(parser.children.size, 2)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertSuccess(parser, "12", listOf('1', '2'))
@@ -210,7 +209,6 @@ internal class CombinatorTest {
       char('2'),
       char('3'),
     ) { a, b, c -> listOf(a, b, c) }
-    assertEquals(parser.children.size, 3)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -225,7 +223,6 @@ internal class CombinatorTest {
       char('3'),
       char('4'),
     ) { a, b, c, d -> listOf(a, b, c, d) }
-    assertEquals(parser.children.size, 4)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -242,7 +239,6 @@ internal class CombinatorTest {
       char('4'),
       char('5'),
     ) { a, b, c, d, e -> listOf(a, b, c, d, e) }
-    assertEquals(parser.children.size, 5)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -261,7 +257,6 @@ internal class CombinatorTest {
       char('5'),
       char('6'),
     ) { a, b, c, d, e, f -> listOf(a, b, c, d, e, f) }
-    assertEquals(parser.children.size, 6)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -282,7 +277,6 @@ internal class CombinatorTest {
       char('6'),
       char('7'),
     ) { a, b, c, d, e, f, g -> listOf(a, b, c, d, e, f, g) }
-    assertEquals(parser.children.size, 7)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)
@@ -305,7 +299,6 @@ internal class CombinatorTest {
       char('7'),
       char('8'),
     ) { a, b, c, d, e, f, g, h -> listOf(a, b, c, d, e, f, g, h) }
-    assertEquals(parser.children.size, 8)
     assertFailure(parser, "", "'1' expected", 0)
     assertFailure(parser, "1", "'2' expected", 1)
     assertFailure(parser, "12", "'3' expected", 2)

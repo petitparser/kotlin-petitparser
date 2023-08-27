@@ -23,3 +23,7 @@ sealed interface Output<out R> : Input {
   }
 }
 
+inline fun <R> Input.success(value: R, position: Int = this.position) = Output.Success(buffer, position, value)
+
+inline fun Input.failure(message: String, position: Int = this.position) = Output.Failure(buffer, position, message)
+

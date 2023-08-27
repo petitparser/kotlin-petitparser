@@ -2,6 +2,7 @@ package org.petitparser.core.parser.repeater
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 
 /** A list of [elements] and its [separators]. */
@@ -22,7 +23,6 @@ fun <R, S> Parser<R>.timesSeparated(separator: Parser<S>, count: Int) =
 /** Returns a parser that accepts the receiver between [min] and [max] times, separated by [separator]. */
 fun <R, S> Parser<R>.repeatSeparated(separator: Parser<S>, min: Int, max: Int) =
   object : Parser<SeparatedList<R, S>> {
-    override val children get() = listOf(this@repeatSeparated, separator)
     override fun parseOn(input: Input): Output<SeparatedList<R, S>> {
       var current = input
       val elements = mutableListOf<R>()

@@ -2,6 +2,7 @@ package org.petitparser.core.parser.action
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.consumer.whitespace
 
@@ -11,7 +12,6 @@ import org.petitparser.core.parser.consumer.whitespace
  */
 fun <R> Parser<R>.trim(left: Parser<Any> = whitespace(), right: Parser<Any> = left) =
   object : Parser<R> {
-    override val children = listOf(left, this@trim, right)
     override fun parseOn(input: Input): Output<R> {
       val before = consumeAll(left, input)
       val result = this@trim.parseOn(before)

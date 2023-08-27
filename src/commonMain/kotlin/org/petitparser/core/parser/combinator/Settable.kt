@@ -13,7 +13,6 @@ fun <R> Parser<R>.settable() = Settable(this)
 
 /** A parser that dispatches to a [delegate]. */
 class Settable<R>(var delegate: Parser<R>) : Parser<R> {
-  override val children = listOf(delegate)
   override fun parseOn(input: Input): Output<R> = delegate.parseOn(input)
 }
 

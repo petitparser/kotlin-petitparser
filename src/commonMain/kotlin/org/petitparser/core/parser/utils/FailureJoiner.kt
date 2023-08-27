@@ -1,6 +1,7 @@
 package org.petitparser.core.parser.utils
 
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.failure
 
 /** Function definition that joins parse [Output.Failure] instances. */
 typealias FailureJoiner = (first: Output.Failure, second: Output.Failure) -> Output.Failure

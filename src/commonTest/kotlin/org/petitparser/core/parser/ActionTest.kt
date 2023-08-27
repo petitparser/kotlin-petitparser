@@ -3,6 +3,7 @@ package org.petitparser.core.parser
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.Token
+import org.petitparser.core.context.failure
 import org.petitparser.core.parser.action.callCC
 import org.petitparser.core.parser.action.cast
 import org.petitparser.core.parser.action.filter

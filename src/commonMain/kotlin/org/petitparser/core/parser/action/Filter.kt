@@ -2,6 +2,7 @@ package org.petitparser.core.parser.action
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.failure
 import org.petitparser.core.parser.Parser
 
 /**
@@ -14,7 +15,6 @@ fun <T> Parser<T>.filter(
     input.failure("unexpected '${result.value}'")
   },
 ) = object : Parser<T> {
-  override val children = listOf(this@filter)
   override fun parseOn(input: Input) = when (val result = this@filter.parseOn(input)) {
     is Output.Success -> when (predicate(result.value)) {
       true -> result

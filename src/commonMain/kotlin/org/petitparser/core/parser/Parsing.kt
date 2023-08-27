@@ -2,6 +2,7 @@ package org.petitparser.core.parser
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.context.failure
 
 /** Parses the provided [input]. */
 fun <R> Parser<R>.parse(input: String, start: Int = 0): Output<R> =

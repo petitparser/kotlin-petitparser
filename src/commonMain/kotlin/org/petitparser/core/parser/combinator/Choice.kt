@@ -28,7 +28,6 @@ private class ChoiceParser<R>(
   val parsers: List<Parser<R>>,
   val failureJoiner: FailureJoiner = ::selectLast,
 ) : Parser<R> {
-  override val children = parsers
   override fun parseOn(input: Input): Output<R> {
     var failure: Output.Failure? = null
     for (parser in parsers) {
