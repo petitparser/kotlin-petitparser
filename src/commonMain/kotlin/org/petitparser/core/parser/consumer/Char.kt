@@ -42,7 +42,9 @@ fun char(category: CharCategory, message: String = "$category expected") =
   char(category::contains, message)
 
 /** Returns a parser that accepts a character satisfying a [predicate]. */
-fun char(predicate: CharPredicate, message: String) = object : Parser<Char> {
+fun char(predicate: CharPredicate, message: String) = CharParser(predicate, message)
+
+class CharParser(val predicate: CharPredicate, val message: String) : Parser<Char> {
   override fun parseOn(input: Input): Output<Char> {
     if (input.position < input.buffer.length) {
       val char = input.buffer[input.position]
