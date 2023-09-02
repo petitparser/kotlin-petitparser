@@ -9,10 +9,10 @@ import org.petitparser.core.parser.misc.failure
 fun <R> undefined(message: String = "undefined parser") = failure<R>(message).settable()
 
 /** Returns a parser that points to the receiver, but can be changed to delegate somewhere else. */
-fun <R> Parser<R>.settable() = Settable(this)
+fun <R> Parser<R>.settable() = SettableParser(this)
 
 /** A parser that dispatches to a [delegate]. */
-class Settable<R>(var delegate: Parser<R>) : Parser<R> {
+class SettableParser<R>(var delegate: Parser<R>) : Parser<R> {
   override fun parseOn(input: Input): Output<R> = delegate.parseOn(input)
 }
 
