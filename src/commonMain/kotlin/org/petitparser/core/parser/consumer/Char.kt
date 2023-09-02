@@ -13,6 +13,10 @@ fun any(message: String = "input expected") = char(CharPredicate.any(), message)
 fun anyOf(chars: String, message: String = "any of [$chars] expected") =
   char(CharPredicate.anyOf(chars), message)
 
+/** Returns a parser that accepts any char of the provided Unicode category. */
+fun category(category: CharCategory, message: String = "$category expected") =
+  char(category::contains, message)
+
 /** Returns a parser that accepts none of the provided [chars]. */
 fun noneOf(chars: String, message: String = "none of [$chars] expected") =
   char(CharPredicate.noneOf(chars), message)

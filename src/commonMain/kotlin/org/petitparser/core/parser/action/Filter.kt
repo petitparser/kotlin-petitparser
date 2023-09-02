@@ -14,12 +14,13 @@ fun <T> Parser<T>.filter(
   failureFactory: (Input, Output.Success<T>) -> Output.Failure = { input, result ->
     input.failure("unexpected '${result.value}'")
   },
-) = object : Parser<T> {
-  override fun parseOn(input: Input) = when (val result = this@filter.parseOn(input)) {
+) = Parser { input ->
+  when (val result = this@filter.parseOn(input)) {
     is Output.Success -> when (predicate(result.value)) {
       true -> result
       false -> failureFactory(input, result)
     }
+
     is Output.Failure -> result
   }
 }

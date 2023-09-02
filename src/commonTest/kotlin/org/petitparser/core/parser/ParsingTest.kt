@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
 val parser = (digit() seq digit()).flatten()
-val input = "a123b456"
+const val input = "a123b456"
 
 internal class ParsingTest {
   @Test

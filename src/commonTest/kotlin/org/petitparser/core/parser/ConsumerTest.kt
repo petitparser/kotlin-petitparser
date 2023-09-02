@@ -2,6 +2,7 @@ package org.petitparser.core.parser
 
 import org.petitparser.core.parser.consumer.any
 import org.petitparser.core.parser.consumer.anyOf
+import org.petitparser.core.parser.consumer.category
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
@@ -32,6 +33,18 @@ internal class ConsumerTest {
     assertFailure(parser, "1", "any of [abc] expected")
     assertFailure(parser, " ", "any of [abc] expected")
     assertFailure(parser, "", "any of [abc] expected")
+  }
+
+  @Test
+  fun test_category() {
+    val parser = category(CharCategory.LOWERCASE_LETTER)
+    assertSuccess(parser, "a", 'a')
+    assertSuccess(parser, "b", 'b')
+    assertSuccess(parser, "c", 'c')
+    assertFailure(parser, "1", "LOWERCASE_LETTER expected")
+    assertFailure(parser, "A", "LOWERCASE_LETTER expected")
+    assertFailure(parser, " ", "LOWERCASE_LETTER expected")
+    assertFailure(parser, "", "LOWERCASE_LETTER expected")
   }
 
   @Test
