@@ -13,3 +13,11 @@ fun <T, R> Parser<T>.map(handler: (T) -> R) = object : Parser<R> {
   }
 }
 
+/** Returns a parser that extracts the element at the provided [index]. */
+fun <R> Parser<List<R>>.pick(index: Int) = map { value -> value[index] }
+
+/** Returns a parser that extracts elements at the specified [indices] range. */
+fun <R> Parser<List<R>>.slice(indices: IntRange) = map { value -> value.slice(indices) }
+
+/** Returns a parser that extracts elements at specified [indices]. */
+fun <R> Parser<List<R>>.slice(indices: Iterable<Int>) = map { value -> value.slice(indices) }

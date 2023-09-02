@@ -10,6 +10,7 @@ import org.petitparser.core.parser.action.filter
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.action.pick
+import org.petitparser.core.parser.action.slice
 import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.action.trim
 import org.petitparser.core.parser.consumer.any
@@ -94,6 +95,24 @@ internal class ActionTest {
     val parser = digit().times(3).pick(1)
     assertSuccess(parser, "123", '2')
     assertSuccess(parser, "789", '8')
+    assertFailure(parser, "abc", "digit expected")
+    assertFailure(parser, "", "digit expected")
+  }
+
+  @Test
+  fun test_slice_range() {
+    val parser = digit().times(5).slice(1..3)
+    assertSuccess(parser, "12345", listOf('2', '3', '4'))
+    assertSuccess(parser, "67890", listOf('7', '8', '9'))
+    assertFailure(parser, "abc", "digit expected")
+    assertFailure(parser, "", "digit expected")
+  }
+
+  @Test
+  fun test_slice_indices() {
+    val parser = digit().times(5).slice(listOf(3, 1, 2))
+    assertSuccess(parser, "12345", listOf('4', '2', '3'))
+    assertSuccess(parser, "67890", listOf('9', '7', '8'))
     assertFailure(parser, "abc", "digit expected")
     assertFailure(parser, "", "digit expected")
   }
