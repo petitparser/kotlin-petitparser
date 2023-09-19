@@ -1,8 +1,9 @@
 plugins {
   kotlin("multiplatform") version "1.9.0"
+  id("maven-publish")
 }
 
-group = "me.renggli"
+group = "com.github.petitparser"
 version = "1.0-SNAPSHOT"
 
 repositories {
