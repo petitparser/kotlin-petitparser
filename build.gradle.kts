@@ -22,11 +22,11 @@ kotlin {
   }
   js {
     browser {
-      commonWebpackConfig {
+      commonWebpackConfig(Action {
         cssSupport {
           enabled.set(true)
         }
-      }
+      })
     }
   }
   val hostOs = System.getProperty("os.name")
