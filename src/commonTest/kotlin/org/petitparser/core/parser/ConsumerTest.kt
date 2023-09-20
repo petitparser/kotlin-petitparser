@@ -11,6 +11,7 @@ import org.petitparser.core.parser.consumer.newline
 import org.petitparser.core.parser.consumer.noneOf
 import org.petitparser.core.parser.consumer.pattern
 import org.petitparser.core.parser.consumer.string
+import org.petitparser.core.parser.consumer.toParser
 import org.petitparser.core.parser.consumer.whitespace
 import kotlin.test.Test
 
@@ -207,6 +208,32 @@ internal class ConsumerTest {
   }
 
   @Test
+  fun test_char_toParser() {
+    val parser = 'a'.toParser()
+    assertSuccess(parser, "a", 'a')
+    assertFailure(parser, "b", "'a' expected")
+    assertFailure(parser, "", "'a' expected")
+  }
+
+  @Test
+  fun test_char_toParser_message() {
+    val parser = 'a'.toParser("want 'a'")
+    assertSuccess(parser, "a", 'a')
+    assertFailure(parser, "A", "want 'a'")
+    assertFailure(parser, "b", "want 'a'")
+    assertFailure(parser, "", "want 'a'")
+  }
+
+  @Test
+  fun test_char_toParser_caseInsensitive() {
+    val parser = 'a'.toParser(ignoreCase = true, message = "want 'a' or 'A'")
+    assertSuccess(parser, "a", 'a')
+    assertSuccess(parser, "A", 'A')
+    assertFailure(parser, "b", "want 'a' or 'A'")
+    assertFailure(parser, "", "want 'a' or 'A'")
+  }
+
+  @Test
   fun test_char_category() {
     val parser = char(CharCategory.UPPERCASE_LETTER)
     assertSuccess(parser, "A", 'A')
@@ -258,5 +285,32 @@ internal class ConsumerTest {
     assertSuccess(parser, "niltok", "niltok")
     assertFailure(parser, "kot", "either way")
     assertFailure(parser, "", "either way")
+  }
+
+  @Test
+  fun test_string_toParser() {
+    val parser = "kotlin".toParser()
+    assertSuccess(parser, "kotlin", "kotlin")
+    assertFailure(parser, "KOTLIN", "'kotlin' expected")
+    assertFailure(parser, "kot", "'kotlin' expected")
+    assertFailure(parser, "", "'kotlin' expected")
+  }
+
+  @Test
+  fun test_string_toParser_message() {
+    val parser = "kotlin".toParser(message = "Kotlin wanted")
+    assertSuccess(parser, "kotlin", "kotlin")
+    assertFailure(parser, "KOTLIN", "Kotlin wanted")
+    assertFailure(parser, "kot", "Kotlin wanted")
+    assertFailure(parser, "", "Kotlin wanted")
+  }
+
+  @Test
+  fun test_string_toParser_ignoreCase() {
+    val parser = "kotlin".toParser(ignoreCase = true)
+    assertSuccess(parser, "kotlin", "kotlin")
+    assertSuccess(parser, "KOTLIN", "KOTLIN")
+    assertFailure(parser, "kot", "'kotlin' expected")
+    assertFailure(parser, "", "'kotlin' expected")
   }
 }

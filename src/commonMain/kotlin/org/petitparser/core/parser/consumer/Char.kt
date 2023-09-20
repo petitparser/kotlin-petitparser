@@ -41,6 +41,13 @@ fun whitespace(message: String = "whitespace expected") = char(Char::isWhitespac
 /** Returns a parser that accepts a specified [char]. */
 fun char(char: Char, message: String = "'$char' expected") = char(CharPredicate.char(char), message)
 
+/** Returns a parser that accepts this [Char]. */
+fun Char.toParser(message: String = "'$this' expected", ignoreCase: Boolean = false): Parser<Char> =
+  when (ignoreCase) {
+    true -> anyOf("${this.lowercase()}${this.uppercaseChar()}", message)
+    false -> char(this, message)
+  }
+
 /** Returns a parser that accepts a specified character [category]. */
 fun char(category: CharCategory, message: String = "$category expected") =
   char(category::contains, message)

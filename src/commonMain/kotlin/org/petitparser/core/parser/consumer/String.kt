@@ -10,6 +10,10 @@ import org.petitparser.core.parser.Parser
 fun string(string: String, message: String = "'$string' expected", ignoreCase: Boolean = false) =
   string({ string.equals(it, ignoreCase) }, string.length, message)
 
+/** Returns a parser that accepts this [String]. */
+fun String.toParser(message: String = "'$this' expected", ignoreCase: Boolean = false): Parser<String> =
+  string(this, message, ignoreCase)
+
 /** Returns a parser that accepts string satisfying the given [predicate]. */
 fun string(predicate: (String) -> Boolean, length: Int, message: String) = object : Parser<String> {
   override fun parseOn(input: Input): Output<String> {
