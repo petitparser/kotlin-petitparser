@@ -9,6 +9,7 @@ import org.petitparser.core.parser.combinator.optional
 import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
+import org.petitparser.core.parser.combinator.seqOf
 import org.petitparser.core.parser.combinator.settable
 import org.petitparser.core.parser.combinator.skip
 import org.petitparser.core.parser.combinator.undefined
@@ -17,6 +18,14 @@ import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.letter
 import org.petitparser.core.parser.repeater.plus
+import org.petitparser.core.parser.utils.Tuple2
+import org.petitparser.core.parser.utils.Tuple3
+import org.petitparser.core.parser.utils.Tuple4
+import org.petitparser.core.parser.utils.Tuple5
+import org.petitparser.core.parser.utils.Tuple6
+import org.petitparser.core.parser.utils.Tuple7
+import org.petitparser.core.parser.utils.Tuple8
+import org.petitparser.core.parser.utils.Tuple9
 import org.petitparser.core.parser.utils.selectFarthest
 import org.petitparser.core.parser.utils.selectFarthestJoined
 import org.petitparser.core.parser.utils.selectFirst
@@ -28,7 +37,6 @@ val failureA0 = Output.Failure("A0", 0, "A0")
 val failureA1 = Output.Failure("A1", 1, "A1")
 val failureB0 = Output.Failure("B0", 0, "B0")
 val failureB1 = Output.Failure("B1", 1, "B1")
-
 val choiceParsers = listOf(
   anyOf("ab").plus() seq anyOf("12").plus(),
   anyOf("ac").plus() seq anyOf("13").plus(),
@@ -169,7 +177,7 @@ internal class CombinatorTest {
 
   @Test
   fun test_sequence() {
-    val parser = seq(char('a'), char('b'), char('c'))
+    val parser = seqOf(char('a'), char('b'), char('c'))
     assertSuccess(parser, "abc", listOf('a', 'b', 'c'))
     assertFailure(parser, "", "'a' expected")
     assertFailure(parser, "a", "'b' expected", 1)
@@ -180,7 +188,7 @@ internal class CombinatorTest {
   }
 
   @Test
-  fun test_sequence_seq() {
+  fun test_sequence_operator() {
     val parser = char('a') seq char('b') seq char('c')
     assertSuccess(parser, "abc", listOf('a', 'b', 'c'))
     assertFailure(parser, "", "'a' expected")
@@ -308,6 +316,175 @@ internal class CombinatorTest {
     assertFailure(parser, "123456", "'7' expected", 6)
     assertFailure(parser, "1234567", "'8' expected", 7)
     assertSuccess(parser, "12345678", listOf('1', '2', '3', '4', '5', '6', '7', '8'))
+  }
+
+  @Test
+  fun test_sequence_seqMap9() {
+    val parser = seqMap(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+      char('8'),
+      char('9'),
+    ) { a, b, c, d, e, f, g, h, i -> listOf(a, b, c, d, e, f, g, h, i) }
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertFailure(parser, "1234567", "'8' expected", 7)
+    assertFailure(parser, "12345678", "'9' expected", 8)
+    assertSuccess(parser, "123456789", listOf('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+  }
+
+  @Test
+  fun test_sequence_tuple2() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertSuccess(parser, "12", Tuple2('1', '2'))
+  }
+
+  @Test
+  fun test_sequence_tuple3() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertSuccess(parser, "123", Tuple3('1', '2', '3'))
+  }
+
+  @Test
+  fun test_sequence_tuple4() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertSuccess(parser, "1234", Tuple4('1', '2', '3', '4'))
+  }
+
+  @Test
+  fun test_sequence_tuple5() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertSuccess(parser, "12345", Tuple5('1', '2', '3', '4', '5'))
+  }
+
+  @Test
+  fun test_sequence_tuple6() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertSuccess(parser, "123456", Tuple6('1', '2', '3', '4', '5', '6'))
+  }
+
+  @Test
+  fun test_sequence_tuple7() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertSuccess(parser, "1234567", Tuple7('1', '2', '3', '4', '5', '6', '7'))
+  }
+
+  @Test
+  fun test_sequence_tuple8() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+      char('8'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertFailure(parser, "1234567", "'8' expected", 7)
+    assertSuccess(parser, "12345678", Tuple8('1', '2', '3', '4', '5', '6', '7', '8'))
+  }
+
+  @Test
+  fun test_sequence_tuple9() {
+    val parser = seq(
+      char('1'),
+      char('2'),
+      char('3'),
+      char('4'),
+      char('5'),
+      char('6'),
+      char('7'),
+      char('8'),
+      char('9'),
+    )
+    assertFailure(parser, "", "'1' expected", 0)
+    assertFailure(parser, "1", "'2' expected", 1)
+    assertFailure(parser, "12", "'3' expected", 2)
+    assertFailure(parser, "123", "'4' expected", 3)
+    assertFailure(parser, "1234", "'5' expected", 4)
+    assertFailure(parser, "12345", "'6' expected", 5)
+    assertFailure(parser, "123456", "'7' expected", 6)
+    assertFailure(parser, "1234567", "'8' expected", 7)
+    assertFailure(parser, "12345678", "'9' expected", 8)
+    assertSuccess(parser, "123456789", Tuple9('1', '2', '3', '4', '5', '6', '7', '8', '9'))
   }
 
   @Test

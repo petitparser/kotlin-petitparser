@@ -6,10 +6,10 @@ import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that accepts a list of [parsers]. */
-fun <R> seq(vararg parsers: Parser<R>): Parser<List<R>> = SequenceParser(listOf(*parsers))
+fun <R> seqOf(vararg parsers: Parser<R>): Parser<List<R>> = seqOf(listOf(*parsers))
 
-/** Returns the sequence of this parser followed by [other]. */
-infix operator fun Parser<*>.plus(other: Parser<Any?>) = seq(other)
+/** Returns a parser that accepts a list of [parsers]. */
+fun <R> seqOf(parsers: List<Parser<R>>): Parser<List<R>> = SequenceParser(parsers)
 
 /** Returns the sequence of this parser followed by [other]. */
 infix fun Parser<Any?>.seq(other: Parser<Any?>): Parser<List<Any?>> {
@@ -34,4 +34,3 @@ private class SequenceParser<R>(val parsers: List<Parser<R>>) : Parser<List<R>> 
     return current.success(elements)
   }
 }
-
