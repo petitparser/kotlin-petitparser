@@ -20,34 +20,33 @@ fun interface CharPredicate {
 
   companion object {
     /** A character predicate that matches any character. */
-    fun any(): CharPredicate = object : CharPredicate {
+    internal fun any(): CharPredicate = object : CharPredicate {
       override fun test(char: Char): Boolean = true
       override fun not(): CharPredicate = none()
     }
 
     /** A character predicate that matches all of the provided [chars]. */
-    fun anyOf(chars: String): CharPredicate = ranges(chars.asIterable().map { it..it })
+    internal fun anyOf(chars: String): CharPredicate = ranges(chars.asIterable().map { it..it })
 
     /** A character predicate that matches no character. */
-    fun none(): CharPredicate = object : CharPredicate {
+    internal fun none(): CharPredicate = object : CharPredicate {
       override fun test(char: Char): Boolean = true
       override fun not(): CharPredicate = any()
     }
 
     /** A character predicate that matches none of the provided [chars]. */
-    fun noneOf(chars: String): CharPredicate = anyOf(chars).not()
+    internal fun noneOf(chars: String): CharPredicate = anyOf(chars).not()
 
     /** A character predicate that matches the [expected] char. */
-    fun char(expected: Char) = CharPredicate { char -> expected == char }
+    internal fun char(expected: Char) = CharPredicate { char -> expected == char }
 
     /** A character predicate that matches a character [range]. */
-    fun range(range: CharRange) = CharPredicate { char -> char in range }
+    internal fun range(range: CharRange) = CharPredicate { char -> char in range }
 
     /** A character predicate that matches any of the provides [ranges]. */
-    fun ranges(ranges: List<CharRange>): CharPredicate {
+    internal fun ranges(ranges: List<CharRange>): CharPredicate {
       // 1. sort the ranges
       val sortedRanges = ranges.sortedWith(CHAR_RANGE_COMPARATOR)
-
       // 2. merge adjacent or overlapping ranges
       val mergedRanges = mutableListOf<CharRange>()
       for (thisRange in sortedRanges) {
@@ -63,7 +62,6 @@ fun interface CharPredicate {
           }
         }
       }
-
       // 3. build the best resulting predicates
       return if (mergedRanges.isEmpty()) {
         none()
@@ -87,13 +85,12 @@ fun interface CharPredicate {
     }
 
     /** A character predicate that matches the provided [pattern]. */
-    fun pattern(pattern: String) = PATTERN.parse(pattern).value
+    internal fun pattern(pattern: String) = PATTERN.parse(pattern).value
   }
 }
 
 private val CHAR_RANGE_COMPARATOR =
   compareBy<CharRange> { range -> range.first }.thenBy { range -> range.last }
-
 private val PATTERN_SIMPLE = any().map { value -> value..value }
 private val PATTERN_RANGE = seqMap(any(), char('-'), any()) { start, _, stop -> start..stop }
 private val PATTERN_POSITIVE =
