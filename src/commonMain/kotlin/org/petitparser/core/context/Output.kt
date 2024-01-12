@@ -30,7 +30,7 @@ sealed interface Output<out R> : Input {
 }
 
 /** Constructs a parse [Output.Success] from the current [Input]. */
-inline fun <R> Input.success(value: R, position: Int = this.position) = Output.Success(buffer, position, value)
+fun <R> Input.success(value: R, position: Int = this.position) = Output.Success(buffer, position, value)
 
 /** Constructs a parse [Output.Failure] from the current [Input]. */
-inline fun Input.failure(message: String, position: Int = this.position) = Output.Failure(buffer, position, message)
+fun Input.failure(message: String, position: Int = this.position) = Output.Failure(buffer, position, message)
