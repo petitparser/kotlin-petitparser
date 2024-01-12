@@ -2,61 +2,66 @@ package org.petitparser.grammar.lisp
 
 import org.petitparser.core.grammar.Grammar
 import org.petitparser.core.parser.Parser
-import org.petitparser.core.parser.combinator.*
-import org.petitparser.core.parser.consumer.CharPredicate.Companion.any
-import org.petitparser.core.parser.consumer.CharPredicate.Companion.anyOf
-import org.petitparser.core.parser.consumer.CharPredicate.Companion.char
-import org.petitparser.core.parser.consumer.CharPredicate.Companion.pattern
+import org.petitparser.core.parser.action.flatten
+import org.petitparser.core.parser.combinator.not
+import org.petitparser.core.parser.combinator.optional
+import org.petitparser.core.parser.combinator.or
+import org.petitparser.core.parser.combinator.seq
+import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.consumer.anyOf
+import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.consumer.newline
+import org.petitparser.core.parser.consumer.pattern
 import org.petitparser.core.parser.consumer.whitespace
 import org.petitparser.core.parser.misc.end
+import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.star
 
 class LispGrammar : Grammar() {
 
   private val comment by seq(char(';'), newline().not().star())
-  private val space by or(whitespace(), ref(comment))
+  private val space by or(whitespace(), comment)
 
-  private val splice by seq(char('@'), list)
-  private val unquote by seq(char(','), ref(list))
-  private val quasiquote by seq(char('`'), ref(list))
-  private val quote by seq(char('\''), ref(atom))
+  private val splice by seq(char('@'), ref(::list))
+  private val unquote by seq(char(','), ref(::list))
+  private val quasiquote by seq(char('`'), ref(::list))
+  private val quote by seq(char('\''), ref(::atom))
 
-  private val symbolToken by seqMap(
+  private val symbolToken by seq(
     pattern("a-zA-Z!#\$%&*/:<=>?@\\^_|~+-"),
-    pattern("a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-")).star()
-  private val symbol = symbolToken.flatten("Symbol expected")
+    pattern("a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-"),
+  ).star()
+  private val symbol by symbolToken.flatten()
 
-  private val characterRaw = pattern("^\"")
-  private val characterEscape by seqMap(char('\\'), any())
-  private val character by or(ref(characterEscape), ref(characterRaw))
+  private val characterRaw by pattern("^\"")
+  private val characterEscape by seq(char('\\'), any())
+  private val character by or(characterEscape, characterRaw)
   private val `string` by seq(
     char('"'),
     character.star(),
-    char('"')) { _, it, _ -> it}
+    char('"'),
+    )
 
+  private val empty by space.star()
+  private val cell by seq(ref(::atom), ref(::cells))
+  private val cells: Parser<Any?> by or(cell, empty)
 
-  private val empty = ref(space).star()
-  private val cell by seq(atom, cells)
-  private val cells by or(ref(cell), ref(empty))
-
-  private val numberToken by seqMap(
-  ref(anyOf("-+")).optional(),
-  char('0') or digit().plus(),
-  char('.').seq(digit().plus()).optional() &
-  anyOf('eE').seq(anyOf('-+').optional()).seq(digit().plus()).optional()
+  private val numberToken by seq(
+    anyOf("-+").optional(),
+    char('0') or digit().plus(),
+    char('.').seq(digit().plus()).optional(),
+    anyOf("eE").seq(anyOf("-+").optional()).seq(digit().plus()).optional(),
   )
-  private val number = ref(numberToken).flatten("Number expected")
+  private val number by numberToken.flatten()
 
-  private val list by seqMap(
+  private val list by seq(
     char('('),
     cell,
-    char(')'),
-  ) { _, it, _ -> it.elements }
+    char(')')
+  )
 
-
-  private val atomChoice: Parser<Any?> by or(
+  private val atom: Parser<Any?> by or(
     list,
     number,
     string,
@@ -67,5 +72,5 @@ class LispGrammar : Grammar() {
     splice
   )
 
-  val start by atomChoice.star().end()
+  val start by atom.star().end()
 }
