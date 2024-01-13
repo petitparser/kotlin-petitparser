@@ -278,35 +278,35 @@ internal class RepeaterTest {
   fun test_string_star() {
     val parser = char('a').starString()
     assertSuccess(parser, "", "")
-    assertSuccess(parser, "a",  "a")
-    assertSuccess(parser, "aa",  "aa")
-    assertSuccess(parser, "aaa",  "aaa")
+    assertSuccess(parser, "a", "a")
+    assertSuccess(parser, "aa", "aa")
+    assertSuccess(parser, "aaa", "aaa")
   }
 
   @Test
   fun test_string_plus() {
     val parser = char('a').plusString()
     assertFailure(parser, "", "'a' expected", 0)
-    assertSuccess(parser, "a",  "a")
-    assertSuccess(parser, "aa",  "aa")
-    assertSuccess(parser, "aaa",  "aaa")
+    assertSuccess(parser, "a", "a")
+    assertSuccess(parser, "aa", "aa")
+    assertSuccess(parser, "aaa", "aaa")
   }
-  
+
   @Test
   fun test_string_times() {
     val parser = char('a').timesString(2)
     assertFailure(parser, "", "'a' expected", 0)
-    assertFailure(parser, "a",  "'a' expected", 1)
-    assertSuccess(parser, "aa",  "aa")
-    assertSuccess(parser, "aaa",  "aa", 2)
+    assertFailure(parser, "a", "'a' expected", 1)
+    assertSuccess(parser, "aa", "aa")
+    assertSuccess(parser, "aaa", "aa", 2)
   }
-  
+
   @Test
   fun test_string_repeat() {
     val parser = char('a').repeatString(1, 2)
     assertFailure(parser, "", "'a' expected", 0)
-    assertSuccess(parser, "a",  "a")
-    assertSuccess(parser, "aa",  "aa")
-    assertSuccess(parser, "aaa",  "aa", 2)
+    assertSuccess(parser, "a", "a")
+    assertSuccess(parser, "aa", "aa")
+    assertSuccess(parser, "aaa", "aa", 2)
   }
 }
