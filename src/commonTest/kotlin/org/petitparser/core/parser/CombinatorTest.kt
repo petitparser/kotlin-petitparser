@@ -4,6 +4,7 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.combinator.and
 import org.petitparser.core.parser.combinator.div
+import org.petitparser.core.parser.combinator.neg
 import org.petitparser.core.parser.combinator.not
 import org.petitparser.core.parser.combinator.optional
 import org.petitparser.core.parser.combinator.or
@@ -159,6 +160,16 @@ internal class CombinatorTest {
     val result = parser.parse("a")
     assertSuccess(result, result.value, 0)
     assertFailure(result.value, "digit expected", 0)
+  }
+
+  @Test
+  fun test_char_neg() {
+    val parser = digit().neg("no digit expected");
+    assertFailure(parser, "1", "no digit expected");
+    assertFailure(parser, "9", "no digit expected");
+    assertSuccess(parser, "a", 'a');
+    assertSuccess(parser, " ", ' ');
+    assertFailure(parser, "", "input expected");
   }
 
   @Test
