@@ -1,4 +1,4 @@
-package org.petitparser.grammar.json
+package org.petitparser.grammars
 
 import org.petitparser.core.parser.assertFailure
 import org.petitparser.core.parser.assertSuccess
