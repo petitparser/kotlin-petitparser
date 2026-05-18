@@ -1,3 +1,5 @@
+rootProject.name = "kotlin-petitparser"
+
 pluginManagement {
     repositories {
         google()
@@ -12,6 +14,3 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "kotlin-petitparser"
-include(":library")
