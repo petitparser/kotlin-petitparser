@@ -198,4 +198,18 @@ class SequenceTupleTest {
     assertFailure(parser, "12345678", "'9' expected", 8)
     assertSuccess(parser, "123456789", Tuple9('1', '2', '3', '4', '5', '6', '7', '8', '9'))
   }
+
+  @Suppress("DEPRECATION")
+  @Test
+  fun test_deprecated_seq_aliases() {
+    val d = org.petitparser.core.parser.consumer.digit()
+    assertSuccess(seq2(d, d), "12", Tuple2('1', '2'))
+    assertSuccess(seq3(d, d, d), "123", Tuple3('1', '2', '3'))
+    assertSuccess(seq4(d, d, d, d), "1234", Tuple4('1', '2', '3', '4'))
+    assertSuccess(seq5(d, d, d, d, d), "12345", Tuple5('1', '2', '3', '4', '5'))
+    assertSuccess(seq6(d, d, d, d, d, d), "123456", Tuple6('1', '2', '3', '4', '5', '6'))
+    assertSuccess(seq7(d, d, d, d, d, d, d), "1234567", Tuple7('1', '2', '3', '4', '5', '6', '7'))
+    assertSuccess(seq8(d, d, d, d, d, d, d, d), "12345678", Tuple8('1', '2', '3', '4', '5', '6', '7', '8'))
+    assertSuccess(seq9(d, d, d, d, d, d, d, d, d), "123456789", Tuple9('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+  }
 }
