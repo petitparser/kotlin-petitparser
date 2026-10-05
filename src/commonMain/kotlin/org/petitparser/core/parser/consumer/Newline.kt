@@ -7,7 +7,10 @@ import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 
 /** Returns a parser that detects newlines platform independently. */
-fun newline(message: String = "newline expected") = object : Parser<String> {
+fun newline(message: String = "newline expected"): NewlineParser = NewlineParser(message)
+
+/** A parser that consumes newlines platform independently. */
+class NewlineParser(val message: String = "newline expected") : Parser<String> {
   override fun parseOn(input: Input): Output<String> {
     val buffer = input.buffer
     val position = input.position
@@ -31,4 +34,25 @@ fun newline(message: String = "newline expected") = object : Parser<String> {
     }
     return input.failure(message)
   }
+
+  override fun fastParseOn(buffer: String, position: Int): Int {
+    if (position < buffer.length) {
+      when (buffer[position]) {
+        '\n' -> return position + 1
+        '\r' -> return if (position + 1 < buffer.length && buffer[position + 1] == '\n') {
+          position + 2
+        } else {
+          position + 1
+        }
+      }
+    }
+    return -1
+  }
+
+  override fun copy(): NewlineParser = NewlineParser(message)
+
+  override fun toString(): String = "${this::class.simpleName}[$message]"
+
+  override fun hasEqualProperties(other: Parser<*>): Boolean =
+    super.hasEqualProperties(other) && other is NewlineParser && message == other.message
 }

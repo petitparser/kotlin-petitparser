@@ -86,20 +86,20 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 3: Character Parsers, Predicates & Optimization
 
-- [ ] **3.1 Character Predicates & Fast Bitset Lookup**
+- [x] **3.1 Character Predicates & Fast Bitset Lookup**
   - Fix bug in `CharPredicate.none()` where `test(char)` was returning `true` instead of `false`.
   - Implement `LookupCharPredicate` using bitset tables (`IntArray`) for O(1) character dispatch on compact ranges (<= 1 KB).
   - Implement character predicate range optimizer in `CharPredicate.ranges` that merges adjacent/overlapping ranges and dynamically switches between single-char, range, `LookupCharPredicate`, or binary search on `starts`/`stops`.
   - Add built-in predicates for `word`, `letter`, `digit`, `lowercase`, `uppercase`.
   - Reference: `lib/src/parser/character/predicate/`, `lib/src/parser/character/utils/optimize.dart`.
 
-- [ ] **3.2 Additional Character Parsers**
+- [x] **3.2 Additional Character Parsers**
   - Add `lowercase(message)` parser.
   - Add `uppercase(message)` parser.
   - Add `word(message)` parser accepting `[a-zA-Z0-9_]`.
   - Reference: `lib/src/parser/character/lowercase.dart`, `uppercase.dart`, `word.dart`.
 
-- [ ] **3.3 Consumer Class Conversions & Unicode**
+- [x] **3.3 Consumer Class Conversions & Unicode**
   - Convert `char` to `CharParser` (inherits `Parser<Char>`, implements `fastParseOn`).
   - Convert `newline` to `NewlineParser` (inherits `Parser<String>`, handles `\n`, `\r\n`, `\r`, implements `fastParseOn`).
   - Convert `string` to `StringParser` (inherits `Parser<String>`, supports `ignoreCase`, implements `fastParseOn`).
