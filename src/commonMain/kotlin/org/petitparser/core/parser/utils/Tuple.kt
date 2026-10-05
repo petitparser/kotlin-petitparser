@@ -53,7 +53,7 @@ data class Tuple8<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8
   val fifth: T5,
   val sixth: T6,
   val seventh: T7,
-  val eight: T8,
+  val eighth: T8,
 )
 
 data class Tuple9<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9>(
@@ -64,6 +64,6 @@ data class Tuple9<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8
   val fifth: T5,
   val sixth: T6,
   val seventh: T7,
-  val eight: T8,
+  val eighth: T8,
   val ninth: T9,
 )

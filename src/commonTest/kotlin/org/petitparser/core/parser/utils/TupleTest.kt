@@ -39,11 +39,12 @@ class TupleTest {
     assertEquals(7, t7_7)
 
     val t8 = Tuple8(1, 2, 3, 4, 5, 6, 7, 8)
-    assertEquals(8, t8.eight)
+    assertEquals(8, t8.eighth)
     val (t8_1, t8_2, t8_3, t8_4, t8_5, t8_6, t8_7, t8_8) = t8
     assertEquals(8, t8_8)
 
     val t9 = Tuple9(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    assertEquals(8, t9.eighth)
     assertEquals(9, t9.ninth)
     val (t9_1, t9_2, t9_3, t9_4, t9_5, t9_6, t9_7, t9_8, t9_9) = t9
     assertEquals(9, t9_9)
