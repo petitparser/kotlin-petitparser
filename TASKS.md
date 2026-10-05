@@ -180,21 +180,21 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 6: Debugging, Indentation & Extended Matchers
 
-- [ ] **6.1 Debugging Tools**
+- [x] **6.1 Debugging Tools**
   - Create package `org.petitparser.core.debug`.
   - Implement `trace<R>(parser: Parser<R>, output: (TraceEvent) -> Unit = ::println): Parser<R>`.
   - Implement `profile<R>(parser: Parser<R>, output: (ProfileResult) -> Unit = ::println): Parser<R>`.
   - Implement `progress<R>(parser: Parser<R>, callback: (Input) -> Unit): Parser<R>`.
   - Reference: `lib/src/debug/`.
 
-- [ ] **6.2 Indentation Combinator**
+- [x] **6.2 Indentation Combinator**
   - Create package `org.petitparser.core.indent`.
   - Implement `Indent` parser supporting indentation-sensitive languages (Python/YAML style):
     - `same`: matches current indentation level.
     - `during`: scoped block matching with automatic stack push/pop and state rollback on failure.
   - Reference: `lib/src/indent/`.
 
-- [ ] **6.3 Extended Matchers**
+- [x] **6.3 Extended Matchers**
   - Create package `org.petitparser.core.matcher`.
   - Implement `accept(input: CharSequence, start: Int = 0): Boolean`.
   - Implement `matches(input: CharSequence, overlapping: Boolean = false, start: Int = 0): Sequence<R>`.
