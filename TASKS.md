@@ -63,7 +63,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Provide direct N-ary mapping via `seqMap(p1, p2, ...) { a, b -> ... }` for zero intermediate tuple allocations, alongside `seq(p1, p2).map { (a, b) -> ... }` destructuring.
   - Reference: `lib/src/parser/combinator/`.
 
-- [ ] **2.3 Repeater Parsers Concrete Migration & String Specializations**
+- [x] **2.3 Repeater Parsers Concrete Migration & String Specializations**
   - Convert `repeat` / `star` / `plus` / `times` to `PossessiveRepeatingParser<R>` (inherits `DelegateParser`, implements loop `fastParseOn`).
   - Convert `starGreedy` / `plusGreedy` to `GreedyRepeatingParser<R>` (inherits `DelegateParser`, holds `limit`, implements backtrack `fastParseOn`).
   - Convert `starLazy` / `plusLazy` to `LazyRepeatingParser<R>` (inherits `DelegateParser`, holds `limit`, implements lazy `fastParseOn`).
