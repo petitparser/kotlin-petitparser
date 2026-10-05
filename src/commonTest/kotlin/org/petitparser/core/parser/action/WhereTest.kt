@@ -77,6 +77,31 @@ internal class WhereTest {
   }
 
   @Test
+  fun test_filter_message() {
+    val p1 = any().filter({ it == '*' }, message = "star expected")
+    assertSuccess(p1, "*", '*')
+    assertFailure(p1, "!", "star expected", 0)
+
+    val p2 = any().filter("star expected") { it == '*' }
+    assertSuccess(p2, "*", '*')
+    assertFailure(p2, "!", "star expected", 0)
+  }
+
+  @Test
+  fun test_filter_message_callback() {
+    val p = any().filter({ it == '*' }, message = { "char '$it' is not a star" })
+    assertSuccess(p, "*", '*')
+    assertFailure(p, "!", "char '!' is not a star", 0)
+  }
+
+  @Test
+  fun test_where_message_callback() {
+    val p = any().where({ it == '*' }, message = { "char '$it' is not a star" })
+    assertSuccess(p, "*", '*')
+    assertFailure(p, "!", "char '!' is not a star", 0)
+  }
+
+  @Test
   fun test_where_message_leading() {
     val parser = any().where("star expected") { it == '*' }
     assertSuccess(parser, "*", '*')
@@ -89,6 +114,10 @@ internal class WhereTest {
     val parser = any().where(predicate = { it == '*' }, factory = factory)
     assertSuccess(parser, "*", '*')
     assertFailure(parser, "!", "failed", 0)
+
+    val filterParser = any().filter(predicate = { it == '*' }, factory = factory)
+    assertSuccess(filterParser, "*", '*')
+    assertFailure(filterParser, "!", "failed", 0)
   }
 
   @Test
