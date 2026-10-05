@@ -22,9 +22,7 @@ class Indent(
   internal val stack = mutableListOf<String>()
   internal var current: String = ""
 
-  /** Parser that increases the indentation. */
-  @Deprecated("Use 'during' instead to properly track indentation state")
-  val increase: Parser<String> by lazy {
+  private val increase: Parser<String> by lazy {
     parser
       .plusString(message = message)
       .filter(message = message) { value ->
@@ -46,9 +44,7 @@ class Indent(
       .filter(message = message) { value -> value == current }
   }
 
-  /** Parser that decreases the indentation by one level. */
-  @Deprecated("Use 'during' instead to properly track indentation state")
-  val decrease: Parser<Unit> by lazy {
+  private val decrease: Parser<Unit> by lazy {
     epsilon(Unit).filter(message = message) {
       if (stack.isNotEmpty()) {
         current = stack.removeLast()
@@ -62,7 +58,6 @@ class Indent(
   /**
    * Runs [parser] in a deeper indentation scope with automatic state rollback on failure.
    */
-  @Suppress("DEPRECATION")
   fun <R> during(parser: Parser<R>): Parser<R> =
     listOf(parser, failure<R>().skip(before = decrease))
       .toChoiceParser(failureJoiner = ::selectFirst)

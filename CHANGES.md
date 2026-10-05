@@ -8,8 +8,6 @@
 - Added diagnostic parity on `Input` and `Output`: `toPositionString()`, `line`, `column`, and factory `Input(buffer, position)`.
 - Optimized `Token`: lazy computed `input` and `length`, and cached newline parser.
 - Deprecated legacy `Grammar` in favor of `GrammarDefinition`.
-- Deprecated `seq2`..`seq9` in favor of typed `seq(...)`.
-- Deprecated `ref0`..`ref9` in favor of `ref(...)`.
 - Deprecated `success()` in favor of `epsilon()`.
 - Modernized `CsvGrammar` and `JsonGrammar` to extend `GrammarDefinition` and use `.surroundedBy(...)`.
 - Added AST transformation, optimizer (`optimize()`), and linter (`linter()`) infrastructure.

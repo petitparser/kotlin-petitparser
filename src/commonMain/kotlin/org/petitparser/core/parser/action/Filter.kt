@@ -105,4 +105,3 @@ class FilterParser<T>(
       factory == other.factory
 }
 
-typealias WhereParser<T> = FilterParser<T>

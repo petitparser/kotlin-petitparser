@@ -24,23 +24,8 @@ fun <R1, R2> seq(
   p2: Parser<R2>,
 ): SequenceParser2<R1, R2> = SequenceParser2(p1, p2)
 
-/** Alias for [seq] with 2 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2)"))
-fun <R1, R2> seq2(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-): SequenceParser2<R1, R2> = SequenceParser2(p1, p2)
-
 /** Sequence of three parsers [p1], ..., [p3] returning a [Tuple3]. */
 fun <R1, R2, R3> seq(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-): SequenceParser3<R1, R2, R3> = SequenceParser3(p1, p2, p3)
-
-/** Alias for [seq] with 3 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3)"))
-fun <R1, R2, R3> seq3(
   p1: Parser<R1>,
   p2: Parser<R2>,
   p3: Parser<R3>,
@@ -54,27 +39,8 @@ fun <R1, R2, R3, R4> seq(
   p4: Parser<R4>,
 ): SequenceParser4<R1, R2, R3, R4> = SequenceParser4(p1, p2, p3, p4)
 
-/** Alias for [seq] with 4 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4)"))
-fun <R1, R2, R3, R4> seq4(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-): SequenceParser4<R1, R2, R3, R4> = SequenceParser4(p1, p2, p3, p4)
-
 /** Sequence of five parsers [p1], ..., [p5] returning a [Tuple5]. */
 fun <R1, R2, R3, R4, R5> seq(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-  p5: Parser<R5>,
-): SequenceParser5<R1, R2, R3, R4, R5> = SequenceParser5(p1, p2, p3, p4, p5)
-
-/** Alias for [seq] with 5 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4, p5)"))
-fun <R1, R2, R3, R4, R5> seq5(
   p1: Parser<R1>,
   p2: Parser<R2>,
   p3: Parser<R3>,
@@ -92,31 +58,8 @@ fun <R1, R2, R3, R4, R5, R6> seq(
   p6: Parser<R6>,
 ): SequenceParser6<R1, R2, R3, R4, R5, R6> = SequenceParser6(p1, p2, p3, p4, p5, p6)
 
-/** Alias for [seq] with 6 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4, p5, p6)"))
-fun <R1, R2, R3, R4, R5, R6> seq6(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-  p5: Parser<R5>,
-  p6: Parser<R6>,
-): SequenceParser6<R1, R2, R3, R4, R5, R6> = SequenceParser6(p1, p2, p3, p4, p5, p6)
-
 /** Sequence of seven parsers [p1], ..., [p7] returning a [Tuple7]. */
 fun <R1, R2, R3, R4, R5, R6, R7> seq(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-  p5: Parser<R5>,
-  p6: Parser<R6>,
-  p7: Parser<R7>,
-): SequenceParser7<R1, R2, R3, R4, R5, R6, R7> = SequenceParser7(p1, p2, p3, p4, p5, p6, p7)
-
-/** Alias for [seq] with 7 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4, p5, p6, p7)"))
-fun <R1, R2, R3, R4, R5, R6, R7> seq7(
   p1: Parser<R1>,
   p2: Parser<R2>,
   p3: Parser<R3>,
@@ -138,36 +81,8 @@ fun <R1, R2, R3, R4, R5, R6, R7, R8> seq(
   p8: Parser<R8>,
 ): SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8> = SequenceParser8(p1, p2, p3, p4, p5, p6, p7, p8)
 
-/** Alias for [seq] with 8 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4, p5, p6, p7, p8)"))
-fun <R1, R2, R3, R4, R5, R6, R7, R8> seq8(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-  p5: Parser<R5>,
-  p6: Parser<R6>,
-  p7: Parser<R7>,
-  p8: Parser<R8>,
-): SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8> = SequenceParser8(p1, p2, p3, p4, p5, p6, p7, p8)
-
 /** Sequence of nine parsers [p1], ..., [p9] returning a [Tuple9]. */
 fun <R1, R2, R3, R4, R5, R6, R7, R8, R9> seq(
-  p1: Parser<R1>,
-  p2: Parser<R2>,
-  p3: Parser<R3>,
-  p4: Parser<R4>,
-  p5: Parser<R5>,
-  p6: Parser<R6>,
-  p7: Parser<R7>,
-  p8: Parser<R8>,
-  p9: Parser<R9>,
-): SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9> =
-  SequenceParser9(p1, p2, p3, p4, p5, p6, p7, p8, p9)
-
-/** Alias for [seq] with 9 parsers. */
-@Deprecated("Use seq(...) instead", ReplaceWith("seq(p1, p2, p3, p4, p5, p6, p7, p8, p9)"))
-fun <R1, R2, R3, R4, R5, R6, R7, R8, R9> seq9(
   p1: Parser<R1>,
   p2: Parser<R2>,
   p3: Parser<R3>,

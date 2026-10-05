@@ -88,33 +88,3 @@ fun <R, A1, A2, A3, A4, A5, A6, A7, A8> ref(function: (A1, A2, A3, A4, A5, A6, A
 fun <R, A1, A2, A3, A4, A5, A6, A7, A8, A9> ref(function: (A1, A2, A3, A4, A5, A6, A7, A8, A9) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): Parser<R> =
   ReferenceParser(function, listOf(a1, a2, a3, a4, a5, a6, a7, a8, a9)) { function(a1, a2, a3, a4, a5, a6, a7, a8, a9) }
 
-// Canonical Dart arity aliases
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function)"))
-fun <R> ref0(function: () -> Parser<R>): Parser<R> = ref(function)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1)"))
-fun <R, A1> ref1(function: (A1) -> Parser<R>, a1: A1): Parser<R> = ref(function, a1)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2)"))
-fun <R, A1, A2> ref2(function: (A1, A2) -> Parser<R>, a1: A1, a2: A2): Parser<R> = ref(function, a1, a2)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3)"))
-fun <R, A1, A2, A3> ref3(function: (A1, A2, A3) -> Parser<R>, a1: A1, a2: A2, a3: A3): Parser<R> = ref(function, a1, a2, a3)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4)"))
-fun <R, A1, A2, A3, A4> ref4(function: (A1, A2, A3, A4) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4): Parser<R> = ref(function, a1, a2, a3, a4)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4, a5)"))
-fun <R, A1, A2, A3, A4, A5> ref5(function: (A1, A2, A3, A4, A5) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): Parser<R> = ref(function, a1, a2, a3, a4, a5)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4, a5, a6)"))
-fun <R, A1, A2, A3, A4, A5, A6> ref6(function: (A1, A2, A3, A4, A5, A6) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): Parser<R> = ref(function, a1, a2, a3, a4, a5, a6)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4, a5, a6, a7)"))
-fun <R, A1, A2, A3, A4, A5, A6, A7> ref7(function: (A1, A2, A3, A4, A5, A6, A7) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): Parser<R> = ref(function, a1, a2, a3, a4, a5, a6, a7)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4, a5, a6, a7, a8)"))
-fun <R, A1, A2, A3, A4, A5, A6, A7, A8> ref8(function: (A1, A2, A3, A4, A5, A6, A7, A8) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): Parser<R> = ref(function, a1, a2, a3, a4, a5, a6, a7, a8)
-
-@Deprecated("Use ref(...) instead", ReplaceWith("ref(function, a1, a2, a3, a4, a5, a6, a7, a8, a9)"))
-fun <R, A1, A2, A3, A4, A5, A6, A7, A8, A9> ref9(function: (A1, A2, A3, A4, A5, A6, A7, A8, A9) -> Parser<R>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): Parser<R> = ref(function, a1, a2, a3, a4, a5, a6, a7, a8, a9)

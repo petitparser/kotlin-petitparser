@@ -270,22 +270,4 @@ class IndentTest {
     assertTrue(definition.indent.stack.isEmpty())
     assertEquals("", definition.indent.current)
   }
-
-  @Suppress("DEPRECATION")
-  @Test
-  fun test_deprecated_increase_decrease() {
-    val indent = Indent()
-    val inc = indent.increase
-    val dec = indent.decrease
-
-    val rInc = inc.parse("  ")
-    assertTrue(rInc is Output.Success)
-    assertEquals("  ", indent.current)
-    assertEquals(listOf(""), indent.stack)
-
-    val rDec = dec.parse("")
-    assertTrue(rDec is Output.Success)
-    assertEquals("", indent.current)
-    assertTrue(indent.stack.isEmpty())
-  }
 }
