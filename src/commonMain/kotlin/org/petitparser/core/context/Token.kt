@@ -1,8 +1,10 @@
 package org.petitparser.core.context
 
+import org.petitparser.core.matcher.matches
 import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.consumer.newline
-import org.petitparser.core.parser.matches
+
+private val newlineTokenParser = newline().token()
 
 /** A token represents a parsed part of the input stream. */
 data class Token<R>(
@@ -16,10 +18,10 @@ data class Token<R>(
   val stop: Int,
 ) {
   /** The consumed input of the token. */
-  val input = buffer.substring(start, stop)
+  val input: String get() = buffer.substring(start, stop)
 
   /** The length of the token. */
-  val length = stop - start
+  val length: Int get() = stop - start
 
   /** The line of the token. */
   val line: Int get() = lineAndColumn.line
@@ -60,12 +62,12 @@ data class Token<R>(
 /** Combines multiple tokens into a single token with the list of its values. */
 fun <T> Iterable<Token<T>>.join(): Token<List<T>> = Token.join(this)
 
-private data class LineAndColumn(val line: Int, val column: Int)
+internal data class LineAndColumn(val line: Int, val column: Int)
 
-private fun lineAndColumn(buffer: String, position: Int): LineAndColumn {
+internal fun lineAndColumn(buffer: String, position: Int): LineAndColumn {
   var line = 1
   var offset = 0
-  for (token in newline().token().matches(buffer)) {
+  for (token in newlineTokenParser.matches(buffer)) {
     if (position < token.stop) {
       return LineAndColumn(line, position - offset + 1)
     }

@@ -18,6 +18,13 @@ class TokenTest {
     assertEquals(1, token.line)
     assertEquals(7, token.column)
     assertEquals("Token[1:7]: val", token.toString())
+
+    val multiline = Token("world", "hello\nbeautiful\nworld", 16, 21)
+    assertEquals("world", multiline.input)
+    assertEquals(5, multiline.length)
+    assertEquals(3, multiline.line)
+    assertEquals(1, multiline.column)
+    assertEquals("Token[3:1]: world", multiline.toString())
   }
 
   @Test
