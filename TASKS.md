@@ -206,14 +206,14 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 7: Verification & Documentation
 
-- [ ] **7.1 Full Test Porting**
+- [x] **7.1 Full Test Porting**
   - Port `test/expression_test.dart` -> `src/commonTest/.../ExpressionTest.kt`.
   - Port `test/definition_test.dart` -> `src/commonTest/.../DefinitionTest.kt`.
   - Port `test/reflection_test.dart` -> `src/commonTest/.../ReflectionTest.kt`.
   - Port `test/debug_test.dart` -> `src/commonTest/.../DebugTest.kt`.
   - Port `test/indent_test.dart` -> `src/commonTest/.../IndentTest.kt`.
   - Port `test/matcher_test.dart` -> `src/commonTest/.../MatcherTest.kt`.
-- [ ] **7.2 Multiplatform Target Verification**
+- [x] **7.2 Multiplatform Target Verification**
   - Run `./gradlew jvmTest`.
   - Run `./gradlew jsTest`.
   - Verify clean builds on Native targets (`macosArm64`, `linuxX64`, etc.).

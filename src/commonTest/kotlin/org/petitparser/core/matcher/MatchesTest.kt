@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class MatcherTest {
+class MatchesTest {
   @Test
   fun test_accept() {
     val parser = string("foo")
