@@ -4,6 +4,7 @@ import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.utils.SequentialParser
 import org.petitparser.core.parser.utils.Tuple2
 import org.petitparser.core.parser.utils.Tuple3
 import org.petitparser.core.parser.utils.Tuple4
@@ -175,7 +176,7 @@ fun <R1, R2, R3, R4, R5, R6, R7, R8, R9> seq9(
 class SequenceParser2<R1, R2>(
   var parser1: Parser<R1>,
   var parser2: Parser<R2>,
-) : Parser<Tuple2<R1, R2>> {
+) : Parser<Tuple2<R1, R2>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple2<R1, R2>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -221,7 +222,7 @@ class SequenceParser3<R1, R2, R3>(
   var parser1: Parser<R1>,
   var parser2: Parser<R2>,
   var parser3: Parser<R3>,
-) : Parser<Tuple3<R1, R2, R3>> {
+) : Parser<Tuple3<R1, R2, R3>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple3<R1, R2, R3>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -273,7 +274,7 @@ class SequenceParser4<R1, R2, R3, R4>(
   var parser2: Parser<R2>,
   var parser3: Parser<R3>,
   var parser4: Parser<R4>,
-) : Parser<Tuple4<R1, R2, R3, R4>> {
+) : Parser<Tuple4<R1, R2, R3, R4>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple4<R1, R2, R3, R4>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -332,7 +333,7 @@ class SequenceParser5<R1, R2, R3, R4, R5>(
   var parser3: Parser<R3>,
   var parser4: Parser<R4>,
   var parser5: Parser<R5>,
-) : Parser<Tuple5<R1, R2, R3, R4, R5>> {
+) : Parser<Tuple5<R1, R2, R3, R4, R5>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple5<R1, R2, R3, R4, R5>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -397,7 +398,7 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>(
   var parser4: Parser<R4>,
   var parser5: Parser<R5>,
   var parser6: Parser<R6>,
-) : Parser<Tuple6<R1, R2, R3, R4, R5, R6>> {
+) : Parser<Tuple6<R1, R2, R3, R4, R5, R6>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple6<R1, R2, R3, R4, R5, R6>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -468,7 +469,7 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
   var parser5: Parser<R5>,
   var parser6: Parser<R6>,
   var parser7: Parser<R7>,
-) : Parser<Tuple7<R1, R2, R3, R4, R5, R6, R7>> {
+) : Parser<Tuple7<R1, R2, R3, R4, R5, R6, R7>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple7<R1, R2, R3, R4, R5, R6, R7>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -545,7 +546,7 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
   var parser6: Parser<R6>,
   var parser7: Parser<R7>,
   var parser8: Parser<R8>,
-) : Parser<Tuple8<R1, R2, R3, R4, R5, R6, R7, R8>> {
+) : Parser<Tuple8<R1, R2, R3, R4, R5, R6, R7, R8>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple8<R1, R2, R3, R4, R5, R6, R7, R8>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -630,7 +631,7 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
   var parser7: Parser<R7>,
   var parser8: Parser<R8>,
   var parser9: Parser<R9>,
-) : Parser<Tuple9<R1, R2, R3, R4, R5, R6, R7, R8, R9>> {
+) : Parser<Tuple9<R1, R2, R3, R4, R5, R6, R7, R8, R9>>, SequentialParser {
   override fun parseOn(input: Input): Output<Tuple9<R1, R2, R3, R4, R5, R6, R7, R8, R9>> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1

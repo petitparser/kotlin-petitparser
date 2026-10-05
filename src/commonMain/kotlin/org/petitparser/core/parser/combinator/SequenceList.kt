@@ -4,6 +4,7 @@ import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.utils.SequentialParser
 
 /** Returns a parser that accepts a list of [parsers]. */
 fun <R> seqOf(vararg parsers: Parser<R>): SequenceParser<R> = SequenceParser(parsers.toList())
@@ -25,7 +26,7 @@ infix fun Parser<*>.seq(other: Parser<*>): SequenceParser<Any?> {
 operator fun Parser<*>.plus(other: Parser<*>): SequenceParser<Any?> = this seq other
 
 /** A parser that parses a sequence of parsers. */
-class SequenceParser<R>(children: Iterable<Parser<R>>) : ListParser<R, List<R>>(children) {
+class SequenceParser<R>(children: Iterable<Parser<R>>) : ListParser<R, List<R>>(children), SequentialParser {
   constructor(vararg children: Parser<R>) : this(children.toList())
 
   override fun parseOn(input: Input): Output<List<R>> {

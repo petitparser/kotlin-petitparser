@@ -135,14 +135,14 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 5: Reflection, Analyzer, Optimizer & Linter
 
-- [ ] **5.1 Graph Traversal & Structural Transformation**
+- [x] **5.1 Graph Traversal & Structural Transformation**
   - Create package `org.petitparser.core.reflection`.
   - Implement `allParsers(root: Parser<*>): Sequence<Parser<*>>` depth-first traversal returning lazy Kotlin `Sequence` of unique reachable parsers.
   - Implement `allChildren(root: Parser<*>): Sequence<Parser<*>>` lazy sequence of direct/indirect children.
   - Implement `transformParser<R>(parser: Parser<R>, handler: (Parser<*>) -> Parser<*>): Parser<R>` for deep copying and AST tree transformation.
   - Reference: `lib/src/reflection/iterable.dart`, `lib/src/reflection/transform.dart`.
 
-- [ ] **5.2 Grammar Analyzer**
+- [x] **5.2 Grammar Analyzer**
   - Implement `Analyzer` computing:
     - Nullability analysis (`isNullable`).
     - First-set computation (`firstSet`).
@@ -150,7 +150,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
     - Cycle-set detection (`cycleSet`).
   - Reference: `lib/src/reflection/analyzer.dart`, `lib/src/reflection/internal/`.
 
-- [ ] **5.3 Parser Optimizer**
+- [x] **5.3 Parser Optimizer**
   - Implement `optimize<R>(parser: Parser<R>): Parser<R>`.
   - Implement rule `FlattenChoice`: merges nested choices with the same failure joiner.
   - Implement rule `RemoveDelegate`: removes redundant `SettableParser` and `LabeledParser` wrappers.
@@ -158,7 +158,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Implement rule `CharacterRepeater`: transforms `flatten(repeat(character))` into `RepeatingCharacterParser`.
   - Reference: `lib/src/reflection/optimize.dart`, `lib/src/reflection/internal/optimize_rules.dart`.
 
-- [ ] **5.4 Grammar Linter**
+- [x] **5.4 Grammar Linter**
   - Implement `linter(parser: Parser<*>): List<LinterIssue>`.
   - Port all 13 Dart linter rules:
     - `CharacterRepeater`

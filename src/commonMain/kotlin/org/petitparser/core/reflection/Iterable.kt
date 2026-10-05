@@ -19,3 +19,27 @@ fun allParsers(root: Parser<*>): Sequence<Parser<*>> = sequence {
     }
   }
 }
+
+/**
+ * Returns a lazy sequence of all direct and indirect children reachable from [root].
+ * The sequence only includes [root] itself if [root] is recursively reachable from its children.
+ */
+fun allChildren(root: Parser<*>): Sequence<Parser<*>> = sequence {
+  val todo = mutableListOf<Parser<*>>()
+  val seen = mutableSetOf<Parser<*>>()
+  for (child in root.children.asReversed()) {
+    if (seen.add(child)) {
+      todo.add(child)
+    }
+  }
+  while (todo.isNotEmpty()) {
+    val current = todo.removeLast()
+    yield(current)
+    for (child in current.children.asReversed()) {
+      if (seen.add(child)) {
+        todo.add(child)
+      }
+    }
+  }
+}
+

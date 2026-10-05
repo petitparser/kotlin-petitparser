@@ -5,6 +5,7 @@ import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.misc.success
+import org.petitparser.core.parser.utils.SequentialParser
 
 /**
  * Returns a parser that consumes input [before] and [after] the receiver, but discards the parse
@@ -33,7 +34,7 @@ class SkipParser<R>(
   delegate: Parser<R>,
   var before: Parser<*> = success(),
   var after: Parser<*> = success(),
-) : DelegateParser<R, R>(delegate) {
+) : DelegateParser<R, R>(delegate), SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val beforeContext = before.parseOn(input)
     if (beforeContext is Output.Failure) return beforeContext

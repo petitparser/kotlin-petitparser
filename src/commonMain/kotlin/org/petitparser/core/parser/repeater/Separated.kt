@@ -4,6 +4,7 @@ import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.utils.SequentialParser
 
 /** A list of [elements] and its [separators]. */
 data class SeparatedList<R, S>(val elements: List<R>, val separators: List<S>) {
@@ -80,7 +81,7 @@ class SeparatedParser<R, S>(
   var separator: Parser<S>,
   min: Int,
   max: Int = min,
-) : RepeatingParser<R, SeparatedList<R, S>>(delegate, min, max) {
+) : RepeatingParser<R, SeparatedList<R, S>>(delegate, min, max), SequentialParser {
   override val children: List<Parser<*>>
     get() = listOf(delegate, separator)
 

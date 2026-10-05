@@ -4,6 +4,7 @@ import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.utils.SequentialParser
 
 /** Sequence of two parsers [p1] and [p2] with a strongly typed mapping function [block]. */
 fun <R1, R2, R> seqMap(
@@ -195,7 +196,7 @@ class SequenceMapParser2<R1, R2, out R>(
   var parser2: Parser<R2>,
   val callback: (R1, R2) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -242,7 +243,7 @@ class SequenceMapParser3<R1, R2, R3, out R>(
   var parser3: Parser<R3>,
   val callback: (R1, R2, R3) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -295,7 +296,7 @@ class SequenceMapParser4<R1, R2, R3, R4, out R>(
   var parser4: Parser<R4>,
   val callback: (R1, R2, R3, R4) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -354,7 +355,7 @@ class SequenceMapParser5<R1, R2, R3, R4, R5, out R>(
   var parser5: Parser<R5>,
   val callback: (R1, R2, R3, R4, R5) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -419,7 +420,7 @@ class SequenceMapParser6<R1, R2, R3, R4, R5, R6, out R>(
   var parser6: Parser<R6>,
   val callback: (R1, R2, R3, R4, R5, R6) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -490,7 +491,7 @@ class SequenceMapParser7<R1, R2, R3, R4, R5, R6, R7, out R>(
   var parser7: Parser<R7>,
   val callback: (R1, R2, R3, R4, R5, R6, R7) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -567,7 +568,7 @@ class SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, out R>(
   var parser8: Parser<R8>,
   val callback: (R1, R2, R3, R4, R5, R6, R7, R8) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1
@@ -650,7 +651,7 @@ class SequenceMapParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9, out R>(
   var parser9: Parser<R9>,
   val callback: (R1, R2, R3, R4, R5, R6, R7, R8, R9) -> R,
   val hasSideEffects: Boolean = false,
-) : Parser<R> {
+) : Parser<R>, SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val r1 = parser1.parseOn(input)
     if (r1 is Output.Failure) return r1

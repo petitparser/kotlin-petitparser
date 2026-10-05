@@ -6,6 +6,7 @@ import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.combinator.DelegateParser
 import org.petitparser.core.parser.consumer.whitespace
+import org.petitparser.core.parser.utils.SequentialParser
 
 /**
  * Returns a parser that consumes input before and after the receiver, discards the excess input
@@ -23,7 +24,7 @@ class TrimmingParser<R>(
   delegate: Parser<R>,
   var left: Parser<*>,
   var right: Parser<*>,
-) : DelegateParser<R, R>(delegate) {
+) : DelegateParser<R, R>(delegate), SequentialParser {
   override val children: List<Parser<*>>
     get() = listOf(delegate, left, right)
 
