@@ -2,16 +2,27 @@ package org.petitparser.core.grammar
 
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
+import org.petitparser.core.definition.ResolvableParser
 import org.petitparser.core.parser.Parser
 import kotlin.reflect.KProperty
 
 abstract class Grammar {
   private val parsers = mutableMapOf<String, Parser<*>>()
 
+  /** Returns the parser with the given [name], or `null` if not found. */
+  operator fun get(name: String): Parser<*>? = parsers[name]
+
+  /** All registered parser names. */
+  val parserNames: Set<String> get() = parsers.keys
+
   /** Forward reference to a parser defined later. */
-  protected fun <R> ref(provider: () -> Parser<R>) = object : Parser<R> {
+  protected fun <R> ref(provider: () -> Parser<R>): Parser<R> = object : ResolvableParser<R> {
     private val delegate: Parser<R> by lazy(provider)
+    override fun resolve(): Parser<R> = delegate
     override fun parseOn(input: Input): Output<R> = delegate.parseOn(input)
+    override fun fastParseOn(buffer: String, position: Int): Int =
+      delegate.fastParseOn(buffer, position)
+    override fun copy(): Parser<R> = this
   }
 
   protected operator fun <R> Parser<R>.provideDelegate(

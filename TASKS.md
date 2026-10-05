@@ -110,7 +110,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 4: Grammar Definition & Expression Builder (Kotlin Idioms)
 
-- [ ] **4.1 Expression Builder Subsystem & DSL**
+- [x] **4.1 Expression Builder Subsystem & DSL**
   - Create package `org.petitparser.core.expression`.
   - Implement `ExpressionResultPrefix<V, O>`, `ExpressionResultPostfix<V, O>`, and `ExpressionResultInfix<V, O>`.
   - Implement `ExpressionGroup<T>` supporting `prefix`, `postfix`, `left` (left-associative binary), `right` (right-associative binary), `wrapper` (brackets/parentheses), and `optional`.
@@ -119,7 +119,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Add unit tests verifying arithmetic precedence, associativity, parentheses, prefix/postfix negation/increments.
   - Reference: `lib/src/expression/`.
 
-- [ ] **4.2 Grammar Definition & Resolution**
+- [x] **4.2 Grammar Definition & Resolution**
   - Create package `org.petitparser.core.definition`.
   - Implement `ResolvableParser` interface for parsers that delegate to another parser during resolution.
   - Support idiomatic Kotlin grammar building:

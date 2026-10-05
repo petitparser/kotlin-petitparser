@@ -3,6 +3,7 @@ package org.petitparser.core.parser.combinator
 import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.definition.ResolvableParser
 import org.petitparser.core.parser.misc.failure
 
 /** Returns a parser that is not defined, but that can be set at a later point in time. */
@@ -13,11 +14,15 @@ fun <R> undefined(message: String = "undefined parser"): SettableParser<R> =
 fun <R> Parser<R>.settable(): SettableParser<R> = SettableParser(this)
 
 /** A parser that dispatches to a [delegate]. */
-class SettableParser<R>(delegate: Parser<R>) : DelegateParser<R, R>(delegate) {
+class SettableParser<R>(delegate: Parser<R>) :
+  DelegateParser<R, R>(delegate),
+  ResolvableParser<R> {
   /** Sets the receiver to delegate to [parser]. */
   fun set(parser: Parser<R>) {
     delegate = parser
   }
+
+  override fun resolve(): Parser<R> = delegate
 
   override fun parseOn(input: Input): Output<R> = delegate.parseOn(input)
 

@@ -9,10 +9,10 @@ import org.petitparser.core.parser.Parser
 fun <R> Parser<R>.optional(): OptionalParser<R?> = OptionalParser(this, null)
 
 /** Returns new parser that accepts the receiver, otherwise returns [otherwise]. */
-fun <R : Any> Parser<R>.optional(otherwise: R): OptionalParser<R> = OptionalParser(this, otherwise)
+fun <R> Parser<R>.optional(otherwise: R): OptionalParser<R> = OptionalParser(this, otherwise)
 
 /** Returns new parser that accepts the receiver, otherwise returns [otherwise]. */
-fun <R : Any> Parser<R>.optionalWith(otherwise: R): OptionalParser<R> = optional(otherwise)
+fun <R> Parser<R>.optionalWith(otherwise: R): OptionalParser<R> = optional(otherwise)
 
 /**
  * A parser that optionally parses its [delegate], or answers [otherwise].
