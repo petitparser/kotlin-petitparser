@@ -2,6 +2,7 @@ package org.petitparser.core.parser.misc
 
 import org.petitparser.core.parser.assertFailure
 import org.petitparser.core.parser.assertSuccess
+import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.consumer.any
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.expectParserInvariants
@@ -81,5 +82,23 @@ internal class EndOfInputTest {
   fun test_to_string() {
     assertEquals("EndOfInputParser[end of input expected]", endOfInput().toString())
     assertEquals("EndOfInputParser[custom]", endOfInput("custom").toString())
+  }
+
+  @Test
+  fun test_endOfInput_in_choice() {
+    val parser = char('a') or endOfInput()
+    assertSuccess(parser, "a", 'a', 1)
+    assertSuccess(parser, "", Unit, 0)
+    assertFailure(parser, "b", "end of input expected", 0)
+  }
+
+  @Test
+  fun test_has_equal_properties() {
+    val p1 = endOfInput("err")
+    val p2 = endOfInput("err")
+    val p3 = endOfInput("diff")
+    assertTrue(p1.hasEqualProperties(p2))
+    assertFalse(p1.hasEqualProperties(p3))
+    assertFalse(p1.hasEqualProperties(any()))
   }
 }

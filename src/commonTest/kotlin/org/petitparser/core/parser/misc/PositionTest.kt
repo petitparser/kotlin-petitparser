@@ -4,6 +4,7 @@ import org.petitparser.core.parser.action.pick
 import org.petitparser.core.parser.assertSuccess
 import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.expectParserInvariants
 import org.petitparser.core.parser.repeater.star
 import kotlin.test.Test
@@ -55,5 +56,19 @@ internal class PositionTest {
   @Test
   fun test_to_string() {
     assertEquals("PositionParser", position().toString())
+  }
+
+  @Test
+  fun test_position_between_tokens() {
+    val parser = char('a') + position() + char('b')
+    assertSuccess(parser, "ab", listOf('a', 1, 'b'), 2)
+    assertEquals(2, parser.fastParseOn("ab", 0))
+  }
+
+  @Test
+  fun test_has_equal_properties() {
+    val p1 = position()
+    val p2 = position()
+    assertTrue(p1.hasEqualProperties(p2))
   }
 }

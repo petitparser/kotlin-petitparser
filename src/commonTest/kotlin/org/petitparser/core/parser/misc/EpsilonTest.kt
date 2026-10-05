@@ -1,7 +1,9 @@
 package org.petitparser.core.parser.misc
 
 import org.petitparser.core.parser.assertSuccess
+import org.petitparser.core.parser.combinator.plus
 import org.petitparser.core.parser.consumer.any
+import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.expectParserInvariants
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -96,5 +98,22 @@ internal class EpsilonTest {
     assertEquals("EpsilonParser[kotlin.Unit]", epsilon().toString())
     assertEquals("EpsilonParser[42]", epsilon(42).toString())
     assertEquals("EpsilonParser[null]", epsilonWith<String?>(null).toString())
+  }
+
+  @Test
+  fun test_epsilon_in_sequence() {
+    val parser = char('a') + epsilon("middle") + char('b')
+    assertSuccess(parser, "ab", listOf('a', "middle", 'b'), 2)
+    assertEquals(2, parser.fastParseOn("ab", 0))
+  }
+
+  @Test
+  fun test_has_equal_properties() {
+    val p1 = epsilon(10)
+    val p2 = epsilon(10)
+    val p3 = epsilon(20)
+    assertTrue(p1.hasEqualProperties(p2))
+    assertFalse(p1.hasEqualProperties(p3))
+    assertFalse(p1.hasEqualProperties(any()))
   }
 }
