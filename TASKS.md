@@ -45,7 +45,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Add `where(predicate, message, factory)` with custom failure message formatting.
   - Reference: `lib/src/parser/action/`.
 
-- [ ] **2.2 Combinator Parsers Concrete Migration & Operator Overloads**
+- [x] **2.2 Combinator Parsers Concrete Migration & Operator Overloads**
   - Convert `or` / `div` to `ChoiceParser<R>` (inherits `ListParser`, implements short-circuiting `fastParseOn`). Leverage `Parser<out R>` covariance so choices of subtypes automatically infer their common supertype (e.g., `sealed interface AstNode`).
   - Convert `seqOf` / `seq` to `SequenceParser<R>` (inherits `ListParser`, implements sequential `fastParseOn`).
   - Add Kotlin operator overloads: `operator fun <R> Parser<R>.plus(other: Parser<Any?>): Parser<List<Any?>>` for sequence concatenation.
