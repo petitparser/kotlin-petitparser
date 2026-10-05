@@ -2,8 +2,14 @@ package org.petitparser.core.reflection
 
 import org.petitparser.core.definition.ResolvableParser
 import org.petitparser.core.parser.Parser
+import org.petitparser.core.parser.action.cast
+import org.petitparser.core.parser.action.castList
+import org.petitparser.core.parser.action.constant
+import org.petitparser.core.parser.action.filter
 import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.map
+import org.petitparser.core.parser.action.permute
+import org.petitparser.core.parser.action.pick
 import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.combinator.or
 import org.petitparser.core.parser.combinator.plus
@@ -14,10 +20,12 @@ import org.petitparser.core.parser.combinator.undefined
 import org.petitparser.core.parser.consumer.any
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.digit
+import org.petitparser.core.parser.consumer.newline
 import org.petitparser.core.parser.consumer.string
 import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.star
 import org.petitparser.core.parser.repeater.starSeparated
+import org.petitparser.core.parser.repeater.starString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -82,6 +90,14 @@ class LinterTest {
     val p3 = char('a').plus().token()
     val r3 = linter(p3, rules = rules)
     assertTrue(r3.isEmpty())
+
+    val p4 = (char('a') + char('b')).flatten()
+    val r4 = linter(p4, rules = rules)
+    assertTrue(r4.isEmpty())
+
+    val p5 = string("abc").star().flatten()
+    val r5 = linter(p5, rules = rules)
+    assertTrue(r5.isEmpty())
   }
 
   @Test
@@ -154,10 +170,26 @@ class LinterTest {
   @Test
   fun test_unnecessary_flatten_rule() {
     val rules = listOf(UnnecessaryFlattenRule())
-    val parser = string("abc").flatten()
-    val results = linter(parser, rules = rules)
-    assertEquals(1, results.size)
-    assertEquals("Unnecessary flatten", results[0].title)
+    val delegates = listOf(
+      char('a'),
+      string("abc"),
+      string("abc").flatten(),
+      newline(),
+      char('a').starString(),
+    )
+    for (delegate in delegates) {
+      val parser = delegate.flatten()
+      val results = linter(parser, rules = rules)
+      val expected = if (delegate is org.petitparser.core.parser.action.FlattenParser) 2 else 1
+      assertEquals(expected, results.size, "Expected issues for $delegate")
+      assertTrue(results.all { it.title == "Unnecessary flatten" })
+    }
+
+    val customMessage = string("abc").flatten(message = "custom error")
+    assertTrue(linter(customMessage, rules = rules).isEmpty())
+
+    val nonStringDelegate = (char('a') + char('b')).flatten()
+    assertTrue(linter(nonStringDelegate, rules = rules).isEmpty())
   }
 
   private class DummyResolvable(var target: Parser<String>) : ResolvableParser<String> {
@@ -212,6 +244,31 @@ class LinterTest {
     val results = linter(parser, rules = rules)
     assertEquals(1, results.size)
     assertEquals("Unused result", results[0].title)
+  }
+
+  @Test
+  fun test_unused_result_rule_all_producers() {
+    val rules = listOf(UnusedResultRule())
+    val producers = listOf(
+      char('a').cast<Any>(),
+      char('a').plus().castList<Any>(),
+      char('a').constant(42),
+      char('a').flatten(),
+      char('a').map { it },
+      (char('a') + char('b')).permute(1, 0),
+      (char('a') + char('b')).pick(0),
+      char('a').token(),
+      char('a').filter { true },
+    )
+    for (producer in producers) {
+      val results = linter(producer.flatten(), rules = rules)
+      assertEquals(1, results.size, "Expected 1 issue for $producer")
+      assertEquals("Unused result", results[0].title)
+    }
+
+    val sideEffectMap = char('a').map(hasSideEffects = true) { it }
+    val sideEffectResults = linter(sideEffectMap.flatten(), rules = rules)
+    assertTrue(sideEffectResults.isEmpty())
   }
 
   @Test

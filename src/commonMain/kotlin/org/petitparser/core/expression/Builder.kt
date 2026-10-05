@@ -58,7 +58,7 @@ class ExpressionBuilder<T> {
 /**
  * Builds an expression parser using the [ExpressionBuilder] DSL.
  */
-inline fun <T> buildExpression(builderAction: ExpressionBuilder<T>.() -> Unit): Parser<T> {
+fun <T> buildExpression(builderAction: ExpressionBuilder<T>.() -> Unit): Parser<T> {
   val builder = ExpressionBuilder<T>()
   builder.builderAction()
   return builder.build()

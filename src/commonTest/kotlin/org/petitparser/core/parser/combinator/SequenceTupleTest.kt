@@ -198,4 +198,51 @@ class SequenceTupleTest {
     assertFailure(parser, "12345678", "'9' expected", 8)
     assertSuccess(parser, "123456789", Tuple9('1', '2', '3', '4', '5', '6', '7', '8', '9'))
   }
+
+  @Test
+  fun test_sequence_then_chaining_full() {
+    val p2 = char('1').then(char('2'))
+    val p3 = p2.then(char('3'))
+    val p4 = p3.then(char('4'))
+    val p5 = p4.then(char('5'))
+    val p6 = p5.then(char('6'))
+    val p7 = p6.then(char('7'))
+    val p8 = p7.then(char('8'))
+    val p9 = p8.then(char('9'))
+    assertSuccess(p9, "123456789", Tuple9('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+  }
+
+  @Test
+  fun test_sequence_mapN_methods() {
+    val s2 = seq(char('1'), char('2'))
+    assertSuccess(s2.map2(hasSideEffects = true) { a, b -> "$a$b" }, "12", "12")
+
+    val s3 = seq(char('1'), char('2'), char('3'))
+    assertSuccess(s3.map3 { a, b, c -> "$a$b$c" }, "123", "123")
+    assertSuccess(s3.map3(hasSideEffects = true) { a, b, c -> "$a$b$c" }, "123", "123")
+
+    val s4 = seq(char('1'), char('2'), char('3'), char('4'))
+    assertSuccess(s4.map4 { a, b, c, d -> "$a$b$c$d" }, "1234", "1234")
+    assertSuccess(s4.map4(hasSideEffects = true) { a, b, c, d -> "$a$b$c$d" }, "1234", "1234")
+
+    val s5 = seq(char('1'), char('2'), char('3'), char('4'), char('5'))
+    assertSuccess(s5.map5 { a, b, c, d, e -> "$a$b$c$d$e" }, "12345", "12345")
+    assertSuccess(s5.map5(hasSideEffects = true) { a, b, c, d, e -> "$a$b$c$d$e" }, "12345", "12345")
+
+    val s6 = seq(char('1'), char('2'), char('3'), char('4'), char('5'), char('6'))
+    assertSuccess(s6.map6 { a, b, c, d, e, f -> "$a$b$c$d$e$f" }, "123456", "123456")
+    assertSuccess(s6.map6(hasSideEffects = true) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }, "123456", "123456")
+
+    val s7 = seq(char('1'), char('2'), char('3'), char('4'), char('5'), char('6'), char('7'))
+    assertSuccess(s7.map7 { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }, "1234567", "1234567")
+    assertSuccess(s7.map7(hasSideEffects = true) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }, "1234567", "1234567")
+
+    val s8 = seq(char('1'), char('2'), char('3'), char('4'), char('5'), char('6'), char('7'), char('8'))
+    assertSuccess(s8.map8 { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }, "12345678", "12345678")
+    assertSuccess(s8.map8(hasSideEffects = true) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }, "12345678", "12345678")
+
+    val s9 = seq(char('1'), char('2'), char('3'), char('4'), char('5'), char('6'), char('7'), char('8'), char('9'))
+    assertSuccess(s9.map9 { a, b, c, d, e, f, g, h, i -> "$a$b$c$d$e$f$g$h$i" }, "123456789", "123456789")
+    assertSuccess(s9.map9(hasSideEffects = true) { a, b, c, d, e, f, g, h, i -> "$a$b$c$d$e$f$g$h$i" }, "123456789", "123456789")
+  }
 }

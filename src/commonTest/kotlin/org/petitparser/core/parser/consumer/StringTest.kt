@@ -150,4 +150,18 @@ class StringTest {
 
     assertEquals(-1, p1.fastParseOn("foo", -1))
   }
+
+  @Test
+  fun test_string_parser_defaults_and_negative_position() {
+    val p = StringParser("foo")
+    assertEquals("'foo' expected", p.message)
+    assertFalse(p.ignoreCase)
+
+    val r1 = p.parseOn(org.petitparser.core.context.Input("foo", -1))
+    assertTrue(r1 is org.petitparser.core.context.Output.Failure)
+
+    val predParser = PredicateStringParser({ true }, 3, "err")
+    val r2 = predParser.parseOn(org.petitparser.core.context.Input("foo", -1))
+    assertTrue(r2 is org.petitparser.core.context.Output.Failure)
+  }
 }

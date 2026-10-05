@@ -48,5 +48,6 @@ internal class ConstantTest {
     assertFalse(p1.isEqualTo(p3))
     assertTrue(p4.isEqualTo(p5))
     assertFalse(p1.isEqualTo(p4))
+    assertFalse(p1.isEqualTo(digit()))
   }
 }

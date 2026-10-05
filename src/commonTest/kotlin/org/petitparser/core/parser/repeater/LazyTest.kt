@@ -172,4 +172,11 @@ class LazyTest {
     }
     assertEquals("$emptyParser must always consume", error4.message)
   }
+
+  @Test
+  fun test_constructor_default_max() {
+    val p = LazyRepeatingParser(letterOrDigit(), digit(), 2)
+    assertEquals(2, p.min)
+    assertEquals(2, p.max)
+  }
 }

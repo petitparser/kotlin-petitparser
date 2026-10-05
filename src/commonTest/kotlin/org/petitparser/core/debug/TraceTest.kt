@@ -26,10 +26,18 @@ class TraceTest {
     // First event is enter event (result is null)
     assertNull(events.first().result)
     assertEquals(0, events.first().level)
+    assertTrue(events.first().toString().isNotEmpty())
 
     // Last event is exit event (result is not null)
     assertNotNull(events.last().result)
     assertTrue(events.last().toString().isNotEmpty())
+  }
+
+  @Test
+  fun test_trace_default_output() {
+    val traced = trace(char('a'))
+    val result = traced.parse("a")
+    assertTrue(result is Output.Success)
   }
 
   @Test

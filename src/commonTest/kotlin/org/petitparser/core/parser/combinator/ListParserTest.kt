@@ -29,6 +29,11 @@ class ListParserTest {
     override fun copy(): Parser<List<R>> = TestListParser(parsers)
   }
 
+  private class VarargListParser<R>(vararg children: Parser<R>) : ListParser<R, List<R>>(*children) {
+    override fun parseOn(input: Input): Output<List<R>> = input.success(emptyList())
+    override fun copy(): Parser<List<R>> = VarargListParser(*parsers.toTypedArray())
+  }
+
   @Test
   fun test_constructors_and_children() {
     val p1 = Parser { it.success("a") }
@@ -38,6 +43,14 @@ class ListParserTest {
     assertEquals(2, listParser.children.size)
     assertSame(p1, listParser.children[0])
     assertSame(p2, listParser.children[1])
+  }
+
+  @Test
+  fun test_vararg_constructor() {
+    val p1 = Parser { it.success("a") }
+    val p2 = Parser { it.success("b") }
+    val listParser = VarargListParser(p1, p2)
+    assertEquals(2, listParser.children.size)
   }
 
   @Test

@@ -155,4 +155,14 @@ class CharacterTest {
     val parser = char('a').plusString()
     assertSuccess(parser, input, input)
   }
+
+  @Test
+  fun test_repeating_character_constructor_default_max_and_equality() {
+    val pred = org.petitparser.core.parser.consumer.CharPredicate.any()
+    val p = RepeatingCharacterParser(pred, "msg", 1)
+    assertEquals(1, p.min)
+    assertEquals(1, p.max)
+    assertFalse(p.isEqualTo(char('a')))
+    assertFalse(p.isEqualTo(RepeatingCharacterParser(pred, "other", 1, 1)))
+  }
 }

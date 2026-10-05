@@ -197,4 +197,21 @@ class ChoiceTest {
     assertSuccess(choice, "a", 'a')
     assertSuccess(choice, "1", "1")
   }
+
+  @Test
+  fun test_choice_iterable_and_vararg_constructor() {
+    val fromIterable = or(listOf(char('a'), char('b')))
+    assertSuccess(fromIterable, "a", 'a')
+
+    val fromVararg = ChoiceParser(char('a'), char('b'))
+    assertSuccess(fromVararg, "b", 'b')
+
+    val p1 = ChoiceParser(char('a'), char('b'), failureJoiner = ::selectFirst)
+    val p2 = ChoiceParser(char('a'), char('b'), failureJoiner = ::selectFirst)
+    val p3 = ChoiceParser(char('a'), char('b'), failureJoiner = ::selectLast)
+    kotlin.test.assertTrue(p1.isEqualTo(p2))
+    kotlin.test.assertFalse(p1.isEqualTo(p3))
+    kotlin.test.assertFalse(p1.isEqualTo(char('a')))
+    kotlin.test.assertFalse(p1.hasEqualProperties(char('a')))
+  }
 }

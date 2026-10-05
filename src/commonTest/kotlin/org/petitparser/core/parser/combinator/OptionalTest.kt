@@ -32,4 +32,14 @@ class OptionalTest {
     assertSuccess(parser, "a", '*', 0)
     assertSuccess(parser, "", '*', 0)
   }
+
+  @Test
+  fun test_equality() {
+    val p1 = digit().optional('*')
+    val p2 = digit().optional('*')
+    val p3 = digit().optional('-')
+    kotlin.test.assertTrue(p1.isEqualTo(p2))
+    kotlin.test.assertFalse(p1.isEqualTo(p3))
+    kotlin.test.assertFalse(p1.isEqualTo(digit()))
+  }
 }

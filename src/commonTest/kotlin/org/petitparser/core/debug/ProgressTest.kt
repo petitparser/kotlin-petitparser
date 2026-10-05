@@ -31,4 +31,11 @@ class ProgressTest {
     progressed.parse("a12")
     assertTrue(frames.all { it.parser.children.isEmpty() })
   }
+
+  @Test
+  fun test_progress_default_output() {
+    val progressed = progress(char('a'))
+    val result = progressed.parse("a")
+    assertTrue(result is Output.Success)
+  }
 }

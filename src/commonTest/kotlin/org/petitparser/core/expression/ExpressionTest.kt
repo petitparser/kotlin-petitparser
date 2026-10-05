@@ -537,4 +537,17 @@ class ExpressionTest {
     assertSuccess(parser, "a+b", "(a+b)")
     assertSuccess(parser, "b+a", "(b+a)")
   }
+
+  @Test
+  fun test_postfix_and_right_simplified_callbacks() {
+    val parser = buildExpression<Int> {
+      primitive(digit().map { it.digitToInt() })
+      group {
+        postfix(char('!')) { a -> a * 2 }
+        right(char('^')) { a, b -> a + b }
+      }
+    }
+    assertSuccess(parser, "3!", 6)
+    assertSuccess(parser, "2^3^4", 9)
+  }
 }

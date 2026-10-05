@@ -264,4 +264,12 @@ class SeparatedTest {
     val expectedSeparators = List(count - 1) { ',' }
     assertSuccess(parser, input, SeparatedList(expectedElements, expectedSeparators))
   }
+
+  @Test
+  fun test_separated_constructor_default_max_and_equality() {
+    val p = SeparatedParser(digit(), char(','), 2)
+    assertEquals(2, p.min)
+    assertEquals(2, p.max)
+    assertFalse(p.isEqualTo(digit()))
+  }
 }

@@ -70,4 +70,11 @@ class SettableTest {
     assertSuccess(parser, "((1))", '1')
     assertFailure(parser, "(1", "')' expected", 2)
   }
+
+  @Test
+  fun test_resolve() {
+    val delegate = digit()
+    val parser = delegate.settable()
+    kotlin.test.assertSame(delegate, parser.resolve())
+  }
 }

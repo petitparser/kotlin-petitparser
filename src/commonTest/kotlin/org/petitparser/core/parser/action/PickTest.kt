@@ -81,6 +81,7 @@ internal class PickTest {
     val p3 = any().star().pick(1)
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
+    assertFalse(p1.isEqualTo(any()))
   }
 
   @Test

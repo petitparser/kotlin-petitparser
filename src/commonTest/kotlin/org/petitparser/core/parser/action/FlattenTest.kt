@@ -78,6 +78,7 @@ internal class FlattenTest {
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
     assertTrue(p3.isEqualTo(p4))
+    assertFalse(p1.isEqualTo(digit()))
   }
 
   @Test

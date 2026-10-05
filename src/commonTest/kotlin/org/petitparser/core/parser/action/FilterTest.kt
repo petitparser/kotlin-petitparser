@@ -8,6 +8,7 @@ import org.petitparser.core.parser.consumer.digit
 import org.petitparser.core.parser.expectParserInvariants
 import org.petitparser.core.parser.repeater.plus
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -114,5 +115,12 @@ internal class FilterTest {
     assertTrue(pMsg1.isEqualTo(pMsg2))
     assertFalse(pMsg1.isEqualTo(pMsg3))
     assertFalse(p1.isEqualTo(pMsg1))
+    assertFalse(p1.isEqualTo(any()))
+  }
+
+  @Test
+  fun test_failure_factory_property() {
+    val parser = any().filter { true } as FilterParser<Char>
+    assertEquals(parser.factory, parser.failureFactory)
   }
 }

@@ -270,4 +270,23 @@ class IndentTest {
     assertTrue(definition.indent.stack.isEmpty())
     assertEquals("", definition.indent.current)
   }
+
+  @Test
+  fun test_increase_and_decrease_edge_cases() {
+    val indent = Indent()
+    assertFalse(indent.decrease.accept(""))
+
+    indent.current = "  "
+    assertFalse(indent.increase.accept(" "))
+    assertFalse(indent.increase.accept("  "))
+    assertFalse(indent.increase.accept("\t\t\t"))
+
+    assertTrue(indent.increase.accept("   "))
+    assertEquals("   ", indent.current)
+    assertEquals(listOf("  "), indent.stack)
+
+    assertTrue(indent.decrease.accept(""))
+    assertEquals("  ", indent.current)
+    assertTrue(indent.stack.isEmpty())
+  }
 }

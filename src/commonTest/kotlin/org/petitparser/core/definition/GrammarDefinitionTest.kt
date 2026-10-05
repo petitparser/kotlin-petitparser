@@ -28,4 +28,23 @@ class GrammarDefinitionTest {
       empty.start()
     }
   }
+
+  private class ParserDelegateGrammar : GrammarDefinition<Char>() {
+    val direct: Parser<Char> by char('a')
+    val alreadyLabeled: Parser<Char> by org.petitparser.core.parser.misc.LabeledParser(char('b'), "custom")
+    val withRule: Parser<Char> by rule { char('c') }
+    override fun start(): Parser<Char> = direct
+  }
+
+  @Test
+  fun test_parser_delegates() {
+    val grammar = ParserDelegateGrammar()
+    assertEquals(setOf("direct", "alreadyLabeled", "withRule"), grammar.productionNames)
+    val parser = grammar.build()
+    assertSuccess(parser, "a", 'a')
+    val bParser = grammar.buildFrom<Char>("alreadyLabeled")
+    assertSuccess(bParser, "b", 'b')
+    val cParser = grammar.buildFrom<Char>("withRule")
+    assertSuccess(cParser, "c", 'c')
+  }
 }

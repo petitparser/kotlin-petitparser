@@ -83,6 +83,7 @@ internal class PermuteTest {
     val p3 = any().star().permute(1, 0)
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
+    assertFalse(p1.isEqualTo(any()))
   }
 
   @Test

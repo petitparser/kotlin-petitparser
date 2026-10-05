@@ -551,4 +551,51 @@ class CharPredicateTest {
     assertTrue(rangesIter.test('c'))
     assertFalse(rangesIter.test('A'))
   }
+
+  @Test
+  fun test_remaining_predicate_branches() {
+    val intRange = CharPredicate.range(65, 90)
+    assertTrue(intRange.test('A'))
+    assertTrue(intRange.test(65))
+    assertFalse(intRange.test('a'))
+
+    val rangesPred = RangesCharPredicate(intArrayOf(65, 90))
+    assertTrue(rangesPred.test('A'))
+    assertFalse(rangesPred.test('a'))
+
+    assertTrue(LetterCharPredicate.test(65))
+    assertTrue(LetterCharPredicate.test(97))
+    assertFalse(LetterCharPredicate.test(48))
+    assertEquals(LetterCharPredicate, LetterCharPredicate)
+    assertEquals(LetterCharPredicate.hashCode(), LetterCharPredicate.hashCode())
+
+    assertTrue(WordCharPredicate.test(65))
+    assertTrue(WordCharPredicate.test(97))
+    assertTrue(WordCharPredicate.test(48))
+    assertTrue(WordCharPredicate.test(95))
+    assertFalse(WordCharPredicate.test(32))
+    assertEquals(WordCharPredicate, WordCharPredicate)
+    assertEquals(WordCharPredicate.hashCode(), WordCharPredicate.hashCode())
+
+    assertTrue(LowercaseCharPredicate.test(97))
+    assertFalse(LowercaseCharPredicate.test(65))
+    assertEquals(LowercaseCharPredicate, LowercaseCharPredicate)
+    assertEquals(LowercaseCharPredicate.hashCode(), LowercaseCharPredicate.hashCode())
+
+    assertTrue(UppercaseCharPredicate.test(65))
+    assertFalse(UppercaseCharPredicate.test(97))
+    assertEquals(UppercaseCharPredicate, UppercaseCharPredicate)
+    assertEquals(UppercaseCharPredicate.hashCode(), UppercaseCharPredicate.hashCode())
+
+    assertEquals(WhitespaceCharPredicate.hashCode(), WhitespaceCharPredicate.hashCode())
+
+    val codePoints = "\uD83D\uDE00A".toCodePoints(unicode = true)
+    assertEquals(listOf(0x1F600, 65), codePoints)
+
+    val defaultCodePoints = "hello".toCodePoints()
+    assertEquals(listOf('h'.code, 'e'.code, 'l'.code, 'l'.code, 'o'.code), defaultCodePoints)
+
+    val expandedFull = expandCase(listOf(RangeCharPredicate(0, 0xffff)), unicode = false)
+    assertEquals(1, expandedFull.size)
+  }
 }

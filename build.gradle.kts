@@ -1,6 +1,7 @@
 plugins {
   kotlin("multiplatform") version "2.4.20"
   id("maven-publish")
+  jacoco
 }
 
 group = "com.github.petitparser"
@@ -25,17 +26,24 @@ kotlin {
   mingwX64()
 
   sourceSets {
-    val commonMain by getting
-    val commonTest by getting {
-      dependencies {
-        implementation(kotlin("test"))
-      }
+    commonTest.dependencies {
+      implementation(kotlin("test"))
     }
-    val jvmMain by getting
-    val jvmTest by getting
-    val jsMain by getting
-    val jsTest by getting
-    val nativeMain by getting
-    val nativeTest by getting
   }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+  dependsOn("jvmTest")
+  reports {
+    xml.required.set(true)
+    html.required.set(true)
+    csv.required.set(true)
+  }
+  classDirectories.setFrom(layout.buildDirectory.dir("classes/kotlin/jvm/main"))
+  sourceDirectories.setFrom(files("src/commonMain/kotlin"))
+  executionData.setFrom(layout.buildDirectory.file("jacoco/jvmTest.exec"))
+}
+
+tasks.named("check") {
+  dependsOn("jacocoTestReport")
 }

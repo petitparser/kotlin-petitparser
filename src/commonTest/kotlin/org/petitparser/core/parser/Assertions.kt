@@ -2,6 +2,7 @@ package org.petitparser.core.parser
 
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.ParseError
+import org.petitparser.core.context.failure
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -73,6 +74,8 @@ fun <T> expectParserInvariants(parser: Parser<T>) {
   assertTrue(copy.isEqualTo(parser), "copy should be equal to $parser")
   assertFalse(parser.isEqualTo(null), "$parser should not be equal to null")
   assertFalse(parser.isEqualTo(Any()), "$parser should not be equal to arbitrary object")
+  val dummyParser: Parser<Unit> = Parser { it.failure("dummy") }
+  parser.hasEqualProperties(dummyParser)
 
   assertEquals(parser.children.size, copy.children.size)
   for (i in copy.children.indices) {

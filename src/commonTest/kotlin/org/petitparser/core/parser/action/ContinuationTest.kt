@@ -81,5 +81,6 @@ internal class ContinuationTest {
     val p3 = digit().callCC(handler2)
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
+    assertFalse(p1.isEqualTo(digit()))
   }
 }

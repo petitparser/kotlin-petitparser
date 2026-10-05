@@ -118,4 +118,12 @@ class RepeatTest {
     }
     assertEquals("$emptyParser must always consume", error4.message)
   }
+
+  @Test
+  fun test_constructor_default_max() {
+    val p = PossessiveRepeatingParser(digit(), 2)
+    assertEquals(2, p.min)
+    assertEquals(2, p.max)
+    assertSuccess(p, "12", listOf('1', '2'))
+  }
 }

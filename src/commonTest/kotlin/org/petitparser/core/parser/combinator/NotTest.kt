@@ -28,4 +28,14 @@ class NotTest {
     assertSuccess(parser, " ", ' ')
     assertFailure(parser, "", "input expected", 0)
   }
+
+  @Test
+  fun test_equality() {
+    val p1 = digit().not("msg1")
+    val p2 = digit().not("msg1")
+    val p3 = digit().not("msg2")
+    kotlin.test.assertTrue(p1.isEqualTo(p2))
+    kotlin.test.assertFalse(p1.isEqualTo(p3))
+    kotlin.test.assertFalse(p1.isEqualTo(digit()))
+  }
 }

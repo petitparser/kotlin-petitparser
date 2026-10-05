@@ -22,7 +22,7 @@ class Indent(
   internal val stack = mutableListOf<String>()
   internal var current: String = ""
 
-  private val increase: Parser<String> by lazy {
+  internal val increase: Parser<String> by lazy {
     parser
       .plusString(message = message)
       .filter(message = message) { value ->
@@ -44,7 +44,7 @@ class Indent(
       .filter(message = message) { value -> value == current }
   }
 
-  private val decrease: Parser<Unit> by lazy {
+  internal val decrease: Parser<Unit> by lazy {
     epsilon(Unit).filter(message = message) {
       if (stack.isNotEmpty()) {
         current = stack.removeLast()

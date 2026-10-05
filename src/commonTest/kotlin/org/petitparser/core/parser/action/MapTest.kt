@@ -60,5 +60,6 @@ internal class MapTest {
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
     assertFalse(p1.isEqualTo(p4))
+    assertFalse(p1.isEqualTo(digit()))
   }
 }

@@ -1,5 +1,6 @@
 package org.petitparser.core.parser.repeater
 
+import org.petitparser.core.context.failure
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.expectParserInvariants
 import kotlin.test.Test
@@ -65,5 +66,22 @@ class RepeatingTest {
   fun test_limited_repeating_parser_invariants() {
     val parser = char('a').repeatGreedy(char('b'), 1, 3)
     expectParserInvariants(parser)
+  }
+
+  private class DummyLimitedRepeatingParser(
+    delegate: org.petitparser.core.parser.Parser<Char>,
+    limit: org.petitparser.core.parser.Parser<*>,
+    min: Int,
+  ) : LimitedRepeatingParser<Char>(delegate, limit, min) {
+    override fun parseOn(input: org.petitparser.core.context.Input) = input.failure("dummy")
+    override fun copy() = this
+  }
+
+  @Test
+  fun test_limited_repeating_constructor_default_max_and_equality() {
+    val p = DummyLimitedRepeatingParser(char('a'), char('b'), 2)
+    assertEquals(2, p.min)
+    assertEquals(2, p.max)
+    assertFalse(p.hasEqualProperties(char('a')))
   }
 }

@@ -50,5 +50,3 @@ fun interface Parser<out R> {
     return true
   }
 }
-
-

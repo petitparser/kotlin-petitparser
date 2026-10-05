@@ -32,4 +32,11 @@ class ProfileTest {
     profiled.parse("a1")
     assertTrue(frames.all { it.parser.children.isEmpty() })
   }
+
+  @Test
+  fun test_profile_default_output() {
+    val profiled = profile(char('a'))
+    val result = profiled.parse("a")
+    assertTrue(result is Output.Success)
+  }
 }

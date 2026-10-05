@@ -16,6 +16,7 @@ import org.petitparser.core.parser.repeater.plus
 import org.petitparser.core.parser.repeater.star
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
@@ -524,5 +525,82 @@ class AnalyzerTest {
     val self = createSelfReference()
     val a5 = Analyzer(self)
     assertEquals(listOf(self), a5.cycleSet(self))
+  }
+
+  @Test
+  fun test_parser_path_edge_cases() {
+    val p = char('a')
+    val path = ParserPath(listOf(p), emptyList())
+    assertTrue(path.toString().contains("ParserPath"))
+
+    assertFailsWith<IllegalArgumentException> {
+      ParserPath(emptyList(), emptyList())
+    }
+    assertFailsWith<IllegalArgumentException> {
+      ParserPath(listOf(p), listOf(0))
+    }
+    assertFailsWith<IllegalArgumentException> {
+      val s = seq(char('a'), char('b'))
+      ParserPath(listOf(s, char('c')), listOf(0))
+    }
+  }
+
+  @Test
+  fun test_first_set_all_nullable() {
+    val s = seq(char('a').optional(), char('b').optional())
+    val analyzer = Analyzer(s)
+    val firsts = analyzer.firstSet(s)
+    assertTrue(firsts.contains(Analyzer.sentinel))
+  }
+
+  @Test
+  fun test_analyzer_unregistered_parser_failures() {
+    val root = char('a')
+    val foreign = char('b')
+    val analyzer = Analyzer(root)
+
+    val e1 = assertFailsWith<IllegalArgumentException> {
+      analyzer.allChildren(foreign)
+    }
+    assertEquals("parser is not part of the analyzer", e1.message)
+
+    val e2 = assertFailsWith<IllegalArgumentException> {
+      analyzer.findPathTo(root, foreign)
+    }
+    assertEquals("target is not part of the analyzer", e2.message)
+
+    val e3 = assertFailsWith<IllegalArgumentException> {
+      analyzer.findAllPaths(foreign) { true }.toList()
+    }
+    assertEquals("source is not part of the analyzer", e3.message)
+
+    val e4 = assertFailsWith<IllegalArgumentException> {
+      analyzer.findAllPathsTo(root, foreign).toList()
+    }
+    assertEquals("target is not part of the analyzer", e4.message)
+  }
+
+  @Test
+  fun test_is_nullable_position() {
+    assertTrue(isNullable(org.petitparser.core.parser.misc.position()))
+  }
+
+  @Test
+  fun test_is_sequence_edge_cases() {
+    val singleSeq = org.petitparser.core.parser.combinator.SequenceParser<Char>(listOf(char('a')))
+    assertFalse(isSequence(singleSeq))
+    val multiSeq = org.petitparser.core.parser.combinator.SequenceParser<Char>(listOf(char('a'), char('b')))
+    assertTrue(isSequence(multiSeq))
+  }
+
+  @Test
+  fun test_is_parser_iterable_equal() {
+    val a = listOf(char('a'))
+    val b = listOf(char('b'))
+    val ab = listOf(char('a'), char('b'))
+    assertTrue(isParserIterableEqual(a, listOf(char('a'))))
+    assertFalse(isParserIterableEqual(a, b))
+    assertFalse(isParserIterableEqual(ab, a))
+    assertFalse(isParserIterableEqual(a, ab))
   }
 }

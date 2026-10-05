@@ -78,4 +78,18 @@ class SequenceListTest {
     assertSuccess(parser, "", emptyList())
     assertSuccess(parser, "abc", emptyList(), 0)
   }
+
+  @Test
+  fun test_sequence_iterable_and_vararg_constructor() {
+    val fromIterable = seqOf(listOf(char('a'), char('b')))
+    assertSuccess(fromIterable, "ab", listOf('a', 'b'))
+
+    val fromVararg = SequenceParser(char('a'), char('b'))
+    assertSuccess(fromVararg, "ab", listOf('a', 'b'))
+
+    // right operand is also a SequenceParser
+    val combined = (char('a') seq char('b')) seq (char('c') seq char('d'))
+    assertEquals(4, combined.children.size)
+    assertSuccess(combined, "abcd", listOf('a', 'b', 'c', 'd'))
+  }
 }

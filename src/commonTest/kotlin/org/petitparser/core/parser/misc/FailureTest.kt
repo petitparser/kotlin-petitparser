@@ -83,4 +83,10 @@ internal class FailureTest {
     assertFalse(p1.hasEqualProperties(p3))
     assertFalse(p1.hasEqualProperties(any()))
   }
+
+  @Test
+  fun test_constructor_default() {
+    val p = FailureParser<String>()
+    assertEquals("unable to parse", p.message)
+  }
 }

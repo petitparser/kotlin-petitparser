@@ -619,5 +619,16 @@ class CharTest {
     assertFalse(u1.isEqualTo(pChar))
     assertEquals(-1, u1.fastParseOn("\uD83D\uDE00", -1))
   }
+
+  @Test
+  fun test_unicode_char_code_point() {
+    val p1 = unicodeChar(0x1F600)
+    assertSuccess(p1, "\uD83D\uDE00", "\uD83D\uDE00")
+    assertFailure(p1, "a", "'\uD83D\uDE00' expected")
+
+    val p2 = unicodeChar(0x41, "letter A expected")
+    assertSuccess(p2, "A", "A")
+    assertFailure(p2, "B", "letter A expected")
+  }
 }
 

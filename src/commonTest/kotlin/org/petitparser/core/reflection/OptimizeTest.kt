@@ -203,4 +203,30 @@ class OptimizeTest {
     )
     assertNotSame(result.children.first(), result.children.last())
   }
+
+  @Test
+  fun test_optimize_callback_with_default_rules() {
+    var count = 0
+    val parser = char('a').plus().flatten()
+    val optimized = optimize(parser, callback = { _, _ -> count++ })
+    assertTrue(count > 0)
+    assertTrue(optimized is RepeatingCharacterParser)
+  }
+
+  @Test
+  fun test_character_repeater_non_matching() {
+    val rule = CharacterRepeater()
+    val nonRepeater = char('a').flatten()
+    rule.run(Analyzer(nonRepeater), nonRepeater) { _, _ -> fail("No replacement expected") }
+
+    val nonCharRepeater = (char('a') seq char('b')).plus().flatten()
+    rule.run(Analyzer(nonCharRepeater), nonCharRepeater) { _, _ -> fail("No replacement expected") }
+  }
+
+  @Test
+  fun test_remove_delegate_non_settable_non_labeled() {
+    val rule = RemoveDelegate()
+    val tokenParser = char('a').token()
+    rule.run(Analyzer(tokenParser), tokenParser) { _, _ -> fail("No replacement expected") }
+  }
 }

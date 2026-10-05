@@ -51,6 +51,15 @@ class ParserTest {
     assertTrue(p1.isEqualTo(p1))
   }
 
+  @Test
+  fun test_default_isEqualTo_with_seen() {
+    val p1 = Parser { it.success(1) }
+    val seen = mutableSetOf<Parser<*>>()
+    assertTrue(p1.isEqualTo(p1, seen))
+    // Call again with seen already containing p1 to test !seen.add(this)
+    assertTrue(p1.isEqualTo(p1, seen))
+  }
+
   private class CyclicParser(var other: Parser<*>? = null) : Parser<String> {
     override fun parseOn(input: org.petitparser.core.context.Input) = input.success("cycle")
     override val children: List<Parser<*>>
