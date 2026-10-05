@@ -85,6 +85,36 @@ class ChoiceTest {
   }
 
   @Test
+  fun test_choice_single() {
+    val parser = or(char('a'))
+    expectParserInvariants(parser)
+    assertEquals(1, parser.children.size)
+    assertSuccess(parser, "a", 'a')
+    assertFailure(parser, "b", "'a' expected", 0)
+    assertFailure(parser, "", "'a' expected", 0)
+  }
+
+  @Test
+  fun test_choice_construction() {
+    val defaultTwo = char('a') or char('b')
+    assertEquals(failureA0, defaultTwo.failureJoiner(failureA1, failureA0))
+    val customTwo = char('a').or(char('b'), failureJoiner = ::selectFarthest)
+    assertEquals(failureA1, customTwo.failureJoiner(failureA1, failureA0))
+    val customCopy = customTwo.copy()
+    assertEquals(failureA1, customCopy.failureJoiner(failureA1, failureA0))
+    val customThree = char('a').or(char('b'), failureJoiner = ::selectFarthest).or(char('c'))
+    assertEquals(failureA1, customThree.failureJoiner(failureA1, failureA0))
+  }
+
+  @Test
+  fun test_choice_nested_preserves_joiner() {
+    val right = char('b').or(char('c'), failureJoiner = ::selectFirst)
+    val combined = char('a') or right
+    assertEquals(2, combined.children.size)
+    assertEquals(right, combined.children[1])
+  }
+
+  @Test
   fun test_choice_selectFirst() {
     val parser = or(choiceParsers, failureJoiner = ::selectFirst)
     expectParserInvariants(parser)

@@ -17,14 +17,13 @@ fun <R : Any> Parser<R>.optionalWith(otherwise: R): OptionalParser<R> = optional
 /**
  * A parser that optionally parses its [delegate], or answers [otherwise].
  */
-@Suppress("UNCHECKED_CAST")
 class OptionalParser<R>(
-  delegate: Parser<*>,
+  delegate: Parser<R>,
   val otherwise: R,
-) : DelegateParser<Any?, R>(delegate) {
+) : DelegateParser<R, R>(delegate) {
   override fun parseOn(input: Input): Output<R> {
     return when (val result = delegate.parseOn(input)) {
-      is Output.Success -> result as Output<R>
+      is Output.Success -> result
       is Output.Failure -> input.success(otherwise)
     }
   }

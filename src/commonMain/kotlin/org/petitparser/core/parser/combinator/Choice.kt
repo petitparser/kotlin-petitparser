@@ -36,9 +36,8 @@ fun <R> Parser<R>.or(
   failureJoiner: FailureJoiner?,
 ): ChoiceParser<R> {
   val left = if (this is ChoiceParser<*>) children as List<Parser<R>> else listOf(this)
-  val right = if (other is ChoiceParser<*>) other.children as List<Parser<R>> else listOf(other)
   val joiner = failureJoiner ?: if (this is ChoiceParser<*>) this.failureJoiner else ::selectLast
-  return ChoiceParser(left + right, joiner)
+  return ChoiceParser(left + other, joiner)
 }
 
 /** A parser that uses the first parser that succeeds. */

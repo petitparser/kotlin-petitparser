@@ -61,6 +61,16 @@ class SequenceListTest {
   }
 
   @Test
+  fun test_sequence_single() {
+    val parser = seqOf(char('a'))
+    expectParserInvariants(parser)
+    assertEquals(1, parser.children.size)
+    assertSuccess(parser, "a", listOf('a'))
+    assertFailure(parser, "", "'a' expected", 0)
+    assertFailure(parser, "b", "'a' expected", 0)
+  }
+
+  @Test
   fun test_sequence_empty() {
     val parser = seqOf<Char>()
     expectParserInvariants(parser)
