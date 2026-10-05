@@ -436,4 +436,119 @@ class CharPredicateTest {
       CharPredicate.pattern("c-a")
     }
   }
+
+  @Test
+  fun test_category_predicate() {
+    val pred = CharPredicate.category(CharCategory.LOWERCASE_LETTER)
+    assertTrue(pred.test('a'))
+    assertTrue(pred.test('a'.code))
+    assertFalse(pred.test('A'))
+    assertFalse(pred.test('A'.code))
+    assertFalse(pred.test(0x10000))
+
+    val same = CategoryCharPredicate(CharCategory.LOWERCASE_LETTER)
+    val other = CategoryCharPredicate(CharCategory.UPPERCASE_LETTER)
+    assertEquals(pred, same)
+    assertNotEquals(pred, other)
+    assertNotEquals<Any?>(pred, null)
+    assertNotEquals<Any?>(pred, "category")
+    assertEquals(pred.hashCode(), same.hashCode())
+    assertEquals("CategoryCharPredicate(LOWERCASE_LETTER)", pred.toString())
+  }
+
+  @Test
+  fun test_letter_or_digit_predicate() {
+    val pred = CharPredicate.letterOrDigit()
+    assertTrue(pred.test('a'))
+    assertTrue(pred.test('A'))
+    assertTrue(pred.test('1'))
+    assertFalse(pred.test('-'))
+    assertTrue(pred.test('a'.code))
+    assertFalse(pred.test(0x10000))
+
+    assertEquals(pred, LetterOrDigitCharPredicate)
+    assertNotEquals<Any?>(pred, null)
+    assertNotEquals<Any?>(pred, "letterOrDigit")
+    assertEquals(pred.hashCode(), LetterOrDigitCharPredicate.hashCode())
+    assertEquals("LetterOrDigitCharPredicate", pred.toString())
+  }
+
+  @Test
+  fun test_lookup_bounds_and_equality() {
+    val l1 = LookupCharPredicate(10, 20, intArrayOf(1))
+    val l2 = LookupCharPredicate(10, 20, intArrayOf(1))
+    val lDiffStart = LookupCharPredicate(11, 20, intArrayOf(1))
+    val lDiffStop = LookupCharPredicate(10, 21, intArrayOf(1))
+    val lDiffBits = LookupCharPredicate(10, 20, intArrayOf(2))
+
+    assertEquals(l1, l2)
+    assertNotEquals(l1, lDiffStart)
+    assertNotEquals(l1, lDiffStop)
+    assertNotEquals(l1, lDiffBits)
+    assertNotEquals<Any?>(l1, null)
+    assertNotEquals<Any?>(l1, "lookup")
+
+    assertFailsWith<IllegalArgumentException> {
+      LookupCharPredicate(20, 10, intArrayOf(1))
+    }
+    assertFailsWith<IllegalArgumentException> {
+      LookupCharPredicate(0, 100, intArrayOf(1))
+    }
+  }
+
+  @Test
+  fun test_ranges_equality() {
+    val r1 = RangesCharPredicate(intArrayOf(10, 20))
+    val r2 = RangesCharPredicate(intArrayOf(10, 20))
+    val r3 = RangesCharPredicate(intArrayOf(10, 25))
+
+    assertEquals(r1, r2)
+    assertNotEquals(r1, r3)
+    assertNotEquals<Any?>(r1, null)
+    assertNotEquals<Any?>(r1, "ranges")
+  }
+
+  @Test
+  fun test_range_equality_and_bounds() {
+    val r1 = RangeCharPredicate(10, 20)
+    val r2 = RangeCharPredicate(10, 20)
+    val rDiffStart = RangeCharPredicate(11, 20)
+    val rDiffStop = RangeCharPredicate(10, 21)
+
+    assertEquals(r1, r2)
+    assertNotEquals(r1, rDiffStart)
+    assertNotEquals(r1, rDiffStop)
+    assertNotEquals<Any?>(r1, null)
+    assertNotEquals<Any?>(r1, "range")
+  }
+
+  @Test
+  fun test_codePointToString_bounds() {
+    assertEquals("a", codePointToString('a'.code))
+    assertEquals("\uD83D\uDE00", codePointToString(0x1F600))
+
+    assertFailsWith<IllegalArgumentException> {
+      codePointToString(-1)
+    }
+    assertFailsWith<IllegalArgumentException> {
+      codePointToString(0x110000)
+    }
+  }
+
+  @Test
+  fun test_iterable_overloads() {
+    val anyOfList = CharPredicate.anyOf(listOf('x', 'y', 'z'))
+    assertTrue(anyOfList.test('x'))
+    assertTrue(anyOfList.test('z'))
+    assertFalse(anyOfList.test('a'))
+
+    val noneOfList = CharPredicate.noneOf(listOf('x', 'y', 'z'))
+    assertFalse(noneOfList.test('x'))
+    assertTrue(noneOfList.test('a'))
+
+    val rangesIter = CharPredicate.ranges(setOf('0'..'9', 'a'..'z'))
+    assertTrue(rangesIter.test('5'))
+    assertTrue(rangesIter.test('c'))
+    assertFalse(rangesIter.test('A'))
+  }
 }

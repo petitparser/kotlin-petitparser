@@ -42,6 +42,12 @@ fun interface CharPredicate {
 
     /** A character predicate that matches any of the provided [chars]. */
     fun anyOf(
+      chars: Iterable<Char>,
+      ignoreCase: Boolean = false,
+    ): CharPredicate = anyOf(chars.joinToString(""), ignoreCase = ignoreCase)
+
+    /** A character predicate that matches any of the provided [chars]. */
+    fun anyOf(
       chars: String,
       ignoreCase: Boolean = false,
       unicode: Boolean = false,
@@ -51,6 +57,12 @@ fun interface CharPredicate {
       val expanded = if (ignoreCase) expandCase(ranges, unicode) else ranges
       return ranges(expanded, unicode = unicode)
     }
+
+    /** A character predicate that matches none of the provided [chars]. */
+    fun noneOf(
+      chars: Iterable<Char>,
+      ignoreCase: Boolean = false,
+    ): CharPredicate = noneOf(chars.joinToString(""), ignoreCase = ignoreCase)
 
     /** A character predicate that matches none of the provided [chars]. */
     fun noneOf(
@@ -65,6 +77,9 @@ fun interface CharPredicate {
     /** A character predicate that matches any letter character `'a'..'z'` or `'A'..'Z'`. */
     fun letter(): CharPredicate = LetterCharPredicate
 
+    /** A character predicate that matches any letter or digit character. */
+    fun letterOrDigit(): CharPredicate = LetterOrDigitCharPredicate
+
     /** A character predicate that matches any word character `[a-zA-Z0-9_]`. */
     fun word(): CharPredicate = WordCharPredicate
 
@@ -77,8 +92,11 @@ fun interface CharPredicate {
     /** A character predicate that matches any whitespace character. */
     fun whitespace(): CharPredicate = WhitespaceCharPredicate
 
+    /** A character predicate that matches any character of the provided Unicode [category]. */
+    fun category(category: CharCategory): CharPredicate = CategoryCharPredicate(category)
+
     /** A character predicate that matches any of the provided [ranges]. */
-    fun ranges(ranges: List<CharRange>): CharPredicate =
+    fun ranges(ranges: Iterable<CharRange>): CharPredicate =
       ranges(ranges.map { RangeCharPredicate(it) }, unicode = false)
 
     /** A character predicate that optimizes a list of range predicates. */
@@ -92,7 +110,7 @@ fun interface CharPredicate {
           mergedRanges.add(thisRange)
         } else {
           val lastRange = mergedRanges.last()
-          if (lastRange.stop + 1 >= thisRange.start) {
+          if (lastRange.stop == Int.MAX_VALUE || lastRange.stop + 1 >= thisRange.start) {
             val characterRange = RangeCharPredicate(
               lastRange.start,
               maxOf(lastRange.stop, thisRange.stop),
@@ -189,6 +207,11 @@ class RangeCharPredicate(val start: Int, val stop: Int) : CharPredicate {
 
 /** Predicate performing O(1) bitset lookup on compact character code spans. */
 class LookupCharPredicate(val start: Int, val stop: Int, val bits: IntArray) : CharPredicate {
+  init {
+    require(start <= stop) { "Invalid range: $start-$stop" }
+    require(bits.size >= ((stop - start + 32) shr 5)) { "Insufficient bitset size for range $start-$stop" }
+  }
+
   override fun test(char: Char): Boolean = test(char.code)
   override fun test(code: Int): Boolean =
     code in start..stop && ((bits[(code - start) shr 5] and (1 shl ((code - start) and 31))) != 0)
@@ -292,6 +315,24 @@ object LetterCharPredicate : CharPredicate {
   override fun toString(): String = "LetterCharPredicate"
 }
 
+/** Predicate matching letter or digit characters. */
+object LetterOrDigitCharPredicate : CharPredicate {
+  override fun test(char: Char): Boolean = char.isLetterOrDigit()
+  override fun test(code: Int): Boolean = if (code in 0..0xffff) code.toChar().isLetterOrDigit() else false
+  override fun equals(other: Any?): Boolean = other is LetterOrDigitCharPredicate
+  override fun hashCode(): Int = this::class.hashCode()
+  override fun toString(): String = "LetterOrDigitCharPredicate"
+}
+
+/** Predicate matching characters of a specified [category]. */
+class CategoryCharPredicate(val category: CharCategory) : CharPredicate {
+  override fun test(char: Char): Boolean = category.contains(char)
+  override fun test(code: Int): Boolean = if (code in 0..0xffff) category.contains(code.toChar()) else false
+  override fun equals(other: Any?): Boolean = other is CategoryCharPredicate && category == other.category
+  override fun hashCode(): Int = category.hashCode()
+  override fun toString(): String = "CategoryCharPredicate($category)"
+}
+
 /** Predicate matching ASCII word character `[a-zA-Z0-9_]`. */
 object WordCharPredicate : CharPredicate {
   override fun test(char: Char): Boolean =
@@ -371,14 +412,16 @@ internal fun String.toCodePoints(unicode: Boolean = false): List<Int> {
   return result
 }
 
-internal fun codePointToString(code: Int): String =
-  if (code in 0..0xffff) {
+internal fun codePointToString(code: Int): String {
+  require(code in 0..0x10ffff) { "Invalid code point: $code" }
+  return if (code in 0..0xffff) {
     code.toChar().toString()
   } else {
     val high = (0xD800 + ((code - 0x10000) shr 10)).toChar()
     val low = (0xDC00 + ((code - 0x10000) and 0x3FF)).toChar()
     "$high$low"
   }
+}
 
 internal fun expandCase(
   ranges: Iterable<RangeCharPredicate>,

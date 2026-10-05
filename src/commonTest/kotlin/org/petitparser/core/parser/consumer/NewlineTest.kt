@@ -44,9 +44,11 @@ class NewlineTest {
 
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
+    assertFalse(p1.isEqualTo(string("abc")))
 
     val copy = p1.copy()
     assertTrue(p1.isEqualTo(copy))
     assertEquals(p1.message, copy.message)
+    assertEquals(-1, p1.fastParseOn("\n", -1))
   }
 }

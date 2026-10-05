@@ -36,9 +36,9 @@ class StringParser(
     val position = input.position
     val stop = position + literal.length
     val buffer = input.buffer
-    if (stop <= buffer.length) {
+    if (position >= 0 && stop <= buffer.length) {
       if (buffer.regionMatches(position, literal, 0, literal.length, ignoreCase = ignoreCase)) {
-        return input.success(buffer.substring(position, stop), stop)
+        return input.success(if (ignoreCase) buffer.substring(position, stop) else literal, stop)
       }
     }
     return input.failure(message)
@@ -46,7 +46,8 @@ class StringParser(
 
   override fun fastParseOn(buffer: String, position: Int): Int {
     val stop = position + literal.length
-    return if (stop <= buffer.length &&
+    return if (position >= 0 &&
+      stop <= buffer.length &&
       buffer.regionMatches(position, literal, 0, literal.length, ignoreCase = ignoreCase)
     ) {
       stop
@@ -74,9 +75,11 @@ class PredicateStringParser(
   val message: String,
 ) : Parser<String> {
   override fun parseOn(input: Input): Output<String> {
-    val stop = input.position + length
-    if (stop <= input.buffer.length) {
-      val str = input.buffer.substring(input.position, stop)
+    val position = input.position
+    val stop = position + length
+    val buffer = input.buffer
+    if (position >= 0 && stop <= buffer.length) {
+      val str = buffer.substring(position, stop)
       if (predicate(str)) {
         return input.success(str, stop)
       }
@@ -86,7 +89,7 @@ class PredicateStringParser(
 
   override fun fastParseOn(buffer: String, position: Int): Int {
     val stop = position + length
-    return if (stop <= buffer.length && predicate(buffer.substring(position, stop))) {
+    return if (position >= 0 && stop <= buffer.length && predicate(buffer.substring(position, stop))) {
       stop
     } else {
       -1

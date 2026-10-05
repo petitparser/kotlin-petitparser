@@ -16,6 +16,14 @@ fun anyUnicode(message: String = "input expected"): UnicodeCharacterParser =
 
 /** Returns a parser that accepts any of the provided [chars]. */
 fun anyOf(
+  chars: Iterable<Char>,
+  message: String = "any of [${chars.joinToString("")}] expected",
+  ignoreCase: Boolean = false,
+): CharacterParser =
+  anyOf(chars.joinToString(""), message, ignoreCase)
+
+/** Returns a parser that accepts any of the provided [chars]. */
+fun anyOf(
   chars: String,
   message: String = "any of [$chars] expected",
   ignoreCase: Boolean = false,
@@ -32,7 +40,15 @@ fun anyOfUnicode(
 
 /** Returns a parser that accepts any char of the provided Unicode [category]. */
 fun category(category: CharCategory, message: String = "$category expected"): CharacterParser =
-  char(category::contains, message)
+  char(CharPredicate.category(category), message)
+
+/** Returns a parser that accepts none of the provided [chars]. */
+fun noneOf(
+  chars: Iterable<Char>,
+  message: String = "none of [${chars.joinToString("")}] expected",
+  ignoreCase: Boolean = false,
+): CharacterParser =
+  noneOf(chars.joinToString(""), message, ignoreCase)
 
 /** Returns a parser that accepts none of the provided [chars]. */
 fun noneOf(
@@ -76,7 +92,7 @@ fun letter(message: String = "letter expected"): CharacterParser =
 
 /** Returns a parser that accepts a letter or digit character. */
 fun letterOrDigit(message: String = "letter or digit expected"): CharacterParser =
-  char(Char::isLetterOrDigit, message)
+  char(CharPredicate.letterOrDigit(), message)
 
 /** Returns a parser that accepts a word character (`[a-zA-Z0-9_]`). */
 fun word(message: String = "letter or digit expected"): CharacterParser =
@@ -127,7 +143,7 @@ fun Char.toParser(message: String = "'$this' expected", ignoreCase: Boolean = fa
 
 /** Returns a parser that accepts a specified character [category]. */
 fun char(category: CharCategory, message: String = "$category expected"): CharacterParser =
-  char(category::contains, message)
+  char(CharPredicate.category(category), message)
 
 /** Returns a parser that accepts a character satisfying a [predicate]. */
 fun char(predicate: CharPredicate, message: String): CharacterParser =
@@ -148,8 +164,11 @@ fun unicodeChar(
 fun unicodeChar(
   char: String,
   message: String = "'$char' expected",
-): UnicodeCharacterParser =
-  UnicodeCharacterParser(CharPredicate.anyOf(char, unicode = true), message)
+): UnicodeCharacterParser {
+  val codePoints = char.toCodePoints(unicode = true)
+  require(codePoints.size == 1) { "'$char' is not a valid character" }
+  return UnicodeCharacterParser(CharPredicate.char(codePoints[0]), message)
+}
 
 /**
  * Parser for an individual character satisfying a [predicate].
@@ -171,7 +190,7 @@ class CharacterParser(
   }
 
   override fun fastParseOn(buffer: String, position: Int): Int =
-    if (position < buffer.length && predicate.test(buffer[position])) {
+    if (position in 0 until buffer.length && predicate.test(buffer[position])) {
       position + 1
     } else {
       -1
@@ -220,7 +239,7 @@ class UnicodeCharacterParser(
 
   override fun fastParseOn(buffer: String, position: Int): Int {
     val length = buffer.length
-    if (position < length) {
+    if (position in 0 until length) {
       val char1 = buffer[position]
       var code = char1.code
       var nextPosition = position + 1

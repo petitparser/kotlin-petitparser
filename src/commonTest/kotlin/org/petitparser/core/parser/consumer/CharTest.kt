@@ -5,7 +5,9 @@ import org.petitparser.core.parser.assertSuccess
 import org.petitparser.core.parser.expectParserInvariants
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class CharTest {
@@ -502,6 +504,120 @@ class CharTest {
     val parser2 = char(CharCategory.UPPERCASE_LETTER)
     expectParserInvariants(parser1)
     expectParserInvariants(parser2)
+    assertTrue(parser1.isEqualTo(parser2))
+    assertFalse(parser1.isEqualTo(category(CharCategory.LOWERCASE_LETTER)))
+  }
+
+  @Test
+  fun test_letterOrDigit_equality() {
+    val p1 = letterOrDigit()
+    val p2 = letterOrDigit()
+    val p3 = letterOrDigit("other message")
+
+    expectParserInvariants(p1)
+    assertTrue(p1.isEqualTo(p2))
+    assertFalse(p1.isEqualTo(p3))
+  }
+
+  @Test
+  fun test_anyOf_noneOf_iterable() {
+    val anyParser = anyOf(listOf('a', 'b', 'c'))
+    expectParserInvariants(anyParser)
+    assertSuccess(anyParser, "a", 'a')
+    assertSuccess(anyParser, "b", 'b')
+    assertFailure(anyParser, "d", "any of [abc] expected")
+
+    val noneParser = noneOf(listOf('a', 'b', 'c'))
+    expectParserInvariants(noneParser)
+    assertSuccess(noneParser, "d", 'd')
+    assertFailure(noneParser, "a", "none of [abc] expected")
+  }
+
+  @Test
+  fun test_anyOfUnicode_ignoreCase() {
+    val parser = anyOfUnicode("aB\uD83E\uDD14", ignoreCase = true)
+    expectParserInvariants(parser)
+    assertSuccess(parser, "a", "a")
+    assertSuccess(parser, "A", "A")
+    assertSuccess(parser, "b", "b")
+    assertSuccess(parser, "B", "B")
+    assertSuccess(parser, "\uD83E\uDD14", "\uD83E\uDD14")
+    assertFailure(parser, "c", "any of [aB\uD83E\uDD14] expected")
+  }
+
+  @Test
+  fun test_noneOfUnicode_ignoreCase() {
+    val parser = noneOfUnicode("aB\uD83E\uDD14", ignoreCase = true)
+    expectParserInvariants(parser)
+    assertSuccess(parser, "c", "c")
+    assertSuccess(parser, "C", "C")
+    assertFailure(parser, "a", "none of [aB\uD83E\uDD14] expected")
+    assertFailure(parser, "A", "none of [aB\uD83E\uDD14] expected")
+    assertFailure(parser, "\uD83E\uDD14", "none of [aB\uD83E\uDD14] expected")
+  }
+
+  @Test
+  fun test_patternUnicode_ignoreCase() {
+    val parser = patternUnicode("a-c\uD83E\uDD14", ignoreCase = true)
+    expectParserInvariants(parser)
+    assertSuccess(parser, "a", "a")
+    assertSuccess(parser, "A", "A")
+    assertSuccess(parser, "b", "b")
+    assertSuccess(parser, "B", "B")
+    assertSuccess(parser, "c", "c")
+    assertSuccess(parser, "C", "C")
+    assertSuccess(parser, "\uD83E\uDD14", "\uD83E\uDD14")
+    assertFailure(parser, "d", "[a-c\uD83E\uDD14] expected")
+    assertFailure(parser, "D", "[a-c\uD83E\uDD14] expected")
+  }
+
+  @Test
+  fun test_patternUnicode_range() {
+    val parser = patternUnicode("\uD83D\uDE00-\uD83D\uDE02")
+    expectParserInvariants(parser)
+    assertSuccess(parser, "\uD83D\uDE00", "\uD83D\uDE00")
+    assertSuccess(parser, "\uD83D\uDE01", "\uD83D\uDE01")
+    assertSuccess(parser, "\uD83D\uDE02", "\uD83D\uDE02")
+    assertFailure(parser, "\uD83D\uDE03", "[\uD83D\uDE00-\uD83D\uDE02] expected")
+  }
+
+  @Test
+  fun test_unicodeChar_invalid_string() {
+    assertFailsWith<IllegalArgumentException> {
+      unicodeChar("")
+    }
+    assertFailsWith<IllegalArgumentException> {
+      unicodeChar("ab")
+    }
+  }
+
+  @Test
+  fun test_range_invalid() {
+    assertFailsWith<IllegalArgumentException> {
+      range('z', 'a')
+    }
+  }
+
+  @Test
+  fun test_character_parser_equality_branches() {
+    val p1 = char('a')
+    val pDiffMessage = char('a', message = "other message")
+    val pUnicode = anyUnicode()
+
+    assertFalse(p1.isEqualTo(pDiffMessage))
+    assertFalse(p1.isEqualTo(pUnicode))
+    assertEquals(-1, p1.fastParseOn("a", -1))
+  }
+
+  @Test
+  fun test_unicode_character_parser_equality_branches() {
+    val u1 = anyUnicode()
+    val uDiffMessage = anyUnicode("other message")
+    val pChar = char('a')
+
+    assertFalse(u1.isEqualTo(uDiffMessage))
+    assertFalse(u1.isEqualTo(pChar))
+    assertEquals(-1, u1.fastParseOn("\uD83D\uDE00", -1))
   }
 }
 

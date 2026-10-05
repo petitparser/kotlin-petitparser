@@ -36,7 +36,7 @@ class NewlineParser(val message: String = "newline expected") : Parser<String> {
   }
 
   override fun fastParseOn(buffer: String, position: Int): Int {
-    if (position < buffer.length) {
+    if (position in 0 until buffer.length) {
       when (buffer[position]) {
         '\n' -> return position + 1
         '\r' -> return if (position + 1 < buffer.length && buffer[position + 1] == '\n') {
