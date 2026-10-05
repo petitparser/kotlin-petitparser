@@ -14,6 +14,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("DEPRECATION")
 class GrammarTest {
   private class RecursiveGrammar : Grammar() {
     val element: Parser<String> by digit().plus().flatten()

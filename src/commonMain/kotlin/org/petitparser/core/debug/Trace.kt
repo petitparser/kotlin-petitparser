@@ -12,7 +12,7 @@ interface TraceEvent {
   val parser: Parser<*>
   val context: Input
   val result: Output<*>?
-  val level: Int get() = if (parent != null) parent!!.level + 1 else 0
+  val level: Int get() = (parent?.level ?: -1) + 1
 }
 
 private class TraceEventImpl(

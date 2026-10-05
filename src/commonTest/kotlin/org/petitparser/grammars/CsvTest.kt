@@ -4,7 +4,14 @@ import org.petitparser.core.parser.assertSuccess
 import kotlin.test.Test
 
 internal class CsvTest {
-  private val parser = CsvGrammar().start
+  private val parser = CsvGrammar().build()
+
+  @Test
+  fun test_build_from_production() {
+    val fieldParser = CsvGrammar().buildFrom<String>("field")
+    assertSuccess(fieldParser, "hello", "hello")
+    assertSuccess(fieldParser, "\"quoted\"", "quoted")
+  }
 
   @Test
   fun test_basic_string() {

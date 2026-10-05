@@ -1,9 +1,11 @@
 package org.petitparser.grammars
 
-import org.petitparser.core.grammar.Grammar
+import org.petitparser.core.definition.GrammarDefinition
+import org.petitparser.core.definition.ref
+import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.action.map
 import org.petitparser.core.parser.combinator.div
-import org.petitparser.core.parser.combinator.seqMap
+import org.petitparser.core.parser.combinator.surroundedBy
 import org.petitparser.core.parser.consumer.char
 import org.petitparser.core.parser.consumer.newline
 import org.petitparser.core.parser.consumer.pattern
@@ -13,16 +15,24 @@ import org.petitparser.core.parser.repeater.star
 import org.petitparser.core.parser.repeater.starSeparated
 import org.petitparser.core.parser.repeater.starString
 
-class CsvGrammar : Grammar() {
-  private val fieldContent by pattern("^,\n\r").starString()
-  private val quotedFieldContent by (string("\"\"").map { _ -> '"' } / pattern("^\"")).star()
-    .map { chars -> chars.joinToString("") }
+class CsvGrammar : GrammarDefinition<List<List<String>>>() {
+  val fieldContent: Parser<String> by def { pattern("^,\n\r").starString() }
+  val quotedFieldContent: Parser<String> by def {
+    (string("\"\"").map { '"' } / pattern("^\"")).star()
+      .map { chars -> chars.joinToString("") }
+  }
 
-  private val quotedField by seqMap(char('"'), quotedFieldContent, char('"')) { _, value, _ -> value }
-  private val field by quotedField / fieldContent
+  val quotedField: Parser<String> by def {
+    ref(::quotedFieldContent).surroundedBy(char('"'))
+  }
+  val field: Parser<String> by def { ref(::quotedField) / ref(::fieldContent) }
 
-  private val record by field.starSeparated(char(',')).map { list -> list.elements }
-  private val lines by record.starSeparated(newline()).map { list -> list.elements }
+  val record: Parser<List<String>> by def {
+    ref(::field).starSeparated(char(',')).map { list -> list.elements }
+  }
+  val lines: Parser<List<List<String>>> by def {
+    ref(::record).starSeparated(newline()).map { list -> list.elements }
+  }
 
-  val start by lines.end()
+  val start: Parser<List<List<String>>> by def { ref(::lines).end() }
 }

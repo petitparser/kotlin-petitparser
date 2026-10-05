@@ -5,7 +5,15 @@ import org.petitparser.core.parser.assertSuccess
 import kotlin.test.Test
 
 internal class JsonTest {
-  private val parser = JsonGrammar().start
+  private val parser = JsonGrammar().build()
+
+  @Test
+  fun test_build_from_production() {
+    val stringParser = JsonGrammar().buildFrom<String>("stringToken")
+    assertSuccess(stringParser, "\"hello\"", "hello")
+    val numberParser = JsonGrammar().buildFrom<Double>("numberToken")
+    assertSuccess(numberParser, "123.45", 123.45)
+  }
 
   @Test
   fun test_true() {

@@ -6,6 +6,8 @@ import org.petitparser.core.definition.ResolvableParser
 import org.petitparser.core.parser.Parser
 import kotlin.reflect.KProperty
 
+@Deprecated("Use GrammarDefinition instead", ReplaceWith("GrammarDefinition<R>", "org.petitparser.core.definition.GrammarDefinition"))
+@Suppress("DEPRECATION")
 abstract class Grammar {
   private val parsers = mutableMapOf<String, Parser<*>>()
 
