@@ -33,29 +33,29 @@ fun <T> defaultFailureFactory(message: String?): FailureFactory<T> =
  * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
  * is created with a default message.
  */
-fun <T> Parser<T>.where(
+fun <T> Parser<T>.filter(
   predicate: (T) -> Boolean,
-): Parser<T> = WhereParser(this, predicate, defaultFailureFactory(null))
+): Parser<T> = FilterParser(this, predicate, defaultFailureFactory(null))
 
 /**
  * Returns a parser that evaluates the [predicate] on the successful parse result.
  * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
  * is created with [message].
  */
-fun <T> Parser<T>.where(
+fun <T> Parser<T>.filter(
   predicate: (T) -> Boolean,
   message: String?,
-): Parser<T> = WhereParser(this, predicate, defaultFailureFactory(message))
+): Parser<T> = FilterParser(this, predicate, defaultFailureFactory(message))
 
 /**
  * Returns a parser that evaluates the [predicate] on the successful parse result.
  * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
  * is created with the message computed by [message].
  */
-fun <T> Parser<T>.where(
+fun <T> Parser<T>.filter(
   predicate: (T) -> Boolean,
   message: (T) -> String,
-): Parser<T> = WhereParser(this, predicate) { input, success ->
+): Parser<T> = FilterParser(this, predicate) { input, success ->
   input.failure(message(success.value))
 }
 
@@ -64,57 +64,10 @@ fun <T> Parser<T>.where(
  * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
  * is created using [factory].
  */
-fun <T> Parser<T>.where(
-  predicate: (T) -> Boolean,
-  factory: FailureFactory<T>,
-): Parser<T> = WhereParser(this, predicate, factory)
-
-/**
- * Returns a parser that evaluates the [predicate] on the successful parse result with custom [message].
- */
-fun <T> Parser<T>.where(
-  message: String,
-  predicate: (T) -> Boolean,
-): Parser<T> = WhereParser(this, predicate, defaultFailureFactory(message))
-
-/**
- * Returns a parser that evaluates the [predicate] on the successful parse result.
- * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
- * is created with a default message.
- */
-fun <T> Parser<T>.filter(
-  predicate: (T) -> Boolean,
-): Parser<T> = where(predicate)
-
-/**
- * Returns a parser that evaluates the [predicate] on the successful parse result.
- * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
- * is created with [message].
- */
-fun <T> Parser<T>.filter(
-  predicate: (T) -> Boolean,
-  message: String?,
-): Parser<T> = where(predicate, message)
-
-/**
- * Returns a parser that evaluates the [predicate] on the successful parse result.
- * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
- * is created with the message computed by [message].
- */
-fun <T> Parser<T>.filter(
-  predicate: (T) -> Boolean,
-  message: (T) -> String,
-): Parser<T> = where(predicate, message)
-
-/**
- * Returns a parser that evaluates the [predicate] on the successful parse result.
- * If the predicate returns `true`, the parser proceeds with the result, otherwise a parse failure
- * is created using [factory].
- */
 fun <T> Parser<T>.filter(
   predicate: (T) -> Boolean,
   factory: FailureFactory<T>,
-): Parser<T> = where(predicate, factory)
+): Parser<T> = FilterParser(this, predicate, factory)
 
 /**
  * Returns a parser that evaluates the [predicate] on the successful parse result with custom [message].
@@ -122,12 +75,12 @@ fun <T> Parser<T>.filter(
 fun <T> Parser<T>.filter(
   message: String,
   predicate: (T) -> Boolean,
-): Parser<T> = where(message, predicate)
+): Parser<T> = FilterParser(this, predicate, defaultFailureFactory(message))
 
 /**
  * A parser that evaluates a predicate on the successful result of its delegate.
  */
-class WhereParser<T>(
+class FilterParser<T>(
   delegate: Parser<T>,
   val predicate: (T) -> Boolean,
   val factory: FailureFactory<T> = defaultFailureFactory(null),
@@ -143,13 +96,13 @@ class WhereParser<T>(
     return result
   }
 
-  override fun copy(): WhereParser<T> = WhereParser(delegate, predicate, factory)
+  override fun copy(): FilterParser<T> = FilterParser(delegate, predicate, factory)
 
   override fun hasEqualProperties(other: Parser<*>): Boolean =
     super.hasEqualProperties(other) &&
-      other is WhereParser<*> &&
+      other is FilterParser<*> &&
       predicate == other.predicate &&
       factory == other.factory
 }
 
-typealias FilterParser<T> = WhereParser<T>
+typealias WhereParser<T> = FilterParser<T>

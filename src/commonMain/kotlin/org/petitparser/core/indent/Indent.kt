@@ -1,7 +1,7 @@
 package org.petitparser.core.indent
 
 import org.petitparser.core.parser.Parser
-import org.petitparser.core.parser.action.where
+import org.petitparser.core.parser.action.filter
 import org.petitparser.core.parser.combinator.and
 import org.petitparser.core.parser.combinator.skip
 import org.petitparser.core.parser.combinator.toChoiceParser
@@ -27,7 +27,7 @@ class Indent(
   val increase: Parser<String> by lazy {
     parser
       .plusString(message = message)
-      .where(message = message) { value ->
+      .filter(message = message) { value ->
         if (value.startsWith(current) && value.length > current.length) {
           stack.add(current)
           current = value
@@ -43,13 +43,13 @@ class Indent(
   val same: Parser<String> by lazy {
     parser
       .starString(message = message)
-      .where(message = message) { value -> value == current }
+      .filter(message = message) { value -> value == current }
   }
 
   /** Parser that decreases the indentation by one level. */
   @Deprecated("Use 'during' instead to properly track indentation state")
   val decrease: Parser<Unit> by lazy {
-    epsilon(Unit).where(message = message) {
+    epsilon(Unit).filter(message = message) {
       if (stack.isNotEmpty()) {
         current = stack.removeLast()
         true

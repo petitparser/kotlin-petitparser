@@ -10,7 +10,7 @@ import org.petitparser.core.parser.action.MapParser
 import org.petitparser.core.parser.action.PermuteParser
 import org.petitparser.core.parser.action.PickParser
 import org.petitparser.core.parser.action.TokenParser
-import org.petitparser.core.parser.action.WhereParser
+import org.petitparser.core.parser.action.FilterParser
 import org.petitparser.core.parser.combinator.ChoiceParser
 import org.petitparser.core.parser.combinator.SettableParser
 import org.petitparser.core.parser.consumer.CharacterParser
@@ -330,7 +330,7 @@ class UnusedResultRule : LinterRule(LinterType.INFO, "Unused result") {
       parser is PermuteParser<*> ||
       parser is PickParser<*> ||
       parser is TokenParser<*> ||
-      parser is WhereParser<*>
+      parser is FilterParser<*>
 }
 
 /** All default linter rules to be run. */

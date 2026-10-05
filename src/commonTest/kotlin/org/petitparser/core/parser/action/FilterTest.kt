@@ -11,16 +11,16 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-internal class WhereTest {
+internal class FilterTest {
   @Test
   fun test_invariants() {
     val predicate: (Char) -> Boolean = { true }
-    expectParserInvariants(any().where(predicate))
+    expectParserInvariants(any().filter(predicate))
   }
 
   @Test
   fun test_default() {
-    val parser = any().where { it == '*' }
+    val parser = any().filter { it == '*' }
     assertSuccess(parser, "*", '*')
     assertFailure(parser, "", "input expected", 0)
     assertFailure(parser, "!", "unexpected '!'", 0)
@@ -28,15 +28,30 @@ internal class WhereTest {
 
   @Test
   fun test_with_message() {
-    val parser = any().where({ it == '*' }, message = "star expected")
+    val parser = any().filter({ it == '*' }, message = "star expected")
     assertSuccess(parser, "*", '*')
     assertFailure(parser, "", "input expected", 0)
     assertFailure(parser, "!", "star expected", 0)
   }
 
   @Test
+  fun test_with_message_leading() {
+    val parser = any().filter("star expected") { it == '*' }
+    assertSuccess(parser, "*", '*')
+    assertFailure(parser, "", "input expected", 0)
+    assertFailure(parser, "!", "star expected", 0)
+  }
+
+  @Test
+  fun test_with_message_callback() {
+    val parser = any().filter({ it == '*' }, message = { "char '$it' is not a star" })
+    assertSuccess(parser, "*", '*')
+    assertFailure(parser, "!", "char '!' is not a star", 0)
+  }
+
+  @Test
   fun test_with_factory() {
-    val parser = digit().plus().flatten().map(String::toInt).where(
+    val parser = digit().plus().flatten().map(String::toInt).filter(
       predicate = { it % 7 == 0 },
       factory = { input, success -> input.failure("${success.value} is not divisible by 7") },
     )
@@ -48,7 +63,7 @@ internal class WhereTest {
   }
 
   @Test
-  fun test_filter() {
+  fun test_filter_collection() {
     val parser = any().plus().filter({ it.first() == it.last() })
     assertSuccess(parser, "a", listOf('a'))
     assertSuccess(parser, "aa", listOf('a', 'a'))
@@ -60,7 +75,7 @@ internal class WhereTest {
   }
 
   @Test
-  fun test_filter_failureFactory() {
+  fun test_filter_custom_failure_factory() {
     val parser = any().plus().filter({ it.first() == it.last() }, { input, success ->
       input.failure(
         "${success.value.first()} != ${success.value.last()}",
@@ -77,59 +92,23 @@ internal class WhereTest {
   }
 
   @Test
-  fun test_filter_message() {
-    val p1 = any().filter({ it == '*' }, message = "star expected")
-    assertSuccess(p1, "*", '*')
-    assertFailure(p1, "!", "star expected", 0)
-
-    val p2 = any().filter("star expected") { it == '*' }
-    assertSuccess(p2, "*", '*')
-    assertFailure(p2, "!", "star expected", 0)
-  }
-
-  @Test
-  fun test_filter_message_callback() {
-    val p = any().filter({ it == '*' }, message = { "char '$it' is not a star" })
-    assertSuccess(p, "*", '*')
-    assertFailure(p, "!", "char '!' is not a star", 0)
-  }
-
-  @Test
-  fun test_where_message_callback() {
-    val p = any().where({ it == '*' }, message = { "char '$it' is not a star" })
-    assertSuccess(p, "*", '*')
-    assertFailure(p, "!", "char '!' is not a star", 0)
-  }
-
-  @Test
-  fun test_where_message_leading() {
-    val parser = any().where("star expected") { it == '*' }
-    assertSuccess(parser, "*", '*')
-    assertFailure(parser, "!", "star expected", 0)
-  }
-
-  @Test
-  fun test_where_factory_named() {
+  fun test_filter_factory_named() {
     val factory: FailureFactory<Char> = { input, _ -> input.failure("failed") }
-    val parser = any().where(predicate = { it == '*' }, factory = factory)
+    val parser = any().filter(predicate = { it == '*' }, factory = factory)
     assertSuccess(parser, "*", '*')
     assertFailure(parser, "!", "failed", 0)
-
-    val filterParser = any().filter(predicate = { it == '*' }, factory = factory)
-    assertSuccess(filterParser, "*", '*')
-    assertFailure(filterParser, "!", "failed", 0)
   }
 
   @Test
   fun test_equality() {
     val pred1: (Char) -> Boolean = { it == '*' }
     val pred2: (Char) -> Boolean = { it == '#' }
-    val p1 = any().where(pred1)
-    val p2 = any().where(pred1)
-    val p3 = any().where(pred2)
-    val pMsg1 = any().where(pred1, message = "star")
-    val pMsg2 = any().where(pred1, message = "star")
-    val pMsg3 = any().where(pred1, message = "hash")
+    val p1 = any().filter(pred1)
+    val p2 = any().filter(pred1)
+    val p3 = any().filter(pred2)
+    val pMsg1 = any().filter(pred1, message = "star")
+    val pMsg2 = any().filter(pred1, message = "star")
+    val pMsg3 = any().filter(pred1, message = "hash")
     assertTrue(p1.isEqualTo(p2))
     assertFalse(p1.isEqualTo(p3))
     assertTrue(pMsg1.isEqualTo(pMsg2))
