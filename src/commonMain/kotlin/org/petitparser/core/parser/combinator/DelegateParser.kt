@@ -16,4 +16,6 @@ abstract class DelegateParser<T, out R>(var delegate: Parser<T>) : Parser<R> {
       delegate = target as Parser<T>
     }
   }
+
+  override fun toString(): String = "${this::class.simpleName}"
 }

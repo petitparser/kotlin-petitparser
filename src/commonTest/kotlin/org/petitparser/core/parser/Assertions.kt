@@ -82,5 +82,7 @@ fun <T> expectParserInvariants(parser: Parser<T>) {
     assertSame(target, copy.children[i], "child $i should be replaced")
   }
 
+  assertEquals(parser::class, copy::class, "copy should have same class")
+  assertEquals(parser.toString(), copy.toString(), "copy should have same toString")
   assertTrue(parser.toString().isNotEmpty(), "toString should not be empty")
 }

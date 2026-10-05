@@ -31,7 +31,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 2: Actions, Combinators & Repeaters (Kotlin-Native & Fast)
 
-- [ ] **2.1 Action Parsers Concrete Migration & Additions**
+- [x] **2.1 Action Parsers Concrete Migration & Additions**
   - Convert `map` to `MapParser<T, R>` (inherits `DelegateParser`, delegates `fastParseOn` directly without running the transformation callback).
   - Convert `pick` to `PickParser<R>` (inherits `DelegateParser`, delegates `fastParseOn`).
   - Convert `flatten` to `FlattenParser<R>` (inherits `DelegateParser`, uses `fastParseOn` when `message != null`).

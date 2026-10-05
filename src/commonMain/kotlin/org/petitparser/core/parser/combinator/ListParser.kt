@@ -22,4 +22,6 @@ abstract class ListParser<R, out S>(children: Iterable<Parser<R>>) : Parser<S> {
       }
     }
   }
+
+  override fun toString(): String = "${this::class.simpleName}"
 }

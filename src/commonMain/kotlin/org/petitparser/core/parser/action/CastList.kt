@@ -6,15 +6,15 @@ import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.combinator.DelegateParser
 
-/** Returns a parser that casts its success result to [R]. */
-fun <R> Parser<*>.cast(): Parser<R> = CastParser(this)
+/** Returns a parser that casts its successful list result to `List<R>`. */
+fun <R> Parser<*>.castList(): Parser<List<R>> = CastListParser(this)
 
-/** A parser that casts a successful parse result to [R]. */
-class CastParser<T, out R>(delegate: Parser<T>) : DelegateParser<T, R>(delegate) {
+/** A parser that casts a successful list result to `List<R>`. */
+class CastListParser<T, out R>(delegate: Parser<T>) : DelegateParser<T, List<R>>(delegate) {
   @Suppress("UNCHECKED_CAST")
-  override fun parseOn(input: Input): Output<R> {
+  override fun parseOn(input: Input): Output<List<R>> {
     return when (val result = delegate.parseOn(input)) {
-      is Output.Success -> result.success(result.value as R)
+      is Output.Success -> result.success(result.value as List<R>)
       is Output.Failure -> result
     }
   }
@@ -22,5 +22,5 @@ class CastParser<T, out R>(delegate: Parser<T>) : DelegateParser<T, R>(delegate)
   override fun fastParseOn(buffer: String, position: Int): Int =
     delegate.fastParseOn(buffer, position)
 
-  override fun copy(): CastParser<T, R> = CastParser(delegate)
+  override fun copy(): CastListParser<T, R> = CastListParser(delegate)
 }

@@ -29,7 +29,36 @@ data class Token<R>(
 
   /** The line and column of the token. */
   private val lineAndColumn by lazy { lineAndColumn(buffer, start) }
+
+  override fun toString(): String = "Token[$line:$column]: $value"
+
+  companion object {
+    /** Combines multiple tokens into a single token with the list of its values. */
+    fun <T> join(tokens: Iterable<Token<T>>): Token<List<T>> {
+      val iterator = tokens.iterator()
+      require(iterator.hasNext()) { "Require at least one token" }
+      val first = iterator.next()
+      val value = mutableListOf<T>(first.value)
+      val buffer = first.buffer
+      var start = first.start
+      var stop = first.stop
+      while (iterator.hasNext()) {
+        val next = iterator.next()
+        require(buffer == next.buffer) { "Tokens do not use the same buffer" }
+        value.add(next.value)
+        start = minOf(start, next.start)
+        stop = maxOf(stop, next.stop)
+      }
+      return Token(value, buffer, start, stop)
+    }
+
+    /** Combines multiple tokens into a single token with the list of its values. */
+    fun <T> join(vararg tokens: Token<T>): Token<List<T>> = join(tokens.asList())
+  }
 }
+
+/** Combines multiple tokens into a single token with the list of its values. */
+fun <T> Iterable<Token<T>>.join(): Token<List<T>> = Token.join(this)
 
 private data class LineAndColumn(val line: Int, val column: Int)
 
