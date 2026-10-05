@@ -73,7 +73,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Add `starString()`, `plusString()`, `timesString()`, `repeatString()` extensions.
   - Reference: `lib/src/parser/repeater/`, `lib/src/parser/utils/separated_list.dart`.
 
-- [ ] **2.4 Misc Parsers**
+- [x] **2.4 Misc Parsers**
   - Convert `endOfInput` to `EndOfInputParser` with `fastParseOn`.
   - Convert `failure` to `FailureParser<R>` with `fastParseOn`.
   - Convert `position` to `PositionParser` with `fastParseOn`.
