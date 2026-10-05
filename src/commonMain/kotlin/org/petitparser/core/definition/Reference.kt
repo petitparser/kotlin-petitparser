@@ -22,7 +22,7 @@ class ReferenceParser<R>(
     throw UnsupportedOperationException("Unsupported operation on parser reference")
 
   override fun copy(): ReferenceParser<R> =
-    throw UnsupportedOperationException("Unsupported operation on parser reference")
+    ReferenceParser(function, arguments, callback)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

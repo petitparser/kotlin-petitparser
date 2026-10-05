@@ -42,14 +42,16 @@ class ExpressionBuilder<T> {
    * Builds the expression parser.
    */
   fun build(): Parser<T> {
-    check(primitives.isNotEmpty()) { "At least one primitive parser expected" }
-    val initial = buildChoice(primitives)
-    val parser = groups.fold(initial) { current, group -> group.build(current) }
-    for (parent in allParsers(parser).toList()) {
-      parent.replace(settableLoopback, parser)
+    var parser: Parser<T>? = if (primitives.isNotEmpty()) buildChoice(primitives) else null
+    for (group in groups) {
+      parser = group.build(parser)
     }
-    settableLoopback.set(parser)
-    return parser
+    val result = parser ?: throw IllegalStateException("At least one primitive parser expected")
+    for (parent in allParsers(result).toList()) {
+      parent.replace(settableLoopback, result)
+    }
+    settableLoopback.set(result)
+    return result
   }
 }
 

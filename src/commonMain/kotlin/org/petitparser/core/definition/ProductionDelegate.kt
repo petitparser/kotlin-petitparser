@@ -17,10 +17,13 @@ class ProductionDelegate<T>(
 ) : ReadOnlyProperty<Any?, Parser<T>>, ResolvableParser<T> {
   var name: String? = null
     private set
+  var owner: Any? = null
+    private set
   private var resolvedParser: Parser<T>? = null
 
   operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ProductionDelegate<T> {
     name = property.name
+    owner = thisRef
     if (thisRef is GrammarDefinition<*>) {
       thisRef.registerProduction(property.name, this)
     }
@@ -51,10 +54,12 @@ class ProductionDelegate<T>(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is ProductionDelegate<*>) return false
-    return name != null && name == other.name
+    return owner !== null && owner === other.owner && name != null && name == other.name
   }
 
-  override fun hashCode(): Int = name?.hashCode() ?: super.hashCode()
+  override fun hashCode(): Int =
+    if (owner != null && name != null) 31 * owner.hashCode() + name.hashCode()
+    else super.hashCode()
 
   override fun hasEqualProperties(other: Parser<*>): Boolean = this == other
 

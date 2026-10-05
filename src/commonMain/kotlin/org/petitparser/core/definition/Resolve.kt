@@ -39,7 +39,8 @@ private fun <R> dereference(
   while (current is ResolvableParser<*>) {
     val existing = mapping[current]
     if (existing != null) {
-      return existing as Parser<R>
+      current = existing
+      break
     }
     if (!references.add(current)) {
       throw IllegalStateException("Recursive references detected: $references")

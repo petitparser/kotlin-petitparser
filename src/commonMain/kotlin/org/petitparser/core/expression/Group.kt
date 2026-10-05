@@ -149,8 +149,13 @@ class ExpressionGroup<T>(
     hasOptional = true
   }
 
-  internal fun build(inner: Parser<T>): Parser<T> {
-    val base = if (primitives.isEmpty()) inner else buildChoice(primitives + inner)
+  internal fun build(inner: Parser<T>?): Parser<T> {
+    val base: Parser<T> = when {
+      inner == null && primitives.isEmpty() -> throw IllegalStateException("At least one primitive parser expected")
+      inner == null -> buildChoice(primitives)
+      primitives.isEmpty() -> inner
+      else -> buildChoice(primitives + inner)
+    }
     return buildOptional(
       buildLeft(
         buildRight(

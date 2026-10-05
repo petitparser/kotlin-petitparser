@@ -21,7 +21,8 @@ abstract class GrammarDefinition<R> {
   /**
    * Returns the production with the given [name], or `null` if not found.
    */
-  operator fun get(name: String): Parser<*>? = productions[name]
+  operator fun get(name: String): Parser<*>? =
+    productions[name] ?: if (name == "start") try { start() } catch (_: UnsupportedOperationException) { null } else null
 
   /**
    * All registered production names.
@@ -56,7 +57,7 @@ abstract class GrammarDefinition<R> {
    */
   @Suppress("UNCHECKED_CAST")
   fun <T> buildFrom(name: String): Parser<T> {
-    val production = productions[name]
+    val production = get(name)
       ?: throw IllegalArgumentException("Unknown production '$name' in ${this::class.simpleName}")
     return buildFrom(production as Parser<T>)
   }

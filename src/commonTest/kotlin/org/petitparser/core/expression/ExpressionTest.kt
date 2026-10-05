@@ -511,4 +511,30 @@ class ExpressionTest {
     assertSuccess(parser, "a+b", "(a+b)")
     assertSuccess(parser, "b+a", "(b+a)")
   }
+
+  @Test
+  fun test_group_primitive_only() {
+    val parser = buildExpression<String> {
+      group {
+        primitive(digit().map(Char::toString))
+        left(char('+')) { a, b -> "($a+$b)" }
+      }
+    }
+    assertSuccess(parser, "1+2", "(1+2)")
+  }
+
+  @Test
+  fun test_multiple_group_primitives() {
+    val parser = buildExpression<String> {
+      group {
+        primitive(char('a').map(Char::toString))
+      }
+      group {
+        primitive(char('b').map(Char::toString))
+        left(char('+')) { a, b -> "($a+$b)" }
+      }
+    }
+    assertSuccess(parser, "a+b", "(a+b)")
+    assertSuccess(parser, "b+a", "(b+a)")
+  }
 }

@@ -214,10 +214,12 @@ class DefinitionTest {
   }
 
   @Test
-  fun test_reference_unsupported_methods() {
+  fun test_reference_copy_and_unsupported_methods() {
     fun number() = digit()
     val reference = ref(::number)
-    assertFailsWith<UnsupportedOperationException> { reference.copy() }
+    val copy = reference.copy()
+    assertEquals(reference, copy)
+    assertTrue(reference.isEqualTo(copy))
     assertFailsWith<UnsupportedOperationException> { reference.parse("0") }
     assertFailsWith<UnsupportedOperationException> { reference.fastParseOn("0", 0) }
   }
@@ -396,6 +398,41 @@ class DefinitionTest {
     }
     Dummy()
     assertFalse(d1 == d2)
+
+    class Dummy1 : GrammarDefinition<Char>() {
+      val a by def { char('a') }
+    }
+    class Dummy2 : GrammarDefinition<Char>() {
+      val a by def { char('b') }
+    }
+    val g1 = Dummy1()
+    val g2 = Dummy2()
+    assertFalse(g1.a == g2.a)
+  }
+
+  @Test
+  fun test_grammar_definition_method_start() {
+    val z = char('z')
+    class MethodGrammar : GrammarDefinition<Char>() {
+      override fun start(): Parser<Char> = z
+    }
+    val grammar = MethodGrammar()
+    assertEquals(z, grammar["start"])
+    val parser = grammar.build()
+    assertSuccess(parser, "z", 'z')
+    val parserByName = grammar.buildFrom<Char>("start")
+    assertSuccess(parserByName, "z", 'z')
+  }
+
+  @Test
+  fun test_resolve_chained_references_memoization() {
+    val leaf = char('x')
+    val r3 = ref { leaf }
+    val r2 = ref { r3 }
+    val r1 = ref { r2 }
+    val pair = seqOf(r1, r2)
+    val resolved = resolve(pair)
+    assertSuccess(resolved, "xx", listOf('x', 'x'))
   }
 
   @Test
