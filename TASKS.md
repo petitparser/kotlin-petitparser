@@ -6,7 +6,7 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 
 ## Phase 1: Core Engine Architecture & AST Foundation
 
-- [ ] **1.1 Backward-Compatible `fun interface Parser<out R>` Enhancement**
+- [x] **1.1 Backward-Compatible `fun interface Parser<out R>` Enhancement**
   - Keep `Parser<out R>` as a Kotlin `fun interface` with single abstract method `fun parseOn(input: Input): Output<R>`, preserving 100% backward compatibility for SAM conversions and lambda parsers `Parser { input -> ... }`.
   - Add interface default method: `fun fastParseOn(buffer: String, position: Int): Int`. Default implementation delegates to `parseOn`.
   - Add interface default method: `fun copy(): Parser<R> = this`.
@@ -16,12 +16,12 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Add interface default hooks: `hasEqualProperties(other: Parser<*>)` and `hasEqualChildren(other: Parser<*>, seen: MutableSet<Parser<*>>)`.
   - Reference: `lib/src/core/parser.dart`.
 
-- [ ] **1.2 Combinator Base Class Hierarchy**
+- [x] **1.2 Combinator Base Class Hierarchy**
   - Implement `abstract class DelegateParser<T, out R>(var delegate: Parser<T>) : Parser<R>` for single-child AST delegation, replacement, and traversal.
   - Implement `abstract class ListParser<R, out S>(children: List<Parser<R>>) : Parser<S>` for multi-child AST delegation, replacement, and traversal.
   - Reference: `lib/src/parser/combinator/delegate.dart`, `lib/src/parser/combinator/list.dart`.
 
-- [ ] **1.3 Test Harness Upgrades**
+- [x] **1.3 Test Harness Upgrades**
   - Update `assertSuccess` in `Assertions.kt` to assert that `fastParseOn` returns the expected end position without allocating `Output`.
   - Update `assertFailure` in `Assertions.kt` to assert that `fastParseOn` returns `-1`.
   - Add `expectParserInvariants` helper to assert `copy()`, `isEqualTo()`, `children`, `replace()`, and `toString()`.
