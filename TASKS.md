@@ -46,15 +46,21 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
   - Reference: `lib/src/parser/action/`.
 
 - [ ] **2.2 Combinator Parsers Concrete Migration & Operator Overloads**
-  - Convert `or` / `div` to `ChoiceParser<R>` (inherits `ListParser`, implements short-circuiting `fastParseOn`).
+  - Convert `or` / `div` to `ChoiceParser<R>` (inherits `ListParser`, implements short-circuiting `fastParseOn`). Leverage `Parser<out R>` covariance so choices of subtypes automatically infer their common supertype (e.g., `sealed interface AstNode`).
   - Convert `seqOf` / `seq` to `SequenceParser<R>` (inherits `ListParser`, implements sequential `fastParseOn`).
   - Add Kotlin operator overloads: `operator fun <R> Parser<R>.plus(other: Parser<Any?>): Parser<List<Any?>>` for sequence concatenation.
+  - Add delimiter-stripping combinators to eliminate dummy tuple mappings:
+    - `followedBy(delimiter)` / `skip(after)`: parses receiver then delimiter, returning receiver's typed value.
+    - `precededBy(delimiter)` / `skip(before)`: parses delimiter then receiver, returning receiver's typed value.
+    - `surroundedBy(left, right)`: parses left, receiver, right, returning receiver's typed value.
   - Convert `and` to `AndParser<R>` (inherits `DelegateParser`, zero-consumption `fastParseOn`).
   - Convert `not` to `NotParser<R>` (inherits `DelegateParser`, inverted `fastParseOn`).
-  - Convert `optional` to `OptionalParser<R>` (inherits `DelegateParser`, fallback `fastParseOn`).
+  - Convert `optional` to `OptionalParser<R>` with strict nullability preservation:
+    - `fun <R> Parser<R>.optional(): Parser<R?>` returning nullable value.
+    - `fun <R : Any> Parser<R>.optional(otherwise: R): Parser<R>` returning non-nullable value with fallback.
   - Convert `settable` to `SettableParser<R>` (inherits `DelegateParser`).
   - Convert `SequenceTuple.kt` to concrete `SequenceParser2`..`SequenceParser9` with direct field access, child replacement, and chained `fastParseOn`.
-  - Refactor `SequenceMap.kt` to compose `seq` and `map` leveraging tuple destructuring: `seq(p1, p2).map { (a, b) -> block(a, b) }`.
+  - Provide direct N-ary mapping via `seqMap(p1, p2, ...) { a, b -> ... }` for zero intermediate tuple allocations, alongside `seq(p1, p2).map { (a, b) -> ... }` destructuring.
   - Reference: `lib/src/parser/combinator/`.
 
 - [ ] **2.3 Repeater Parsers Concrete Migration & String Specializations**
@@ -116,9 +122,10 @@ Actionable task list to bring Kotlin PetitParser (`src`) to complete feature par
 - [ ] **4.2 Grammar Definition & Resolution**
   - Create package `org.petitparser.core.definition`.
   - Implement `ResolvableParser` interface for parsers that delegate to another parser during resolution.
-  - Support both:
-    1. Kotlin property delegate syntax (`val rule by def { ... }`) that derives rule names automatically from `KProperty.name` without reflection.
-    2. Function reference syntax (`ref0(::rule)`, `ref1(::rule, arg)`) for parameterized productions.
+  - Support idiomatic Kotlin grammar building:
+    1. Property delegation (`val rule by def { ... }`) that derives rule names automatically from `KProperty.name` without reflection.
+    2. Typed forward references via callable references: `ref(::rule)` where `::rule` is a `KProperty0<Parser<R>>`, inferring `Parser<R>` with zero boilerplate (eliminating Dart's clumsy `ref0`..`ref9`).
+    3. Parameterized productions using standard Kotlin methods: `fun token(p: Parser<String>) = p.trim()`.
   - Implement `resolve<R>(root: Parser<R>): Parser<R>` to traverse the graph, inline `ResolvableParser` references, and eliminate indirection wrappers.
   - Implement `GrammarDefinition<R>` base class with `start()`, `build()`, and `buildFrom(production)`.
   - Add unit tests for recursive and parameterized grammar definitions.
