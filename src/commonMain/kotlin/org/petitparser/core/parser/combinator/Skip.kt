@@ -4,7 +4,7 @@ import org.petitparser.core.context.Input
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.success
 import org.petitparser.core.parser.Parser
-import org.petitparser.core.parser.misc.success
+import org.petitparser.core.parser.misc.epsilon
 import org.petitparser.core.parser.utils.SequentialParser
 
 /**
@@ -12,7 +12,7 @@ import org.petitparser.core.parser.utils.SequentialParser
  * results of [before] and [after] and only returns the result of the receiver.
  */
 fun <R> Parser<R>.skip(before: Parser<*>? = null, after: Parser<*>? = null): SkipParser<R> =
-  SkipParser(this, before ?: success(), after ?: success())
+  SkipParser(this, before ?: epsilon(), after ?: epsilon())
 
 /** Returns a parser that parses the receiver then [delimiter], returning the receiver's result. */
 fun <R> Parser<R>.followedBy(delimiter: Parser<*>): SkipParser<R> =
@@ -32,8 +32,8 @@ fun <R> Parser<R>.surroundedBy(left: Parser<*>, right: Parser<*> = left): SkipPa
  */
 class SkipParser<R>(
   delegate: Parser<R>,
-  var before: Parser<*> = success(),
-  var after: Parser<*> = success(),
+  var before: Parser<*> = epsilon(),
+  var after: Parser<*> = epsilon(),
 ) : DelegateParser<R, R>(delegate), SequentialParser {
   override fun parseOn(input: Input): Output<R> {
     val beforeContext = before.parseOn(input)

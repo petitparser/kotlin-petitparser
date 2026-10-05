@@ -15,9 +15,11 @@ fun <R> epsilon(value: R): EpsilonParser<R> = EpsilonParser(value)
 fun <R> epsilonWith(value: R): EpsilonParser<R> = EpsilonParser(value)
 
 /** Returns a parser that consumes nothing and succeeds. */
+@Deprecated("Use epsilon() or epsilonWith(value) instead", ReplaceWith("epsilon()"))
 fun success(): EpsilonParser<Unit> = epsilon()
 
 /** Returns a parser that consumes nothing and succeeds with a [value]. */
+@Deprecated("Use epsilon() or epsilonWith(value) instead", ReplaceWith("epsilon(value)"))
 fun <R> success(value: R): EpsilonParser<R> = epsilonWith(value)
 
 /** A parser that consumes nothing and succeeds. */

@@ -3,7 +3,7 @@ package org.petitparser.core.parser.utils
 import org.petitparser.core.parser.Parser
 import org.petitparser.core.parser.action.trim
 import org.petitparser.core.parser.combinator.plus
-import org.petitparser.core.parser.combinator.seq2
+import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.seqMap
 import org.petitparser.core.parser.combinator.seqOf
 import org.petitparser.core.parser.combinator.skip
@@ -27,7 +27,7 @@ class SequentialParserTest {
 
   @Test
   fun test_sequenceTuple() {
-    val parser: Parser<*> = seq2(char('a'), char('b'))
+    val parser: Parser<*> = seq(char('a'), char('b'))
     assertTrue(parser is SequentialParser)
   }
 

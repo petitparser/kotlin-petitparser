@@ -5,7 +5,7 @@ import org.petitparser.core.parser.action.flatten
 import org.petitparser.core.parser.action.token
 import org.petitparser.core.parser.combinator.ChoiceParser
 import org.petitparser.core.parser.combinator.or
-import org.petitparser.core.parser.combinator.seq2
+import org.petitparser.core.parser.combinator.seq
 import org.petitparser.core.parser.combinator.settable
 import org.petitparser.core.parser.combinator.toChoiceParser
 import org.petitparser.core.parser.combinator.undefined
@@ -188,14 +188,14 @@ class OptimizeTest {
 
   @Test
   fun test_removeDuplicate_withDuplicate() {
-    val parser = seq2(digit(), digit())
+    val parser = seq(digit(), digit())
     val result = optimize(parser, rules = listOf(RemoveDuplicate()))
     assertSame(result.children.first(), result.children.last())
   }
 
   @Test
   fun test_removeDuplicate_withoutDuplicate() {
-    val parser = seq2(digit(message = "first"), digit(message = "second"))
+    val parser = seq(digit(message = "first"), digit(message = "second"))
     val result = optimize(
       parser,
       rules = listOf(RemoveDuplicate()),

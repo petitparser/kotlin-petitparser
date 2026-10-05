@@ -12,6 +12,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class EpsilonTest {
+  @Suppress("DEPRECATION")
   @Test
   fun test_invariants() {
     expectParserInvariants(epsilon())
@@ -47,6 +48,7 @@ internal class EpsilonTest {
     assertEquals("foo", p2.result)
   }
 
+  @Suppress("DEPRECATION")
   @Test
   fun test_success_aliases() {
     val s1 = success()

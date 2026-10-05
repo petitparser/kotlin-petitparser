@@ -64,19 +64,19 @@ class TokenizedListGrammarDefinition : GrammarDefinition<Any?>() {
 class TypedReferencesGrammarDefinition : GrammarDefinition<List<String>>() {
   override fun start(): Parser<List<String>> = ref(::f0)
 
-  fun f0(): Parser<List<String>> = ref1(::f1, 1)
-  fun f1(a1: Int): Parser<List<String>> = ref2(::f2, a1, 2)
-  fun f2(a1: Int, a2: Int): Parser<List<String>> = ref3(::f3, a1, a2, 3)
-  fun f3(a1: Int, a2: Int, a3: Int): Parser<List<String>> = ref4(::f4, a1, a2, a3, 4)
-  fun f4(a1: Int, a2: Int, a3: Int, a4: Int): Parser<List<String>> = ref5(::f5, a1, a2, a3, a4, 5)
+  fun f0(): Parser<List<String>> = ref(::f1, 1)
+  fun f1(a1: Int): Parser<List<String>> = ref(::f2, a1, 2)
+  fun f2(a1: Int, a2: Int): Parser<List<String>> = ref(::f3, a1, a2, 3)
+  fun f3(a1: Int, a2: Int, a3: Int): Parser<List<String>> = ref(::f4, a1, a2, a3, 4)
+  fun f4(a1: Int, a2: Int, a3: Int, a4: Int): Parser<List<String>> = ref(::f5, a1, a2, a3, a4, 5)
   fun f5(a1: Int, a2: Int, a3: Int, a4: Int, a5: Int): Parser<List<String>> =
-    ref6(::f6, a1, a2, a3, a4, a5, 6)
+    ref(::f6, a1, a2, a3, a4, a5, 6)
   fun f6(a1: Int, a2: Int, a3: Int, a4: Int, a5: Int, a6: Int): Parser<List<String>> =
-    ref7(::f7, a1, a2, a3, a4, a5, a6, 7)
+    ref(::f7, a1, a2, a3, a4, a5, a6, 7)
   fun f7(a1: Int, a2: Int, a3: Int, a4: Int, a5: Int, a6: Int, a7: Int): Parser<List<String>> =
-    ref8(::f8, a1, a2, a3, a4, a5, a6, a7, 8)
+    ref(::f8, a1, a2, a3, a4, a5, a6, a7, 8)
   fun f8(a1: Int, a2: Int, a3: Int, a4: Int, a5: Int, a6: Int, a7: Int, a8: Int): Parser<List<String>> =
-    ref9(::f9, a1, a2, a3, a4, a5, a6, a7, a8, 9)
+    ref(::f9, a1, a2, a3, a4, a5, a6, a7, a8, 9)
   fun f9(
     a1: Int,
     a2: Int,
