@@ -85,12 +85,35 @@ class CharacterTest {
   }
 
   @Test
+  fun test_string_times_zero() {
+    val parser = char('a').timesString(0)
+    assertSuccess(parser, "", "")
+    assertSuccess(parser, "a", "", 0)
+  }
+
+  @Test
+  fun test_string_times_negative() {
+    val error = assertFailsWith<IllegalArgumentException> {
+      char('a').timesString(-1)
+    }
+    assertEquals("min must be at least 0, but got -1", error.message)
+  }
+
+  @Test
   fun test_string_repeat() {
     val parser = char('a').repeatString(1, 2)
     assertFailure(parser, "", "'a' expected", 0)
     assertSuccess(parser, "a", "a")
     assertSuccess(parser, "aa", "aa")
     assertSuccess(parser, "aaa", "aa", 2)
+  }
+
+  @Test
+  fun test_string_repeat_default_max() {
+    val parser = char('a').repeatString(2)
+    assertIs<RepeatingCharacterParser>(parser)
+    assertEquals(2, parser.min)
+    assertEquals(2, parser.max)
   }
 
   @Test
@@ -108,6 +131,22 @@ class CharacterTest {
     assertSuccess(parser, "a", "a")
     assertSuccess(parser, "aa", "aa")
     assertSuccess(parser, "aaa", "aaa")
+
+    val customParser = char('a').settable().plusString("custom error")
+    assertFailure(customParser, "", "custom error", 0)
+  }
+
+  @Test
+  fun test_fallback_bounds() {
+    val error1 = assertFailsWith<IllegalArgumentException> {
+      char('a').settable().repeatString(-1, 2)
+    }
+    assertEquals("min must be at least 0, but got -1", error1.message)
+
+    val error2 = assertFailsWith<IllegalArgumentException> {
+      char('a').settable().repeatString(3, 2)
+    }
+    assertEquals("max must be at least 3, but got 2", error2.message)
   }
 
   @Test

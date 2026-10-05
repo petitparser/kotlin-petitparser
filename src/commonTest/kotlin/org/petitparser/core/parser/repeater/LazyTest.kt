@@ -96,17 +96,80 @@ class LazyTest {
   }
 
   @Test
+  fun test_lazy_bounds() {
+    val error1 = assertFailsWith<IllegalArgumentException> {
+      digit().repeatLazy(letterOrDigit(), -1, 2)
+    }
+    assertEquals("min must be at least 0, but got -1", error1.message)
+
+    val error2 = assertFailsWith<IllegalArgumentException> {
+      digit().repeatLazy(letterOrDigit(), 3, 2)
+    }
+    assertEquals("max must be at least 3, but got 2", error2.message)
+  }
+
+  @Test
+  fun test_lazy_default_max() {
+    val parser = letterOrDigit().repeatLazy(digit(), 2)
+    assertEquals(2, parser.min)
+    assertEquals(2, parser.max)
+  }
+
+  @Test
+  fun test_lazy_toString() {
+    assertEquals("LazyRepeatingParser[0..*]", letterOrDigit().starLazy(digit()).toString())
+    assertEquals("LazyRepeatingParser[1..*]", letterOrDigit().plusLazy(digit()).toString())
+    assertEquals("LazyRepeatingParser[2..4]", letterOrDigit().repeatLazy(digit(), 2, 4).toString())
+  }
+
+  @Test
+  fun test_lazy_equality() {
+    val p1 = digit().repeatLazy(letterOrDigit(), 1, 3)
+    val p2 = digit().repeatLazy(letterOrDigit(), 1, 3)
+    val pDiffMin = digit().repeatLazy(letterOrDigit(), 2, 3)
+    val pDiffMax = digit().repeatLazy(letterOrDigit(), 1, 4)
+    val pDiffLimit = digit().repeatLazy(letterOrDigit().star(), 1, 3)
+    val pDiffDelegate = digit().star().repeatLazy(letterOrDigit(), 1, 3)
+
+    kotlin.test.assertTrue(p1.isEqualTo(p2))
+    kotlin.test.assertFalse(p1.isEqualTo(pDiffMin))
+    kotlin.test.assertFalse(p1.isEqualTo(pDiffMax))
+    kotlin.test.assertFalse(p1.isEqualTo(pDiffLimit))
+    kotlin.test.assertFalse(p1.isEqualTo(pDiffDelegate))
+  }
+
+  @Test
+  fun test_lazy_unbounded() {
+    val count = 10_000
+    val input = "a".repeat(count) + "1"
+    val parser = letterOrDigit().repeatLazy(digit(), 2, Int.MAX_VALUE)
+    val expected = List(count) { 'a' }
+    assertSuccess(parser, input, expected, count)
+  }
+
+  @Test
   fun test_infinite_loop_protection() {
     val emptyParser = Parser { it.success(Unit) }
-    val parser = emptyParser.starLazy(digit())
+    val starParser = emptyParser.starLazy(digit())
     val error1 = assertFailsWith<IllegalStateException> {
-      parser.parseOn(org.petitparser.core.context.Input.Impl("a", 0))
+      starParser.parseOn(org.petitparser.core.context.Input.Impl("a", 0))
     }
     assertEquals("$emptyParser must always consume", error1.message)
 
     val error2 = assertFailsWith<IllegalStateException> {
-      parser.fastParseOn("a", 0)
+      starParser.fastParseOn("a", 0)
     }
     assertEquals("$emptyParser must always consume", error2.message)
+
+    val plusParser = emptyParser.plusLazy(digit())
+    val error3 = assertFailsWith<IllegalStateException> {
+      plusParser.parseOn(org.petitparser.core.context.Input.Impl("a", 0))
+    }
+    assertEquals("$emptyParser must always consume", error3.message)
+
+    val error4 = assertFailsWith<IllegalStateException> {
+      plusParser.fastParseOn("a", 0)
+    }
+    assertEquals("$emptyParser must always consume", error4.message)
   }
 }
