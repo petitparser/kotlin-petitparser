@@ -40,4 +40,23 @@ class TraceTest {
     traced.parse("a1")
     assertTrue(events.all { it.parser.toString().contains("first") })
   }
+
+  @Test
+  fun test_trace_event_level() {
+    val rootEvent = object : TraceEvent {
+      override val parent: TraceEvent? = null
+      override val parser = char('a')
+      override val context = org.petitparser.core.context.Input("")
+      override val result = null
+    }
+    assertEquals(0, rootEvent.level)
+
+    val childEvent = object : TraceEvent {
+      override val parent = rootEvent
+      override val parser = char('b')
+      override val context = org.petitparser.core.context.Input("")
+      override val result = null
+    }
+    assertEquals(1, childEvent.level)
+  }
 }
