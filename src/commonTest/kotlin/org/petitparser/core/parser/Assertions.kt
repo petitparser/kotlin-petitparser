@@ -2,9 +2,11 @@ package org.petitparser.core.parser
 
 import org.petitparser.core.context.Output
 import org.petitparser.core.context.ParseError
+import org.petitparser.core.context.failure
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.asserter
 
@@ -21,6 +23,7 @@ fun <R> assertSuccess(
   val result = parser.parse(input)
   assertSuccess(result, value, position)
   assertFailsWith<UnsupportedOperationException> { result.message }
+  assertEquals(result.position, parser.fastParseOn(input, 0), "fastParseOn position for $parser on '$input'")
 }
 
 fun <R> assertSuccess(output: Output<R>, value: R, position: Int = UNCHECKED_POSITION) {
@@ -46,6 +49,7 @@ fun <R> assertFailure(
     val error = assertFailsWith<ParseError>(message) { result.value }
     assertFailure(error.failure, message, position)
   }
+  assertEquals(-1, parser.fastParseOn(input, 0), "fastParseOn failure for $parser on '$input'")
 }
 
 fun <R> assertFailure(
@@ -60,4 +64,28 @@ fun <R> assertFailure(
       if (position != UNCHECKED_POSITION) assertEquals(position, output.position, "position")
     }
   }
+}
+
+fun <T> expectParserInvariants(parser: Parser<T>) {
+  val copy = parser.copy()
+  assertTrue(parser.isEqualTo(parser), "$parser should be equal to itself")
+  assertTrue(copy.isEqualTo(copy), "$copy should be equal to itself")
+  assertTrue(parser.isEqualTo(copy), "$parser should be equal to its copy")
+  assertTrue(copy.isEqualTo(parser), "copy should be equal to $parser")
+  assertFalse(parser.isEqualTo(null), "$parser should not be equal to null")
+  assertFalse(parser.isEqualTo(Any()), "$parser should not be equal to arbitrary object")
+  val dummyParser: Parser<Unit> = Parser { it.failure("dummy") }
+  parser.hasEqualProperties(dummyParser)
+
+  assertEquals(parser.children.size, copy.children.size)
+  for (i in copy.children.indices) {
+    val source = copy.children[i]
+    val target = source.copy()
+    copy.replace(source, target)
+    assertSame(target, copy.children[i], "child $i should be replaced")
+  }
+
+  assertEquals(parser::class, copy::class, "copy should have same class")
+  assertEquals(parser.toString(), copy.toString(), "copy should have same toString")
+  assertTrue(parser.toString().isNotEmpty(), "toString should not be empty")
 }
